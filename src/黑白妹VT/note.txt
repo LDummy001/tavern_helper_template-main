@@ -1,0 +1,11 @@
+Action:
+ - Use for representing the properties of each action
+   - Effect when starting the action
+   - Effect when finish the action
+   - Force follow-up action
+   - Handle randomness
+
+Action Command:
+  - Sub-class of Command class
+  - Use for handling commands for actions.
+    - May need to override static method parseString() to returning multiple commands

@@ -1,0 +1,599 @@
+<head><script type="module">var __webpack_modules__ = {
+  "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-161.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true": 
+  /*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-161.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+  },
+  "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=script&setup=true&lang=ts": 
+  /*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=script&setup=true&lang=ts ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      default: () => __WEBPACK_DEFAULT_EXPORT__
+    });
+    var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
+    var vue__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+    var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+    var lodash__WEBPACK_IMPORTED_MODULE_1___default = __webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+    var zod__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! zod */ "zod");
+    var zod__WEBPACK_IMPORTED_MODULE_2___default = __webpack_require__.n(zod__WEBPACK_IMPORTED_MODULE_2__);
+    const __WEBPACK_DEFAULT_EXPORT__ = (0, vue__WEBPACK_IMPORTED_MODULE_0__.defineComponent)({
+      __name: "app",
+      setup(__props, {expose: __expose}) {
+        __expose();
+        const defaultStatus = {
+          name: "角色",
+          mood: "情緒穩定",
+          location: "未知位置",
+          objective: "等待玩家指示",
+          hp: 88,
+          mp: 64,
+          stamina: 72,
+          focus: 55,
+          battery: 76,
+          signal: 3,
+          buffs: [ {
+            label: "專注",
+            type: "positive"
+          }, {
+            label: "輕裝",
+            type: "positive"
+          }, {
+            label: "輕微疲勞",
+            type: "neutral"
+          } ]
+        };
+        const StatusShape = zod__WEBPACK_IMPORTED_MODULE_2__.z.object({
+          name: zod__WEBPACK_IMPORTED_MODULE_2__.z.string().min(1).optional(),
+          mood: zod__WEBPACK_IMPORTED_MODULE_2__.z.string().optional(),
+          location: zod__WEBPACK_IMPORTED_MODULE_2__.z.string().optional(),
+          objective: zod__WEBPACK_IMPORTED_MODULE_2__.z.string().optional(),
+          hp: zod__WEBPACK_IMPORTED_MODULE_2__.z.number().min(0).max(100).optional(),
+          mp: zod__WEBPACK_IMPORTED_MODULE_2__.z.number().min(0).max(100).optional(),
+          stamina: zod__WEBPACK_IMPORTED_MODULE_2__.z.number().min(0).max(100).optional(),
+          focus: zod__WEBPACK_IMPORTED_MODULE_2__.z.number().min(0).max(100).optional(),
+          battery: zod__WEBPACK_IMPORTED_MODULE_2__.z.number().min(0).max(100).optional(),
+          signal: zod__WEBPACK_IMPORTED_MODULE_2__.z.number().min(0).max(4).optional(),
+          buffs: zod__WEBPACK_IMPORTED_MODULE_2__.z.array(zod__WEBPACK_IMPORTED_MODULE_2__.z.object({
+            label: zod__WEBPACK_IMPORTED_MODULE_2__.z.string(),
+            type: zod__WEBPACK_IMPORTED_MODULE_2__.z.enum([ "positive", "negative", "neutral" ]).default("neutral")
+          })).optional()
+        }).partial();
+        const status = (0, vue__WEBPACK_IMPORTED_MODULE_0__.reactive)({
+          ...defaultStatus
+        });
+        const chatPreview = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+        const clock = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)(new Date);
+        const avatarUrl = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
+        let clockTimer = null;
+        const unregisterFns = [];
+        const timeString = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => clock.value.toLocaleTimeString("zh-TW", {
+          hour: "2-digit",
+          minute: "2-digit"
+        }));
+        const dateString = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => clock.value.toLocaleDateString("zh-TW", {
+          month: "short",
+          day: "numeric",
+          weekday: "short"
+        }));
+        const signalBars = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => Array.from({
+          length: 4
+        }, (_, index) => index < status.signal));
+        const metrics = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => [ {
+          key: "hp",
+          label: "生命",
+          value: status.hp
+        }, {
+          key: "mp",
+          label: "意志",
+          value: status.mp
+        }, {
+          key: "stamina",
+          label: "體力",
+          value: status.stamina
+        }, {
+          key: "focus",
+          label: "專注",
+          value: status.focus
+        } ]);
+        const initials = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => status.name.replace(/\s+/g, "").slice(0, 2).toUpperCase());
+        const avatarStyle = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => avatarUrl.value ? {
+          backgroundImage: `url(${avatarUrl.value})`
+        } : {});
+        function setStatus(partial) {
+          if (!partial) {
+            return;
+          }
+          const parsed = StatusShape.safeParse(partial);
+          if (!parsed.success) {
+            console.warn("[手机角色状态栏] 無法解析狀態數據", parsed.error);
+            return;
+          }
+          const {buffs, ...rest} = parsed.data;
+          Object.entries(rest).forEach(([key, value]) => {
+            if (value === undefined || value === null) {
+              return;
+            }
+            status[key] = value;
+          });
+          status.buffs = buffs?.length ? buffs : defaultStatus.buffs;
+        }
+        function refreshStatus() {
+          try {
+            status.name = substitudeMacros("{{char}}").trim() || defaultStatus.name;
+          } catch (error) {
+            console.warn("[手机角色状态栏] 解析角色名失敗", error);
+            status.name = defaultStatus.name;
+          }
+          try {
+            const variables = getVariables({
+              type: "character"
+            });
+            const raw = lodash__WEBPACK_IMPORTED_MODULE_1___default().get(variables, "手机角色状态栏") ?? lodash__WEBPACK_IMPORTED_MODULE_1___default().get(variables, "mobile_status") ?? lodash__WEBPACK_IMPORTED_MODULE_1___default().get(variables, "角色狀態");
+            if (lodash__WEBPACK_IMPORTED_MODULE_1___default().isPlainObject(raw)) {
+              setStatus(raw);
+            } else {
+              status.battery = defaultStatus.battery;
+              status.signal = defaultStatus.signal;
+            }
+          } catch (error) {
+            console.info("[手机角色状态栏] 無法取得角色變量, 使用預設值", error);
+            Object.assign(status, defaultStatus);
+          }
+          try {
+            const avatar = getCharAvatarPath("current", true);
+            avatarUrl.value = avatar;
+          } catch (error) {
+            console.warn("[手机角色状态栏] 無法取得頭像", error);
+            avatarUrl.value = null;
+          }
+        }
+        function compactText(message) {
+          const text = (message ?? "").replace(/```[\s\S]*?```/g, "[代碼]").replace(/!\[[^\]]*]\([^)]+\)/g, "").replace(/\[[^\]]*]\([^)]+\)/g, "$1").replace(/\r?\n+/g, " ").replace(/\s+/g, " ").trim();
+          return text.length > 52 ? `${text.slice(0, 52)}…` : text;
+        }
+        function formatBubbleTime(value) {
+          const timestamp = typeof value === "number" ? value : Date.now();
+          return new Date(timestamp).toLocaleTimeString("zh-TW", {
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+        }
+        function refreshChatPreview() {
+          try {
+            const lastId = getLastMessageId();
+            if (Number.isNaN(lastId) || lastId < 0) {
+              chatPreview.value = [];
+              return;
+            }
+            const from = Math.max(0, lastId - 5);
+            const range = from === lastId ? lastId : `${from}-${lastId}`;
+            const messages = getChatMessages(range).filter(message => [ "assistant", "user" ].includes(message.role));
+            chatPreview.value = messages.slice(-4).map(message => ({
+              id: message.message_id,
+              sender: message.role === "assistant" ? "char" : "user",
+              text: compactText(message.message),
+              time: formatBubbleTime(message.extra?.timestamp ?? Date.now())
+            }));
+          } catch (error) {
+            console.warn("[手机角色状态栏] 無法載入聊天", error);
+            chatPreview.value = [];
+          }
+        }
+        function refreshAll() {
+          refreshStatus();
+          refreshChatPreview();
+        }
+        function startClock() {
+          clockTimer = window.setInterval(() => {
+            clock.value = new Date;
+          }, 3e4);
+        }
+        function stopClock() {
+          if (clockTimer !== null) {
+            clearInterval(clockTimer);
+            clockTimer = null;
+          }
+        }
+        function registerEvent(eventType, callback) {
+          const handler = eventOn(eventType, (..._args) => callback());
+          unregisterFns.push(() => handler.stop());
+        }
+        (0, vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(() => {
+          refreshAll();
+          startClock();
+          registerEvent(tavern_events.MESSAGE_RECEIVED, refreshAll);
+          registerEvent(tavern_events.MESSAGE_SENT, refreshAll);
+          registerEvent(tavern_events.MESSAGE_UPDATED, refreshAll);
+          registerEvent(tavern_events.CHARACTER_EDITED, refreshStatus);
+          registerEvent(tavern_events.CHAT_CHANGED, refreshAll);
+        });
+        (0, vue__WEBPACK_IMPORTED_MODULE_0__.onUnmounted)(() => {
+          stopClock();
+          unregisterFns.forEach(stop => stop());
+        });
+        const __returned__ = {
+          defaultStatus,
+          StatusShape,
+          status,
+          chatPreview,
+          clock,
+          avatarUrl,
+          get clockTimer() {
+            return clockTimer;
+          },
+          set clockTimer(v) {
+            clockTimer = v;
+          },
+          unregisterFns,
+          timeString,
+          dateString,
+          signalBars,
+          metrics,
+          initials,
+          avatarStyle,
+          setStatus,
+          refreshStatus,
+          compactText,
+          formatBubbleTime,
+          refreshChatPreview,
+          refreshAll,
+          startClock,
+          stopClock,
+          registerEvent
+        };
+        Object.defineProperty(__returned__, "__isScriptSetup", {
+          enumerable: false,
+          value: true
+        });
+        return __returned__;
+      }
+    });
+  },
+  "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=template&id=17d123de&scoped=true&ts=true": 
+  /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=template&id=17d123de&scoped=true&ts=true ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      render: () => render
+    });
+    var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
+    var vue__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+    const _hoisted_1 = {
+      class: "phone-wrapper"
+    };
+    const _hoisted_2 = {
+      class: "phone-body"
+    };
+    const _hoisted_3 = {
+      class: "phone-screen"
+    };
+    const _hoisted_4 = {
+      class: "status-bar"
+    };
+    const _hoisted_5 = {
+      class: "time-block"
+    };
+    const _hoisted_6 = {
+      class: "time"
+    };
+    const _hoisted_7 = {
+      class: "date"
+    };
+    const _hoisted_8 = {
+      class: "signal-block"
+    };
+    const _hoisted_9 = {
+      class: "signal-bars"
+    };
+    const _hoisted_10 = {
+      class: "battery"
+    };
+    const _hoisted_11 = {
+      class: "battery-icon"
+    };
+    const _hoisted_12 = {
+      class: "hero-card"
+    };
+    const _hoisted_13 = {
+      key: 0
+    };
+    const _hoisted_14 = {
+      class: "hero-main"
+    };
+    const _hoisted_15 = {
+      class: "subtitle"
+    };
+    const _hoisted_16 = {
+      class: "location"
+    };
+    const _hoisted_17 = {
+      class: "hero-objective"
+    };
+    const _hoisted_18 = {
+      class: "stats-panel"
+    };
+    const _hoisted_19 = {
+      class: "stat-header"
+    };
+    const _hoisted_20 = {
+      class: "stat-title"
+    };
+    const _hoisted_21 = {
+      class: "stat-value"
+    };
+    const _hoisted_22 = {
+      class: "stat-bar"
+    };
+    const _hoisted_23 = {
+      class: "buff-panel"
+    };
+    const _hoisted_24 = {
+      class: "buff-tags"
+    };
+    const _hoisted_25 = {
+      class: "chat-panel"
+    };
+    const _hoisted_26 = {
+      class: "chat-list"
+    };
+    const _hoisted_27 = {
+      class: "chat-text"
+    };
+    const _hoisted_28 = {
+      class: "chat-meta"
+    };
+    const _hoisted_29 = {
+      key: 0,
+      class: "chat-placeholder"
+    };
+    function render(_ctx, _cache, $props, $setup, $data, $options) {
+      return (0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [ _cache[6] || (_cache[6] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "phone-notch"
+      }, null, -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("header", _hoisted_4, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_6, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.timeString), 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_7, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.dateString), 1) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [ ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.signalBars, (active, index) => ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", {
+        key: index,
+        class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "signal-bar", {
+          active
+        } ])
+      }, null, 2))), 128)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+        class: "battery-fill",
+        style: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)({
+          width: `${$setup.status.battery}%`
+        })
+      }, null, 4) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.status.battery) + "%", 1) ]) ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("section", _hoisted_12, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "avatar",
+        style: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($setup.avatarStyle)
+      }, [ !$setup.avatarUrl ? ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_13, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.initials), 1)) : (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ], 4), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [ _cache[1] || (_cache[1] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+        class: "label"
+      }, "檔案同步", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", null, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.status.name), 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_15, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.status.mood), 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_16, [ _cache[0] || (_cache[0] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+        class: "dot"
+      }, null, -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.status.location), 1) ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [ _cache[2] || (_cache[2] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "當前目標", -1)), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.status.objective), 1) ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("section", _hoisted_18, [ ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.metrics, metric => ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("article", {
+        key: metric.key,
+        class: "stat-card"
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("header", _hoisted_19, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_20, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(metric.label), 1), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_21, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(metric.value) + "%", 1) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "stat-fill",
+        style: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)({
+          width: `${metric.value}%`
+        })
+      }, null, 4) ]) ]))), 128)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("section", _hoisted_23, [ _cache[3] || (_cache[3] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "buff-header"
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "狀態效果"), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", null, "即時同步") ], -1)), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [ ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.status.buffs, buff => ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", {
+        key: buff.label,
+        class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "buff-pill", buff.type ])
+      }, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(buff.label), 3))), 128)) ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("section", _hoisted_25, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "chat-header"
+      }, [ _cache[4] || (_cache[4] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "最近通訊", -1)), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+        type: "button",
+        class: "refresh",
+        onClick: $setup.refreshAll
+      }, "重新整理") ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_26, [ ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.chatPreview, bubble => ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+        key: bubble.id,
+        class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "chat-bubble", bubble.sender ])
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_27, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(bubble.text), 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_28, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(bubble.sender === "char" ? $setup.status.name : "你") + " · " + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(bubble.time), 1) ], 2))), 128)), !$setup.chatPreview.length ? ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", _hoisted_29, [ ..._cache[5] || (_cache[5] = [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "暫無聊天紀錄, 等待新的互動...", -1) ]) ])) : (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]) ]) ]) ]) ]);
+    }
+  },
+  "./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js": 
+  /*!**************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js ***!
+  \**************************************************************************************************************************************/ (__unused_webpack_module, exports) => {
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports["default"] = (sfc, props) => {
+      const target = sfc.__vccOpts || sfc;
+      for (const [key, val] of props) {
+        target[key] = val;
+      }
+      return target;
+    };
+  },
+  "./src/手机角色状态栏/app.vue": 
+  /*!*****************************!*\
+  !*** ./src/手机角色状态栏/app.vue ***!
+  \*****************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      default: () => __WEBPACK_DEFAULT_EXPORT__
+    });
+    var _app_vue_vue_type_template_id_17d123de_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.vue?vue&type=template&id=17d123de&scoped=true&ts=true */ "./src/手机角色状态栏/app.vue?vue&type=template&id=17d123de&scoped=true&ts=true");
+    var _app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.vue?vue&type=script&setup=true&lang=ts */ "./src/手机角色状态栏/app.vue?vue&type=script&setup=true&lang=ts");
+    var _app_vue_vue_type_style_index_0_id_17d123de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true */ "./src/手机角色状态栏/app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true");
+    var _node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js");
+    const __exports__ = (0, _node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__["default"], [ [ "render", _app_vue_vue_type_template_id_17d123de_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__.render ], [ "__scopeId", "data-v-17d123de" ], [ "__file", "src/手机角色状态栏/app.vue" ] ]);
+    if (false) {}
+    const __WEBPACK_DEFAULT_EXPORT__ = __exports__;
+  },
+  "./src/手机角色状态栏/app.vue?vue&type=script&setup=true&lang=ts": 
+  /*!****************************************************************!*\
+  !*** ./src/手机角色状态栏/app.vue?vue&type=script&setup=true&lang=ts ***!
+  \****************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      default: () => _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_158_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__["default"]
+    });
+    var _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_158_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!../../node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./app.vue?vue&type=script&setup=true&lang=ts */ "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=script&setup=true&lang=ts");
+  },
+  "./src/手机角色状态栏/app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true": 
+  /*!**************************************************************************************!*\
+  !*** ./src/手机角色状态栏/app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true ***!
+  \**************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    var _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_mini_css_extract_plugin_2_9_4_webpack_5_102_1_node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_pnpm_css_loader_7_1_2_webpack_5_102_1_node_modules_css_loader_dist_cjs_js_clonedRuleSet_161_use_1_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_pnpm_postcss_loader_8_2_0_postcs_37bafd025248bbddf6b8842180147e3c_node_modules_postcss_loader_dist_cjs_js_node_modules_pnpm_sass_loader_16_0_6_sass_1_94_0_webpack_5_102_1_node_modules_sass_loader_dist_cjs_js_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_style_index_0_id_17d123de_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!../../node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!../../node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-161.use[1]!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!../../node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!../../node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true */ "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-161.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true");
+  },
+  "./src/手机角色状态栏/app.vue?vue&type=template&id=17d123de&scoped=true&ts=true": 
+  /*!*******************************************************************************!*\
+  !*** ./src/手机角色状态栏/app.vue?vue&type=template&id=17d123de&scoped=true&ts=true ***!
+  \*******************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      render: () => _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_158_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_4_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_template_id_17d123de_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__.render
+    });
+    var _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_158_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_4_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_template_id_17d123de_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!../../node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./app.vue?vue&type=template&id=17d123de&scoped=true&ts=true */ "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-158!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=template&id=17d123de&scoped=true&ts=true");
+  },
+  lodash: 
+  /*!********************!*\
+  !*** external "_" ***!
+  \********************/ module => {
+    module.exports = _;
+  },
+  vue: 
+  /*!**********************!*\
+  !*** external "Vue" ***!
+  \**********************/ module => {
+    module.exports = Vue;
+  },
+  zod: 
+  /*!********************!*\
+  !*** external "z" ***!
+  \********************/ module => {
+    module.exports = z;
+  }
+};
+
+var __webpack_module_cache__ = {};
+
+function __webpack_require__(moduleId) {
+  var cachedModule = __webpack_module_cache__[moduleId];
+  if (cachedModule !== undefined) {
+    return cachedModule.exports;
+  }
+  var module = __webpack_module_cache__[moduleId] = {
+    exports: {}
+  };
+  __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+  return module.exports;
+}
+
+(() => {
+  __webpack_require__.n = module => {
+    var getter = module && module.__esModule ? () => module["default"] : () => module;
+    __webpack_require__.d(getter, {
+      a: getter
+    });
+    return getter;
+  };
+})();
+
+(() => {
+  __webpack_require__.d = (exports, definition) => {
+    for (var key in definition) {
+      if (__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+        Object.defineProperty(exports, key, {
+          enumerable: true,
+          get: definition[key]
+        });
+      }
+    }
+  };
+})();
+
+(() => {
+  __webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+})();
+
+(() => {
+  __webpack_require__.r = exports => {
+    if (typeof Symbol !== "undefined" && Symbol.toStringTag) {
+      Object.defineProperty(exports, Symbol.toStringTag, {
+        value: "Module"
+      });
+    }
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+  };
+})();
+
+var __webpack_exports__ = {};
+
+(() => {
+  /*!******************************!*\
+  !*** ./src/手机角色状态栏/index.ts ***!
+  \******************************/
+  __webpack_require__.r(__webpack_exports__);
+  var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
+  var vue__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+  var _app_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.vue */ "./src/手机角色状态栏/app.vue");
+  $(() => {
+    (0, vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_app_vue__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#app");
+  });
+})();</script><style>/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-161.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/手机角色状态栏/app.vue?vue&type=style&index=0&id=17d123de&lang=scss&scoped=true ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft YaHei",sans-serif}.phone-wrapper[data-v-17d123de]{width:100%;display:flex;justify-content:center;padding:16px 0;background:linear-gradient(140deg,#f6f1ff,#f8fbff 45%,#fef4f4)}.phone-body[data-v-17d123de]{position:relative;width:min(420px,100%);aspect-ratio:9/19.5;background:#0c0d12;border-radius:36px;padding:18px;box-shadow:0 12px 45px rgba(17,21,56,0.35),0 8px 20px rgba(58,96,159,0.18);overflow:hidden}.phone-notch[data-v-17d123de]{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:18px;background:#000;border-radius:0 0 16px 16px}.phone-screen[data-v-17d123de]{width:100%;height:100%;background:linear-gradient(160deg,#141824,#0d111a 40%,#191d2c);border-radius:24px;padding:24px;color:#f5f5ff;display:flex;flex-direction:column;gap:18px;overflow:hidden}.status-bar[data-v-17d123de]{display:flex;justify-content:space-between;align-items:flex-start;font-size:12px;color:rgba(255,255,255,0.75)}.time-block[data-v-17d123de]{display:flex;flex-direction:column;gap:2px}.time-block .time[data-v-17d123de]{font-size:20px;font-weight:600;color:#fff}.time-block .date[data-v-17d123de]{letter-spacing:0.05em}.signal-block[data-v-17d123de]{display:flex;align-items:center;gap:10px}.signal-bars[data-v-17d123de]{display:flex;gap:2px}.signal-bar[data-v-17d123de]{width:4px;height:12px;border-radius:2px;background:rgba(255,255,255,0.2);transition:background 0.3s}.signal-bar.active[data-v-17d123de]{background:#5ee4ff}.battery[data-v-17d123de]{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}.battery-icon[data-v-17d123de]{width:24px;height:12px;border:1px solid rgba(255,255,255,0.6);border-radius:6px;position:relative;padding:1px}.battery-icon[data-v-17d123de]::after{content:"";position:absolute;right:-4px;top:3px;width:3px;height:6px;background:rgba(255,255,255,0.6);border-radius:2px}.battery-fill[data-v-17d123de]{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#3af1d5,#5ee4ff);transition:width 0.4s ease}.hero-card[data-v-17d123de]{display:grid;grid-template-columns:auto 1fr;gap:16px;background:linear-gradient(135deg,rgba(67,92,219,0.4),rgba(168,111,255,0.35));padding:18px;border-radius:22px;position:relative;overflow:hidden}.hero-card[data-v-17d123de]::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at top right,rgba(255,255,255,0.25),transparent 55%)}.avatar[data-v-17d123de]{width:72px;height:72px;border-radius:20px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffffff;background-size:cover;background-position:center;border:1px solid rgba(255,255,255,0.25);z-index:1}.hero-main[data-v-17d123de]{display:flex;flex-direction:column;gap:6px;z-index:1}.hero-main .label[data-v-17d123de]{font-size:12px;letter-spacing:0.2em;opacity:0.7;text-transform:uppercase}.hero-main h1[data-v-17d123de]{margin:0;font-size:22px;font-weight:700}.hero-main .subtitle[data-v-17d123de]{margin:0;color:rgba(255,255,255,0.8)}.hero-main .location[data-v-17d123de]{display:flex;align-items:center;gap:6px;margin:0;font-size:13px;color:rgba(255,255,255,0.7)}.hero-main .dot[data-v-17d123de]{width:8px;height:8px;border-radius:50%;background:#55ffb7;box-shadow:0 0 8px rgba(85,255,183,0.8)}.hero-objective[data-v-17d123de]{grid-column:1/-1;margin-top:8px;padding:12px;border-radius:14px;background:rgba(6,8,18,0.3);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);z-index:1}.hero-objective span[data-v-17d123de]{font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.65}.hero-objective p[data-v-17d123de]{margin:4px 0 0;font-size:14px}.stats-panel[data-v-17d123de]{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}.stat-card[data-v-17d123de]{padding:14px;background:rgba(255,255,255,0.04);border-radius:16px;border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(10px)}.stat-header[data-v-17d123de]{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;color:rgba(255,255,255,0.8)}.stat-header .stat-value[data-v-17d123de]{font-weight:600;font-size:14px}.stat-bar[data-v-17d123de]{width:100%;height:6px;border-radius:99px;background:rgba(255,255,255,0.12);overflow:hidden}.stat-fill[data-v-17d123de]{height:100%;border-radius:99px;background:linear-gradient(90deg,#55ffb7,#5ee4ff);transition:width 0.35s ease}.buff-panel[data-v-17d123de]{padding:16px;border-radius:18px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.2);display:flex;flex-direction:column;gap:10px}.buff-header[data-v-17d123de]{display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,0.7)}.buff-tags[data-v-17d123de]{display:flex;flex-wrap:wrap;gap:8px}.buff-pill[data-v-17d123de]{padding:6px 12px;border-radius:999px;font-size:12px;letter-spacing:0.05em;text-transform:uppercase;border:1px solid transparent}.buff-pill.positive[data-v-17d123de]{background:rgba(85,255,183,0.12);border-color:rgba(85,255,183,0.4);color:#bfffed}.buff-pill.neutral[data-v-17d123de]{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.8)}.buff-pill.negative[data-v-17d123de]{background:rgba(255,120,143,0.12);border-color:rgba(255,120,143,0.4);color:#ffcfd8}.chat-panel[data-v-17d123de]{flex:1;min-height:0;display:flex;flex-direction:column;background:rgba(10,13,22,0.8);border-radius:20px;border:1px solid rgba(255,255,255,0.08);padding:16px;gap:12px}.chat-header[data-v-17d123de]{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:rgba(255,255,255,0.7)}.refresh[data-v-17d123de]{border:none;background:rgba(255,255,255,0.08);color:#fff;border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;transition:background 0.2s}.refresh[data-v-17d123de]:hover{background:rgba(255,255,255,0.15)}.chat-list[data-v-17d123de]{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;overflow:hidden}.chat-bubble[data-v-17d123de]{padding:10px 12px;border-radius:16px;max-width:90%;background:rgba(255,255,255,0.05);align-self:flex-start}.chat-bubble.char[data-v-17d123de]{background:rgba(94,228,255,0.12);border:1px solid rgba(94,228,255,0.2);margin-left:auto;align-self:flex-end}.chat-text[data-v-17d123de]{margin:0 0 4px;font-size:13px;color:rgba(255,255,255,0.92)}.chat-meta[data-v-17d123de]{font-size:11px;color:rgba(255,255,255,0.6)}.chat-placeholder[data-v-17d123de]{padding:12px;border-radius:14px;background:rgba(255,255,255,0.03);text-align:center;font-size:13px;color:rgba(255,255,255,0.65)}@media (max-width:480px){.phone-body[data-v-17d123de]{padding:14px;border-radius:30px}.phone-screen[data-v-17d123de]{padding:18px;border-radius:20px}}
+</style></head>
+<body>
+  <div id="app"></div>
+</body>
