@@ -1,13 +1,14 @@
 import { ClassRegistry } from '@/util/class_registry';
 import { Character } from './variables/character';
 import { Datetime } from './variables/datetime';
+import { Item } from './variables/item';
 import { State } from './variables/state';
 
 export abstract class Command {
   protected abstract get REGEX(): RegExp;
   protected abstract create(args: string[]): Command;
   protected abstract isValid(): boolean;
-  public abstract execute(state: State): State;
+  public abstract execute(state: State, message_id: number): State;
 
   public static readonly registry = new ClassRegistry<typeof Command>();
 
@@ -43,7 +44,7 @@ export class DeltaMinutesCommand extends Command {
     if (isNaN(this.delta_minutes)) return false;
     return true;
   }
-  public execute(state: State): State {
+  public execute(state: State, _message_id: number): State {
     state.datetime.deltaMinutes(this.delta_minutes);
     return state;
   }
@@ -57,7 +58,7 @@ export class SetBigLocationCommand extends Command {
     this.big_location = big_location;
   }
   protected get REGEX(): RegExp {
-    return /setBigLocation\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+    return /setBigLocation\(\s*"([^"]+?)"\s*\s*\)/g;
   }
   protected create(args: string[]): Command {
     const big_location = args[0];
@@ -66,7 +67,7 @@ export class SetBigLocationCommand extends Command {
   protected isValid(): boolean {
     return true;
   }
-  public execute(state: State): State {
+  public execute(state: State, _message_id: number): State {
     state.big_location = this.big_location;
     return state;
   }
@@ -80,7 +81,7 @@ export class SetMiddleLocationCommand extends Command {
     this.middle_location = middle_location;
   }
   protected get REGEX(): RegExp {
-    return /setMiddleLocation\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+    return /setMiddleLocation\(\s*"([^"]+?)"\s*\s*\)/g;
   }
   protected create(args: string[]): Command {
     const middle_location = args[0];
@@ -89,7 +90,7 @@ export class SetMiddleLocationCommand extends Command {
   protected isValid(): boolean {
     return true;
   }
-  public execute(state: State): State {
+  public execute(state: State, _message_id: number): State {
     state.middle_location = this.middle_location;
     return state;
   }
@@ -103,7 +104,7 @@ export class SetSmallLocationCommand extends Command {
     this.small_location = small_location;
   }
   protected get REGEX(): RegExp {
-    return /setSmallLocation\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+    return /setSmallLocation\(\s*"([^"]+?)"\s*\s*\)/g;
   }
   protected create(args: string[]): Command {
     const small_location = args[0];
@@ -112,7 +113,7 @@ export class SetSmallLocationCommand extends Command {
   protected isValid(): boolean {
     return true;
   }
-  public execute(state: State): State {
+  public execute(state: State, _message_id: number): State {
     state.small_location = this.small_location;
     return state;
   }
@@ -126,7 +127,7 @@ export class SetWeatherCommand extends Command {
     this.weather = weather;
   }
   protected get REGEX(): RegExp {
-    return /setWeather\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+    return /setWeather\(\s*"([^"]+?)"\s*\s*\)/g;
   }
   protected create(args: string[]): Command {
     const weather = args[0];
@@ -135,7 +136,7 @@ export class SetWeatherCommand extends Command {
   protected isValid(): boolean {
     return true;
   }
-  public execute(state: State): State {
+  public execute(state: State, _message_id: number): State {
     state.weather = this.weather;
     return state;
   }
@@ -217,7 +218,7 @@ export class CreateCharacterCommand extends Command {
     this.horny = horny;
   }
   protected get REGEX(): RegExp {
-    return /createCharacter\s*\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*\)/g;
+    return /createCharacter\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*\)/g;
   }
   protected create(args: string[]): Command {
     const id = args[0];
@@ -283,8 +284,8 @@ export class CreateCharacterCommand extends Command {
     if (isNaN(this.horny)) return false;
     return true;
   }
-  public execute(state: State): State {
-    if (state.active_characters.has(this.id) || state.deactive_characters.has(this.id)) return state;
+  public execute(state: State, _message_id: number): State {
+    if (state.hasCharacter(this.id)) return state;
     let birthday_year = state.datetime.year - this.age;
     if (
       state.datetime.month < this.birthday_month ||
@@ -325,6 +326,542 @@ export class CreateCharacterCommand extends Command {
   }
 }
 
+@Command.registry.register()
+export class DeltaMoneyCommand extends Command {
+  private id: string;
+  private delta: number;
+  constructor(id: string, delta: number) {
+    super();
+    this.id = id;
+    this.delta = delta;
+  }
+  protected get REGEX(): RegExp {
+    return /deltaMoney\(\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const delta = Number(args[1]);
+    return new DeltaMoneyCommand(id, delta);
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.delta)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    const character = state.getCharacter(this.id);
+    if (!character) return state;
+    character.money += this.delta;
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class DeltaFriendshipCommand extends Command {
+  private from_id: string;
+  private to_id: string;
+  private delta: number;
+  constructor(from_id: string, to_id: string, delta: number) {
+    super();
+    this.from_id = from_id;
+    this.to_id = to_id;
+    this.delta = delta;
+  }
+  protected get REGEX(): RegExp {
+    return /deltaFriendship\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const from_id = args[0];
+    const to_id = args[1];
+    const delta = Number(args[2]);
+    return new DeltaFriendshipCommand(from_id, to_id, delta);
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.delta)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    if (!state.hasCharacter(this.from_id)) return state;
+    if (!state.hasCharacter(this.to_id)) return state;
+    const character = state.getCharacter(this.from_id);
+    if (!character) return state;
+    character.deltaFriendship(this.to_id, this.delta);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class DeltaLoveCommand extends Command {
+  private from_id: string;
+  private to_id: string;
+  private delta: number;
+  constructor(from_id: string, to_id: string, delta: number) {
+    super();
+    this.from_id = from_id;
+    this.to_id = to_id;
+    this.delta = delta;
+  }
+  protected get REGEX(): RegExp {
+    return /deltaLove\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const from_id = args[0];
+    const to_id = args[1];
+    const delta = Number(args[2]);
+    return new DeltaLoveCommand(from_id, to_id, delta);
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.delta)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    if (!state.hasCharacter(this.from_id)) return state;
+    if (!state.hasCharacter(this.to_id)) return state;
+    const character = state.getCharacter(this.from_id);
+    if (!character) return state;
+    character.deltaLove(this.to_id, this.delta);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class DeltaMoodCommand extends Command {
+  private id: string;
+  private delta: number;
+  constructor(id: string, delta: number) {
+    super();
+    this.id = id;
+    this.delta = delta;
+  }
+  protected get REGEX(): RegExp {
+    return /deltaMood\(\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const delta = Number(args[1]);
+    return new DeltaMoodCommand(id, delta);
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.delta)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    const character = state.getCharacter(this.id);
+    if (!character) return state;
+    character.deltaMood(this.delta);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class DeltaHornyCommand extends Command {
+  private id: string;
+  private delta: number;
+  constructor(id: string, delta: number) {
+    super();
+    this.id = id;
+    this.delta = delta;
+  }
+  protected get REGEX(): RegExp {
+    return /deltaHorny\(\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const delta = Number(args[1]);
+    return new DeltaHornyCommand(id, delta);
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.delta)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    const character = state.getCharacter(this.id);
+    if (!character) return state;
+    character.deltaHorny(this.delta);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class SetRelationCommand extends Command {
+  private from_id: string;
+  private to_id: string;
+  private relation: string;
+  constructor(from_id: string, to_id: string, relation: string) {
+    super();
+    this.from_id = from_id;
+    this.to_id = to_id;
+    this.relation = relation;
+  }
+  protected get REGEX(): RegExp {
+    return /setRelation\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const from_id = args[0];
+    const to_id = args[1];
+    const relation = args[2];
+    return new SetRelationCommand(from_id, to_id, relation);
+  }
+  protected isValid(): boolean {
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    if (!state.hasCharacter(this.from_id)) return state;
+    if (!state.hasCharacter(this.to_id)) return state;
+    const character = state.getCharacter(this.from_id);
+    if (!character) return state;
+    character.relations.set(this.to_id, this.relation);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class SetCharacterPropertyCommand extends Command {
+  private id: string;
+  private key: string;
+  private value: string;
+  constructor(id: string, key: string, value: string) {
+    super();
+    this.id = id;
+    this.key = key;
+    this.value = value;
+  }
+  protected get REGEX(): RegExp {
+    return /setCharacterProperty\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const key = args[1];
+    const value = args[2];
+    return new SetCharacterPropertyCommand(id, key, value);
+  }
+  protected isValid(): boolean {
+    const allowed_keys = [
+      Character.IDENTITY_KEY,
+      Character.INTRODUCTION_KEY,
+      Character.PERSONALITY_KEY,
+      Character.HAIRSTYLE_KEY,
+      Character.APPEARANCE_KEY,
+      Character.CLOTHES_KEY,
+      Character.FAVOURITE_KEY,
+      Character.EXTRA_INFORMATION_KEY,
+    ];
+    return allowed_keys.includes(this.key);
+  }
+  public execute(state: State, _message_id: number): State {
+    const character = state.getCharacter(this.id);
+    if (!character) return state;
+    switch (this.key) {
+      case Character.IDENTITY_KEY:
+        character.identity = this.value;
+        break;
+      case Character.INTRODUCTION_KEY:
+        character.introduction = this.value;
+        break;
+      case Character.PERSONALITY_KEY:
+        character.personality = this.value;
+        break;
+      case Character.HAIRSTYLE_KEY:
+        character.hairstyle = this.value;
+        break;
+      case Character.APPEARANCE_KEY:
+        character.appearance = this.value;
+        break;
+      case Character.CLOTHES_KEY:
+        character.clothes = this.value;
+        break;
+      case Character.FAVOURITE_KEY:
+        character.favourite = this.value;
+        break;
+      case Character.EXTRA_INFORMATION_KEY:
+        character.extra_information = this.value;
+        break;
+    }
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class CreateItemCommand extends Command {
+  private id: string;
+  private name: string;
+  private description: string;
+  private value: number;
+  constructor(id: string, name: string, description: string, value: number) {
+    super();
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.value = value;
+  }
+  protected get REGEX(): RegExp {
+    return /createItem\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const name = args[1];
+    const description = args[2];
+    const value = Number(args[3]);
+    return new CreateItemCommand(id, name, description, value);
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.value)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    if (state.items.has(this.id)) return state;
+    const item = new Item(this.name, this.description, this.value);
+    state.items.set(this.id, item);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class DeltaItemCommand extends Command {
+  private character_id: string;
+  private item_id: string;
+  private delta: number;
+  constructor(character_id: string, item_id: string, delta: number) {
+    super();
+    this.character_id = character_id;
+    this.item_id = item_id;
+    this.delta = delta;
+  }
+  protected get REGEX(): RegExp {
+    return /deltaItem\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const character_id = args[0];
+    const item_id = args[1];
+    const delta = Number(args[2]);
+    return new DeltaItemCommand(character_id, item_id, delta);
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.delta)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    if (!state.items.has(this.item_id)) return state;
+    const character = state.getCharacter(this.character_id);
+    if (!character) return state;
+    let quantity = character.inventory.get(this.item_id) || 0;
+    quantity += this.delta;
+    if (quantity <= 0) {
+      character.inventory.delete(this.item_id);
+    } else {
+      character.inventory.set(this.item_id, quantity);
+    }
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class CreatePromiseCommand extends Command {
+  private deadline_year: number;
+  private deadline_month: number;
+  private deadline_date: number;
+  private deadline_hours: number;
+  private deadline_minutes: number;
+  private character_ids: string[];
+  private location: string;
+  private description: string;
+  constructor(
+    deadline_year: number,
+    deadline_month: number,
+    deadline_date: number,
+    deadline_hours: number,
+    deadline_minutes: number,
+    character_ids: string[],
+    location: string,
+    description: string,
+  ) {
+    super();
+    this.deadline_year = deadline_year;
+    this.deadline_month = deadline_month;
+    this.deadline_date = deadline_date;
+    this.deadline_hours = deadline_hours;
+    this.deadline_minutes = deadline_minutes;
+    this.character_ids = character_ids;
+    this.location = location;
+    this.description = description;
+  }
+  protected get REGEX(): RegExp {
+    return /createPromise\(\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const deadline_year = Number(args[0]);
+    const deadline_month = Number(args[1]);
+    const deadline_date = Number(args[2]);
+    const deadline_hours = Number(args[3]);
+    const deadline_minutes = Number(args[4]);
+    const character_ids_str = args[5];
+    const location = args[6];
+    const description = args[7];
+    const character_ids = character_ids_str.split(',').map(s => s.trim());
+    return new CreatePromiseCommand(
+      deadline_year,
+      deadline_month,
+      deadline_date,
+      deadline_hours,
+      deadline_minutes,
+      character_ids,
+      location,
+      description,
+    );
+  }
+  protected isValid(): boolean {
+    if (isNaN(this.deadline_year)) return false;
+    if (isNaN(this.deadline_month)) return false;
+    if (isNaN(this.deadline_date)) return false;
+    if (isNaN(this.deadline_hours)) return false;
+    if (isNaN(this.deadline_minutes)) return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    for (const id of this.character_ids) {
+      if (!state.hasCharacter(id)) return state;
+    }
+    const deadline = new Datetime(
+      new Date(
+        this.deadline_year,
+        this.deadline_month - 1,
+        this.deadline_date,
+        this.deadline_hours,
+        this.deadline_minutes,
+      ),
+    );
+    state.addPromise(deadline, this.character_ids, this.location, this.description);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class RemovePromiseCommand extends Command {
+  private id: string;
+  constructor(id: string) {
+    super();
+    this.id = id;
+  }
+  protected get REGEX(): RegExp {
+    return /removePromise\(\s*"([^,()]+)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    return new RemovePromiseCommand(id);
+  }
+  protected isValid(): boolean {
+    return this.id.trim() !== '';
+  }
+  public execute(state: State, _message_id: number): State {
+    if (!state.promises.has(this.id)) return state;
+    state.promises.delete(this.id);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class StartEventCommand extends Command {
+  private event: string;
+  constructor(event: string) {
+    super();
+    this.event = event;
+  }
+  protected get REGEX(): RegExp {
+    return /startEvent\(\s*"([^"]+)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const event = args[0];
+    return new StartEventCommand(event);
+  }
+  protected isValid(): boolean {
+    return this.event.trim() !== '';
+  }
+  public execute(state: State, _message_id: number): State {
+    state.current_event = this.event;
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class FinishEventCommand extends Command {
+  private summary: string;
+  private weighting: number;
+  constructor(summary: string, weighting: number) {
+    super();
+    this.summary = summary;
+    this.weighting = weighting;
+  }
+  protected get REGEX(): RegExp {
+    return /finishEvent\(\s*"([^"]+)"\s*,\s*([^,()]+)\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const summary = args[0];
+    const weighting = Number(args[1]);
+    return new FinishEventCommand(summary, weighting);
+  }
+  protected isValid(): boolean {
+    if (this.summary.trim() === '') return false;
+    if (isNaN(this.weighting)) return false;
+    return true;
+  }
+  public execute(state: State, message_id: number): State {
+    state.addSummary(this.summary, this.weighting, message_id);
+    state.current_event = State.CURRENT_EVENT_NULL_VALUE;
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class ActivateCharacterCommand extends Command {
+  private id: string;
+  constructor(id: string) {
+    super();
+    this.id = id;
+  }
+  protected get REGEX(): RegExp {
+    return /activateCharacter\(\s*"([^"]+)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    return new ActivateCharacterCommand(id);
+  }
+  protected isValid(): boolean {
+    return this.id.trim() !== '';
+  }
+  public execute(state: State, _message_id: number): State {
+    if (!state.deactive_characters.has(this.id)) return state;
+    const character = state.deactive_characters.get(this.id)!;
+    state.active_characters.set(this.id, character);
+    state.deactive_characters.delete(this.id);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class DeactivateCharacterCommand extends Command {
+  private id: string;
+  constructor(id: string) {
+    super();
+    this.id = id;
+  }
+  protected get REGEX(): RegExp {
+    return /deactivateCharacter\(\s*"([^"]+)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    return new DeactivateCharacterCommand(id);
+  }
+  protected isValid(): boolean {
+    return this.id.trim() !== '';
+  }
+  public execute(state: State, _message_id: number): State {
+    if (!state.active_characters.has(this.id)) return state;
+    const character = state.active_characters.get(this.id)!;
+    state.deactive_characters.set(this.id, character);
+    state.active_characters.delete(this.id);
+    return state;
+  }
+}
+
 export class Commands {
   private commands: Command[] = [];
 
@@ -353,9 +890,9 @@ export class Commands {
     return new Commands(commands);
   }
 
-  public execute(state: State): State {
+  public execute(state: State, message_id: number): State {
     for (const command of this.commands) {
-      command.execute(state);
+      command.execute(state, message_id);
     }
     return state;
   }

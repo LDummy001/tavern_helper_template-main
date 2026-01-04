@@ -427,6 +427,7 @@ const getUserStatusPrompt = (): string => {
 const getCharacterStatusPrompt = (): string => {
   const variables = getVariables({ type: 'chat' });
   const characters = variables['characters'];
+  if (characters === undefined) return ''
   let character_status_prompt = `<CharacterStatus>\n`;
   for (const [key, character_state] of Object.entries(characters) as [string, any]) {
     if (key === 'c1') continue;
@@ -462,10 +463,25 @@ const getCharacterStatusPrompt = (): string => {
   return character_status_prompt;
 };
 
+const getItemTablePrompt = (): string => {
+  let item_table_prompt = '<ItemTable>\n';
+  item_table_prompt += '|id|名稱|描述|價值|\n';
+  item_table_prompt += '|---|---|---|---|\n';
+  const variables = getVariables({ type: 'chat' });
+  const items = variables['items'];
+  if (items === undefined) return '';
+  for (const [key, item] of Object.entries(items) as [string, any]) {
+    item_table_prompt += `|${key}|${item.name}|${item.description}|${item.value}|\n`;
+  }
+  item_table_prompt += '</ItemTable>';
+  return item_table_prompt;
+};
+
 const getExtraWorldInfoPrompt = (): string => {
   let extra_world_info_prompt = '';
   const variables = getVariables({ type: 'chat' });
   const extra_world_infos = variables['extra_world_info'];
+  if (extra_world_infos === undefined) return ''
   for (const extra_world_info of Array.from(extra_world_infos) as { name: string; content: string }[]) {
     if (extra_world_info.name === '' || extra_world_info.content === '') continue;
     extra_world_info_prompt += `<${extra_world_info.name}>\n`;
@@ -482,6 +498,8 @@ const getPostWorldInfoSystemPrompt = (item: fold_item): string => {
   post_world_info_system_prompt += `${getUserStatusPrompt()}\n`;
   post_world_info_system_prompt += '\n';
   post_world_info_system_prompt += `${getCharacterStatusPrompt()}\n`;
+  post_world_info_system_prompt += '\n';
+  post_world_info_system_prompt += `${getItemTablePrompt()}\n`;
   post_world_info_system_prompt += '\n';
   post_world_info_system_prompt += `${getExtraWorldInfoPrompt()}\n`;
   post_world_info_system_prompt += '\n';

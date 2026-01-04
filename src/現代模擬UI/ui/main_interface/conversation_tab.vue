@@ -38,9 +38,11 @@
                   <FoldBarComponent
                     v-if="segment.type === 'fold_bar'"
                     :title="segment.fold_bar_title || '內容'"
-                    :content="segment.message"
                     :is-open="segment.is_open || false"
-                  />
+                  >
+                    <!-- eslint-disable-next-line vue/no-v-html -->
+                    <span v-html="segment.message"></span>
+                  </FoldBarComponent>
                 </template>
               </div>
               <div v-if="message.is_latest_assistant && message.swipes" class="swipe-controls">

@@ -36,4 +36,8 @@ export class Datetime {
   public deltaMinutes(delta_minutes: number): void {
     this._date.setMinutes(this._date.getMinutes() + delta_minutes);
   }
+
+  public clone(): Datetime {
+    return new Datetime(new Date(this._date));
+  }
 }

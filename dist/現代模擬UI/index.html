@@ -945,6 +945,7 @@
             type: "chat"
           });
           const characters = variables["characters"];
+          if (characters === undefined) return "";
           let character_status_prompt = `<CharacterStatus>\n`;
           for (const [key, character_state] of Object.entries(characters)) {
             if (key === "c1" || key === character_id) continue;
@@ -987,6 +988,7 @@
             type: "chat"
           });
           const items = variables["items"];
+          if (items === undefined) return "";
           for (const [key, item] of Object.entries(items)) {
             item_table_prompt += `|${key}|${item.name}|${item.description}|${item.value}|\n`;
           }
@@ -999,6 +1001,7 @@
             type: "chat"
           });
           const extra_world_infos = variables["extra_world_info"];
+          if (extra_world_infos === undefined) return "";
           for (const extra_world_info of Array.from(extra_world_infos)) {
             if (extra_world_info.name === "" || extra_world_info.content === "") continue;
             extra_world_info_prompt += `<${extra_world_info.name}>\n`;
@@ -1877,6 +1880,7 @@
             type: "chat"
           });
           const characters = variables["characters"];
+          if (characters === undefined) return "";
           let character_status_prompt = `<CharacterStatus>\n`;
           for (const [key, character_state] of Object.entries(characters)) {
             if (key === "c1") continue;
@@ -1911,12 +1915,28 @@
           character_status_prompt += `</CharacterStatus>`;
           return character_status_prompt;
         };
+        const getItemTablePrompt = () => {
+          let item_table_prompt = "<ItemTable>\n";
+          item_table_prompt += "|id|名稱|描述|價值|\n";
+          item_table_prompt += "|---|---|---|---|\n";
+          const variables = getVariables({
+            type: "chat"
+          });
+          const items = variables["items"];
+          if (items === undefined) return "";
+          for (const [key, item] of Object.entries(items)) {
+            item_table_prompt += `|${key}|${item.name}|${item.description}|${item.value}|\n`;
+          }
+          item_table_prompt += "</ItemTable>";
+          return item_table_prompt;
+        };
         const getExtraWorldInfoPrompt = () => {
           let extra_world_info_prompt = "";
           const variables = getVariables({
             type: "chat"
           });
           const extra_world_infos = variables["extra_world_info"];
+          if (extra_world_infos === undefined) return "";
           for (const extra_world_info of Array.from(extra_world_infos)) {
             if (extra_world_info.name === "" || extra_world_info.content === "") continue;
             extra_world_info_prompt += `<${extra_world_info.name}>\n`;
@@ -1932,6 +1952,8 @@
           post_world_info_system_prompt += `${getUserStatusPrompt()}\n`;
           post_world_info_system_prompt += "\n";
           post_world_info_system_prompt += `${getCharacterStatusPrompt()}\n`;
+          post_world_info_system_prompt += "\n";
+          post_world_info_system_prompt += `${getItemTablePrompt()}\n`;
           post_world_info_system_prompt += "\n";
           post_world_info_system_prompt += `${getExtraWorldInfoPrompt()}\n`;
           post_world_info_system_prompt += "\n";
@@ -1969,6 +1991,7 @@
           getPreWorldInfoSystemPrompt,
           getUserStatusPrompt,
           getCharacterStatusPrompt,
+          getItemTablePrompt,
           getExtraWorldInfoPrompt,
           getPostWorldInfoSystemPrompt,
           castObjectToString,
@@ -2364,6 +2387,7 @@
             type: "chat"
           });
           const characters = variables["characters"];
+          if (characters === undefined) return "";
           let character_status_prompt = `<CharacterStatus>\n`;
           for (const [key, character_state] of Object.entries(characters)) {
             if (key === "c1") continue;
@@ -2406,6 +2430,7 @@
             type: "chat"
           });
           const items = variables["items"];
+          if (items === undefined) return "";
           for (const [key, item] of Object.entries(items)) {
             item_table_prompt += `|${key}|${item.name}|${item.description}|${item.value}|\n`;
           }
@@ -2418,6 +2443,7 @@
             type: "chat"
           });
           const extra_world_infos = variables["extra_world_info"];
+          if (extra_world_infos === undefined) return "";
           for (const extra_world_info of Array.from(extra_world_infos)) {
             if (extra_world_info.name === "" || extra_world_info.content === "") continue;
             extra_world_info_prompt += `<${extra_world_info.name}>\n`;
@@ -2607,7 +2633,7 @@
           }
         });
         const hasGeneratedResults = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => generated_start_year.value || generated_start_month.value || generated_start_date.value || generated_start_hour.value || generated_start_minute.value || generated_big_location.value || generated_middle_location.value || generated_small_location.value || generated_weather.value || generated_information.value);
-        const isStartTabCompleted = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => start_year.value.trim() !== "" && start_month.value.trim() !== "" && start_date.value.trim() !== "" && start_hour.value.trim() !== "" && start_minute.value.trim() !== "" && big_location.value.trim() !== "" && middle_location.value.trim() !== "" && small_location.value.trim() !== "" && weather.value.trim() !== "" && information.value.trim() !== "");
+        const isStartTabCompleted = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => String(start_year.value).trim() !== "" && String(start_month.value).trim() !== "" && String(start_date.value).trim() !== "" && String(start_hour.value).trim() !== "" && String(start_minute.value).trim() !== "" && String(big_location.value).trim() !== "" && String(middle_location.value).trim() !== "" && String(small_location.value).trim() !== "" && String(weather.value).trim() !== "" && String(information.value).trim() !== "");
         const allTabsCompleted = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => isWorldInfoTabCompleted() && isUserTabCompleted() && isCharacterTabCompleted() && isItemTabCompleted() && isExtraTabCompleted() && isStartTabCompleted.value);
         const generateStartData = async () => {
           is_generating.value = true;
@@ -2689,16 +2715,16 @@
               type: "chat"
             });
             if (variables?.start_settings) {
-              start_year.value = variables.start_settings.start_year || "";
-              start_month.value = variables.start_settings.start_month || "";
-              start_date.value = variables.start_settings.start_date || "";
-              start_hour.value = variables.start_settings.start_hour || "";
-              start_minute.value = variables.start_settings.start_minute || "";
-              big_location.value = variables.start_settings.big_location || "";
-              middle_location.value = variables.start_settings.middle_location || "";
-              small_location.value = variables.start_settings.small_location || "";
-              weather.value = variables.start_settings.weather || "";
-              information.value = variables.start_settings.information || "";
+              start_year.value = String(variables.start_settings.start_year || "");
+              start_month.value = String(variables.start_settings.start_month || "");
+              start_date.value = String(variables.start_settings.start_date || "");
+              start_hour.value = String(variables.start_settings.start_hour || "");
+              start_minute.value = String(variables.start_settings.start_minute || "");
+              big_location.value = String(variables.start_settings.big_location || "");
+              middle_location.value = String(variables.start_settings.middle_location || "");
+              small_location.value = String(variables.start_settings.small_location || "");
+              weather.value = String(variables.start_settings.weather || "");
+              information.value = String(variables.start_settings.information || "");
             }
             const stored_generated = localStorage.getItem("start_tab_generated");
             if (stored_generated) {
@@ -2827,6 +2853,7 @@
             type: "chat"
           });
           const characters = variables["characters"];
+          if (characters === undefined) return "";
           let character_status_prompt = `<CharacterStatus>\n`;
           for (const [key, character_state] of Object.entries(characters)) {
             if (key === "c1") continue;
@@ -2869,6 +2896,7 @@
             type: "chat"
           });
           const items = variables["items"];
+          if (items === undefined) return "";
           for (const [key, item] of Object.entries(items)) {
             item_table_prompt += `|${key}|${item.name}|${item.description}|${item.value}|\n`;
           }
@@ -2881,6 +2909,7 @@
             type: "chat"
           });
           const extra_world_infos = variables["extra_world_info"];
+          if (extra_world_infos === undefined) return "";
           for (const extra_world_info of Array.from(extra_world_infos)) {
             if (extra_world_info.name === "" || extra_world_info.content === "") continue;
             extra_world_info_prompt += `<${extra_world_info.name}>\n`;
@@ -3003,22 +3032,25 @@
             value: data.generated_information || ""
           });
         };
-        const applyAllGeneratedResults = () => {
+        const applyGeneratedDatetime = () => {
           if (generated_start_year.value) start_year.value = generated_start_year.value;
           if (generated_start_month.value) start_month.value = generated_start_month.value;
           if (generated_start_date.value) start_date.value = generated_start_date.value;
           if (generated_start_hour.value) start_hour.value = generated_start_hour.value;
           if (generated_start_minute.value) start_minute.value = generated_start_minute.value;
-          if (generated_big_location.value) big_location.value = generated_big_location.value;
-          if (generated_middle_location.value) middle_location.value = generated_middle_location.value;
-          if (generated_small_location.value) small_location.value = generated_small_location.value;
-          if (generated_weather.value) weather.value = generated_weather.value;
-          if (generated_information.value) information.value = generated_information.value;
           generated_start_year.value = "";
           generated_start_month.value = "";
           generated_start_date.value = "";
           generated_start_hour.value = "";
           generated_start_minute.value = "";
+        };
+        const applyAllGeneratedResults = () => {
+          applyGeneratedDatetime();
+          if (generated_big_location.value) big_location.value = generated_big_location.value;
+          if (generated_middle_location.value) middle_location.value = generated_middle_location.value;
+          if (generated_small_location.value) small_location.value = generated_small_location.value;
+          if (generated_weather.value) weather.value = generated_weather.value;
+          if (generated_information.value) information.value = generated_information.value;
           generated_big_location.value = "";
           generated_middle_location.value = "";
           generated_small_location.value = "";
@@ -3132,7 +3164,7 @@
             const item = new _UI_variable_logic_variables_item__WEBPACK_IMPORTED_MODULE_3__.Item(item_record.name, item_record.description, item_record.value);
             items.set(item_id, item);
           }
-          const state = new _UI_variable_logic_variables_state__WEBPACK_IMPORTED_MODULE_4__.State(new _UI_variable_logic_variables_datetime__WEBPACK_IMPORTED_MODULE_2__.Datetime(new Date(start_year_num, start_month_num - 1, start_date_num, start_hour_num, start_minute_num)), big_location_string, middle_location_string, small_location_string, weather_string, "無", active_characters, deactive_characters, items);
+          const state = new _UI_variable_logic_variables_state__WEBPACK_IMPORTED_MODULE_4__.State(new _UI_variable_logic_variables_datetime__WEBPACK_IMPORTED_MODULE_2__.Datetime(new Date(start_year_num, start_month_num - 1, start_date_num, start_hour_num, start_minute_num)), big_location_string, middle_location_string, small_location_string, weather_string, _UI_variable_logic_variables_state__WEBPACK_IMPORTED_MODULE_4__.State.CURRENT_EVENT_NULL_VALUE, active_characters, deactive_characters, items, new Map, []);
           state.saveAsVariable(-1);
           variable = getVariables({
             type: "chat"
@@ -3183,6 +3215,7 @@
           getPostWorldInfoSystemPrompt,
           castObjectToString,
           parseAndFillGeneratedData,
+          applyGeneratedDatetime,
           applyAllGeneratedResults,
           isEmptyValue,
           isWorldInfoTabCompleted,
@@ -3480,6 +3513,7 @@
             type: "chat"
           });
           const characters = variables["characters"];
+          if (characters === undefined) return "";
           let character_status_prompt = `<CharacterStatus>\n`;
           for (const [key, character_state] of Object.entries(characters)) {
             if (key === "c1") continue;
@@ -3522,6 +3556,7 @@
             type: "chat"
           });
           const items = variables["items"];
+          if (items === undefined) return "";
           for (const [key, item] of Object.entries(items)) {
             item_table_prompt += `|${key}|${item.name}|${item.description}|${item.value}|\n`;
           }
@@ -3534,6 +3569,7 @@
             type: "chat"
           });
           const extra_world_infos = variables["extra_world_info"];
+          if (extra_world_infos === undefined) return "";
           for (const extra_world_info of Array.from(extra_world_infos)) {
             if (extra_world_info.name === "" || extra_world_info.content === "") continue;
             extra_world_info_prompt += `<${extra_world_info.name}>\n`;
@@ -6733,9 +6769,9 @@
     };
     const _hoisted_40 = [ "disabled" ];
     function render(_ctx, _cache, $props, $setup, $data, $options) {
-      return (0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [ _cache[41] || (_cache[41] = (0, 
+      return (0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [ _cache[40] || (_cache[40] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", null, "開始設定", -1)), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [ _cache[23] || (_cache[23] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [ _cache[22] || (_cache[22] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "起始時間", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -6745,7 +6781,7 @@
         placeholder: "年",
         min: "1900",
         max: "2100"
-      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_year ] ]), _cache[17] || (_cache[17] = (0, 
+      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_year ] ]), _cache[16] || (_cache[16] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "unit"
       }, "年", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [ (0, 
@@ -6756,7 +6792,7 @@
         placeholder: "月",
         min: "1",
         max: "12"
-      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_month ] ]), _cache[18] || (_cache[18] = (0, 
+      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_month ] ]), _cache[17] || (_cache[17] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "unit"
       }, "月", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [ (0, 
@@ -6767,7 +6803,7 @@
         placeholder: "日",
         min: "1",
         max: "31"
-      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_date ] ]), _cache[19] || (_cache[19] = (0, 
+      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_date ] ]), _cache[18] || (_cache[18] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "unit"
       }, "日", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [ (0, 
@@ -6778,7 +6814,7 @@
         placeholder: "時",
         min: "0",
         max: "23"
-      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_hour ] ]), _cache[20] || (_cache[20] = (0, 
+      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_hour ] ]), _cache[19] || (_cache[19] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "unit"
       }, "時", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [ (0, 
@@ -6789,11 +6825,11 @@
         placeholder: "分",
         min: "0",
         max: "59"
-      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_minute ] ]), _cache[21] || (_cache[21] = (0, 
+      }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.start_minute ] ]), _cache[20] || (_cache[20] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "unit"
       }, "分", -1)) ]) ]), $setup.generated_start_year || $setup.generated_start_month || $setup.generated_start_date || $setup.generated_start_hour || $setup.generated_start_minute ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_10, [ _cache[22] || (_cache[22] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_10, [ _cache[21] || (_cache[21] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "生成結果：", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_start_year ? `年：${$setup.generated_start_year}\n` : "") + (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_start_month ? `月：${$setup.generated_start_month}\n` : "") + (0, 
@@ -6802,113 +6838,102 @@
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_start_minute ? `分：${$setup.generated_start_minute}` : ""), 1), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "replace-btn",
-        onClick: _cache[5] || (_cache[5] = $event => {
-          if ($setup.generated_start_year) $setup.start_year = $setup.generated_start_year;
-          if ($setup.generated_start_month) $setup.start_month = $setup.generated_start_month;
-          if ($setup.generated_start_date) $setup.start_date = $setup.generated_start_date;
-          if ($setup.generated_start_hour) $setup.start_hour = $setup.generated_start_hour;
-          if ($setup.generated_start_minute) $setup.start_minute = $setup.generated_start_minute;
-          $setup.generated_start_year = "";
-          $setup.generated_start_month = "";
-          $setup.generated_start_date = "";
-          $setup.generated_start_hour = "";
-          $setup.generated_start_minute = "";
-        })
-      }, " 使用 ") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [ _cache[25] || (_cache[25] = (0, 
+        onClick: $setup.applyGeneratedDatetime
+      }, "使用") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [ _cache[24] || (_cache[24] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "大地點", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-        "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => $setup.big_location = $event),
+        "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => $setup.big_location = $event),
         type: "text",
         class: "form-input",
         placeholder: "輸入大地點"
       }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.big_location ] ]), $setup.generated_big_location ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_13, [ _cache[24] || (_cache[24] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_13, [ _cache[23] || (_cache[23] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "生成結果：", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_big_location), 1), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "replace-btn",
-        onClick: _cache[7] || (_cache[7] = $event => {
+        onClick: _cache[6] || (_cache[6] = $event => {
           $setup.big_location = $setup.generated_big_location;
           $setup.generated_big_location = "";
         })
       }, " 使用 ") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [ _cache[27] || (_cache[27] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [ _cache[26] || (_cache[26] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "中地點", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-        "onUpdate:modelValue": _cache[8] || (_cache[8] = $event => $setup.middle_location = $event),
+        "onUpdate:modelValue": _cache[7] || (_cache[7] = $event => $setup.middle_location = $event),
         type: "text",
         class: "form-input",
         placeholder: "輸入中地點"
       }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.middle_location ] ]), $setup.generated_middle_location ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_16, [ _cache[26] || (_cache[26] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_16, [ _cache[25] || (_cache[25] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "生成結果：", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_middle_location), 1), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "replace-btn",
-        onClick: _cache[9] || (_cache[9] = $event => {
+        onClick: _cache[8] || (_cache[8] = $event => {
           $setup.middle_location = $setup.generated_middle_location;
           $setup.generated_middle_location = "";
         })
       }, " 使用 ") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [ _cache[29] || (_cache[29] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [ _cache[28] || (_cache[28] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "小地點", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-        "onUpdate:modelValue": _cache[10] || (_cache[10] = $event => $setup.small_location = $event),
+        "onUpdate:modelValue": _cache[9] || (_cache[9] = $event => $setup.small_location = $event),
         type: "text",
         class: "form-input",
         placeholder: "輸入小地點"
       }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.small_location ] ]), $setup.generated_small_location ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_19, [ _cache[28] || (_cache[28] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_19, [ _cache[27] || (_cache[27] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "生成結果：", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_small_location), 1), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "replace-btn",
-        onClick: _cache[11] || (_cache[11] = $event => {
+        onClick: _cache[10] || (_cache[10] = $event => {
           $setup.small_location = $setup.generated_small_location;
           $setup.generated_small_location = "";
         })
       }, " 使用 ") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [ _cache[31] || (_cache[31] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [ _cache[30] || (_cache[30] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "天氣", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-        "onUpdate:modelValue": _cache[12] || (_cache[12] = $event => $setup.weather = $event),
+        "onUpdate:modelValue": _cache[11] || (_cache[11] = $event => $setup.weather = $event),
         type: "text",
         class: "form-input",
         placeholder: "輸入天氣"
       }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.weather ] ]), $setup.generated_weather ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_22, [ _cache[30] || (_cache[30] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_22, [ _cache[29] || (_cache[29] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "生成結果：", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_weather), 1), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "replace-btn",
-        onClick: _cache[13] || (_cache[13] = $event => {
+        onClick: _cache[12] || (_cache[12] = $event => {
           $setup.weather = $setup.generated_weather;
           $setup.generated_weather = "";
         })
       }, " 使用 ") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [ _cache[33] || (_cache[33] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [ _cache[32] || (_cache[32] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "起始資訊", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
-        "onUpdate:modelValue": _cache[14] || (_cache[14] = $event => $setup.information = $event),
+        "onUpdate:modelValue": _cache[13] || (_cache[13] = $event => $setup.information = $event),
         class: "form-textarea",
         placeholder: "輸入起始資訊",
         rows: "3"
       }, null, 512), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.information ] ]), $setup.generated_information ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_25, [ _cache[32] || (_cache[32] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_25, [ _cache[31] || (_cache[31] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "生成結果：", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.generated_information), 1), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "replace-btn",
-        onClick: _cache[15] || (_cache[15] = $event => {
+        onClick: _cache[14] || (_cache[14] = $event => {
           $setup.information = $setup.generated_information;
           $setup.generated_information = "";
         })
       }, " 使用 ") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [ _cache[34] || (_cache[34] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [ _cache[33] || (_cache[33] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "生成要求", -1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
-        "onUpdate:modelValue": _cache[16] || (_cache[16] = $event => $setup.generation_requirement = $event),
+        "onUpdate:modelValue": _cache[15] || (_cache[15] = $event => $setup.generation_requirement = $event),
         class: "form-textarea",
         placeholder: "輸入生成這些項目的要求",
         rows: "3"
@@ -6930,7 +6955,7 @@
         class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "status-item", {
           completed: $setup.isWorldInfoTabCompleted()
         } ])
-      }, [ _cache[35] || (_cache[35] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+      }, [ _cache[34] || (_cache[34] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "status-label"
       }, "世界資訊：", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_33, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.isWorldInfoTabCompleted() ? "已完成" : "未完成"), 1) ], 2), (0, 
@@ -6938,7 +6963,7 @@
         class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "status-item", {
           completed: $setup.isUserTabCompleted()
         } ])
-      }, [ _cache[36] || (_cache[36] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+      }, [ _cache[35] || (_cache[35] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "status-label"
       }, "用戶設定：", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_34, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.isUserTabCompleted() ? "已完成" : "未完成"), 1) ], 2), (0, 
@@ -6946,7 +6971,7 @@
         class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "status-item", {
           completed: $setup.isCharacterTabCompleted()
         } ])
-      }, [ _cache[37] || (_cache[37] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+      }, [ _cache[36] || (_cache[36] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "status-label"
       }, "角色設定：", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_35, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.isCharacterTabCompleted() ? "已完成" : "未完成"), 1) ], 2), (0, 
@@ -6954,7 +6979,7 @@
         class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "status-item", {
           completed: $setup.isItemTabCompleted()
         } ])
-      }, [ _cache[38] || (_cache[38] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+      }, [ _cache[37] || (_cache[37] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "status-label"
       }, "物品設定：", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_36, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.isItemTabCompleted() ? "已完成" : "未完成"), 1) ], 2), (0, 
@@ -6962,7 +6987,7 @@
         class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "status-item", {
           completed: $setup.isExtraTabCompleted()
         } ])
-      }, [ _cache[39] || (_cache[39] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+      }, [ _cache[38] || (_cache[38] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "status-label"
       }, "額外設定：", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_37, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.isExtraTabCompleted() ? "已完成" : "未完成"), 1) ], 2), (0, 
@@ -6970,7 +6995,7 @@
         class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "status-item", {
           completed: $setup.isStartTabCompleted
         } ])
-      }, [ _cache[40] || (_cache[40] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+      }, [ _cache[39] || (_cache[39] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "status-label"
       }, "開始設定：", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_38, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.isStartTabCompleted ? "已完成" : "未完成"), 1) ], 2) ]), (0, 
@@ -8042,23 +8067,24 @@
       class: "message-content"
     };
     const _hoisted_13 = [ "innerHTML" ];
-    const _hoisted_14 = {
+    const _hoisted_14 = [ "innerHTML" ];
+    const _hoisted_15 = {
       key: 0,
       class: "swipe-controls"
     };
-    const _hoisted_15 = [ "disabled", "onClick" ];
-    const _hoisted_16 = {
+    const _hoisted_16 = [ "disabled", "onClick" ];
+    const _hoisted_17 = {
       class: "swipe-indicator"
     };
-    const _hoisted_17 = [ "disabled", "onClick" ];
     const _hoisted_18 = [ "disabled", "onClick" ];
-    const _hoisted_19 = {
+    const _hoisted_19 = [ "disabled", "onClick" ];
+    const _hoisted_20 = {
       class: "input-area"
     };
-    const _hoisted_20 = {
+    const _hoisted_21 = {
       class: "input-container"
     };
-    const _hoisted_21 = {
+    const _hoisted_22 = {
       key: 0,
       class: "loading-spinner"
     };
@@ -8117,28 +8143,33 @@
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)($setup["FoldBarComponent"], {
         key: 1,
         title: segment.fold_bar_title || "內容",
-        content: segment.message,
         "is-open": segment.is_open || false
-      }, null, 8, [ "title", "content", "is-open" ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ], 64))), 128)) ]), message.is_latest_assistant && message.swipes ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_14, [ (0, 
+      }, {
+        default: (0, vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(() => [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" eslint-disable-next-line vue/no-v-html "), (0, 
+        vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+          innerHTML: segment.message
+        }, null, 8, _hoisted_14) ]),
+        _: 2
+      }, 1032, [ "title", "is-open" ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ], 64))), 128)) ]), message.is_latest_assistant && message.swipes ? ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_15, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "swipe-btn",
         disabled: (message.swipe_id || 0) <= 0,
         onClick: $event => $setup.previousSwipe(message)
-      }, " ‹ ", 8, _hoisted_15), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_16, (0, 
+      }, " ‹ ", 8, _hoisted_16), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_17, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((message.swipe_id || 0) + 1) + "/" + (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(message.swipes.length), 1), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "swipe-btn",
         disabled: $setup.is_generating_new_swipe,
         onClick: $event => $setup.nextSwipe(message)
-      }, "›", 8, _hoisted_17), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      }, "›", 8, _hoisted_18), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "swipe-btn delete-btn",
         disabled: message.swipes.length <= 1,
         title: "刪除當前swipe",
         onClick: $event => $setup.deleteSwipe(message)
-      }, " × ", 8, _hoisted_18) ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ], 64)) ], 2))), 128)) ], 512) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [ (0, 
+      }, " × ", 8, _hoisted_19) ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ], 64)) ], 2))), 128)) ], 512) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
         ref: "message_input_ref",
         "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => $setup.user_input = $event),
@@ -8148,7 +8179,7 @@
         onKeydown: $setup.handleKeyDown,
         onInput: $setup.adjustTextareaHeight
       }, null, 544), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.user_input ] ]), $setup.is_generating || $setup.is_generating_new_swipe ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_21)) : (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_22)) : (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "send-button",
         onClick: _cache[2] || (_cache[2] = $event => $setup.is_generating || $setup.is_generating_new_swipe ? $setup.stopGeneration() : $setup.sendMessage())
@@ -9057,18 +9088,35 @@
   \**********************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
     __webpack_require__.r(__webpack_exports__);
     __webpack_require__.d(__webpack_exports__, {
+      ActivateCharacterCommand: () => ActivateCharacterCommand,
       Command: () => Command,
       Commands: () => Commands,
       CreateCharacterCommand: () => CreateCharacterCommand,
+      CreateItemCommand: () => CreateItemCommand,
+      CreatePromiseCommand: () => CreatePromiseCommand,
+      DeactivateCharacterCommand: () => DeactivateCharacterCommand,
+      DeltaFriendshipCommand: () => DeltaFriendshipCommand,
+      DeltaHornyCommand: () => DeltaHornyCommand,
+      DeltaItemCommand: () => DeltaItemCommand,
+      DeltaLoveCommand: () => DeltaLoveCommand,
       DeltaMinutesCommand: () => DeltaMinutesCommand,
+      DeltaMoneyCommand: () => DeltaMoneyCommand,
+      DeltaMoodCommand: () => DeltaMoodCommand,
+      FinishEventCommand: () => FinishEventCommand,
+      RemovePromiseCommand: () => RemovePromiseCommand,
       SetBigLocationCommand: () => SetBigLocationCommand,
+      SetCharacterPropertyCommand: () => SetCharacterPropertyCommand,
       SetMiddleLocationCommand: () => SetMiddleLocationCommand,
+      SetRelationCommand: () => SetRelationCommand,
       SetSmallLocationCommand: () => SetSmallLocationCommand,
-      SetWeatherCommand: () => SetWeatherCommand
+      SetWeatherCommand: () => SetWeatherCommand,
+      StartEventCommand: () => StartEventCommand
     });
     var _util_class_registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/util/class_registry */ "./src/util/class_registry.ts");
     var _variables_character__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./variables/character */ "./src/現代模擬UI/variable_logic/variables/character.ts");
     var _variables_datetime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./variables/datetime */ "./src/現代模擬UI/variable_logic/variables/datetime.ts");
+    var _variables_item__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./variables/item */ "./src/現代模擬UI/variable_logic/variables/item.ts");
+    var _variables_state__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./variables/state */ "./src/現代模擬UI/variable_logic/variables/state.ts");
     var __decorate = undefined && undefined.__decorate || function(decorators, target, key, desc) {
       var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
       if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -9077,7 +9125,7 @@
     var __metadata = undefined && undefined.__metadata || function(k, v) {
       if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var DeltaMinutesCommand_1, SetBigLocationCommand_1, SetMiddleLocationCommand_1, SetSmallLocationCommand_1, SetWeatherCommand_1, CreateCharacterCommand_1;
+    var DeltaMinutesCommand_1, SetBigLocationCommand_1, SetMiddleLocationCommand_1, SetSmallLocationCommand_1, SetWeatherCommand_1, CreateCharacterCommand_1, DeltaMoneyCommand_1, DeltaFriendshipCommand_1, DeltaLoveCommand_1, DeltaMoodCommand_1, DeltaHornyCommand_1, SetRelationCommand_1, SetCharacterPropertyCommand_1, CreateItemCommand_1, DeltaItemCommand_1, CreatePromiseCommand_1, RemovePromiseCommand_1, StartEventCommand_1, FinishEventCommand_1, ActivateCharacterCommand_1, DeactivateCharacterCommand_1;
     class Command {
       static registry=new _util_class_registry__WEBPACK_IMPORTED_MODULE_0__.ClassRegistry;
       constructor(..._args) {}
@@ -9107,7 +9155,7 @@
         if (isNaN(this.delta_minutes)) return false;
         return true;
       }
-      execute(state) {
+      execute(state, _message_id) {
         state.datetime.deltaMinutes(this.delta_minutes);
         return state;
       }
@@ -9120,7 +9168,7 @@
         this.big_location = big_location;
       }
       get REGEX() {
-        return /setBigLocation\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+        return /setBigLocation\(\s*"([^"]+?)"\s*\s*\)/g;
       }
       create(args) {
         const big_location = args[0];
@@ -9129,7 +9177,7 @@
       isValid() {
         return true;
       }
-      execute(state) {
+      execute(state, _message_id) {
         state.big_location = this.big_location;
         return state;
       }
@@ -9142,7 +9190,7 @@
         this.middle_location = middle_location;
       }
       get REGEX() {
-        return /setMiddleLocation\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+        return /setMiddleLocation\(\s*"([^"]+?)"\s*\s*\)/g;
       }
       create(args) {
         const middle_location = args[0];
@@ -9151,7 +9199,7 @@
       isValid() {
         return true;
       }
-      execute(state) {
+      execute(state, _message_id) {
         state.middle_location = this.middle_location;
         return state;
       }
@@ -9164,7 +9212,7 @@
         this.small_location = small_location;
       }
       get REGEX() {
-        return /setSmallLocation\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+        return /setSmallLocation\(\s*"([^"]+?)"\s*\s*\)/g;
       }
       create(args) {
         const small_location = args[0];
@@ -9173,7 +9221,7 @@
       isValid() {
         return true;
       }
-      execute(state) {
+      execute(state, _message_id) {
         state.small_location = this.small_location;
         return state;
       }
@@ -9186,7 +9234,7 @@
         this.weather = weather;
       }
       get REGEX() {
-        return /setWeather\s*\(\s*"([^"]+?)"\s*\s*\)/g;
+        return /setWeather\(\s*"([^"]+?)"\s*\s*\)/g;
       }
       create(args) {
         const weather = args[0];
@@ -9195,7 +9243,7 @@
       isValid() {
         return true;
       }
-      execute(state) {
+      execute(state, _message_id) {
         state.weather = this.weather;
         return state;
       }
@@ -9252,7 +9300,7 @@
         this.horny = horny;
       }
       get REGEX() {
-        return /createCharacter\s*\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*\)/g;
+        return /createCharacter\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*\)/g;
       }
       create(args) {
         const id = args[0];
@@ -9294,8 +9342,8 @@
         if (isNaN(this.horny)) return false;
         return true;
       }
-      execute(state) {
-        if (state.active_characters.has(this.id) || state.deactive_characters.has(this.id)) return state;
+      execute(state, _message_id) {
+        if (state.hasCharacter(this.id)) return state;
         let birthday_year = state.datetime.year - this.age;
         if (state.datetime.month < this.birthday_month || state.datetime.month === this.birthday_month && state.datetime.date < this.birthday_date) {
           birthday_year -= 1;
@@ -9307,6 +9355,499 @@
       }
     };
     CreateCharacterCommand = CreateCharacterCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, String, Number, String, String, String, String, Number, Number, Number, String, Number, Number, String, String, String, Number, Number, String, String, Number, Number, Number ]) ], CreateCharacterCommand);
+    let DeltaMoneyCommand = DeltaMoneyCommand_1 = class DeltaMoneyCommand extends Command {
+      id;
+      delta;
+      constructor(id, delta) {
+        super();
+        this.id = id;
+        this.delta = delta;
+      }
+      get REGEX() {
+        return /deltaMoney\(\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        const delta = Number(args[1]);
+        return new DeltaMoneyCommand_1(id, delta);
+      }
+      isValid() {
+        if (isNaN(this.delta)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        const character = state.getCharacter(this.id);
+        if (!character) return state;
+        character.money += this.delta;
+        return state;
+      }
+    };
+    DeltaMoneyCommand = DeltaMoneyCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, Number ]) ], DeltaMoneyCommand);
+    let DeltaFriendshipCommand = DeltaFriendshipCommand_1 = class DeltaFriendshipCommand extends Command {
+      from_id;
+      to_id;
+      delta;
+      constructor(from_id, to_id, delta) {
+        super();
+        this.from_id = from_id;
+        this.to_id = to_id;
+        this.delta = delta;
+      }
+      get REGEX() {
+        return /deltaFriendship\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const from_id = args[0];
+        const to_id = args[1];
+        const delta = Number(args[2]);
+        return new DeltaFriendshipCommand_1(from_id, to_id, delta);
+      }
+      isValid() {
+        if (isNaN(this.delta)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        if (!state.hasCharacter(this.from_id)) return state;
+        if (!state.hasCharacter(this.to_id)) return state;
+        const character = state.getCharacter(this.from_id);
+        if (!character) return state;
+        character.deltaFriendship(this.to_id, this.delta);
+        return state;
+      }
+    };
+    DeltaFriendshipCommand = DeltaFriendshipCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, String, Number ]) ], DeltaFriendshipCommand);
+    let DeltaLoveCommand = DeltaLoveCommand_1 = class DeltaLoveCommand extends Command {
+      from_id;
+      to_id;
+      delta;
+      constructor(from_id, to_id, delta) {
+        super();
+        this.from_id = from_id;
+        this.to_id = to_id;
+        this.delta = delta;
+      }
+      get REGEX() {
+        return /deltaLove\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const from_id = args[0];
+        const to_id = args[1];
+        const delta = Number(args[2]);
+        return new DeltaLoveCommand_1(from_id, to_id, delta);
+      }
+      isValid() {
+        if (isNaN(this.delta)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        if (!state.hasCharacter(this.from_id)) return state;
+        if (!state.hasCharacter(this.to_id)) return state;
+        const character = state.getCharacter(this.from_id);
+        if (!character) return state;
+        character.deltaLove(this.to_id, this.delta);
+        return state;
+      }
+    };
+    DeltaLoveCommand = DeltaLoveCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, String, Number ]) ], DeltaLoveCommand);
+    let DeltaMoodCommand = DeltaMoodCommand_1 = class DeltaMoodCommand extends Command {
+      id;
+      delta;
+      constructor(id, delta) {
+        super();
+        this.id = id;
+        this.delta = delta;
+      }
+      get REGEX() {
+        return /deltaMood\(\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        const delta = Number(args[1]);
+        return new DeltaMoodCommand_1(id, delta);
+      }
+      isValid() {
+        if (isNaN(this.delta)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        const character = state.getCharacter(this.id);
+        if (!character) return state;
+        character.deltaMood(this.delta);
+        return state;
+      }
+    };
+    DeltaMoodCommand = DeltaMoodCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, Number ]) ], DeltaMoodCommand);
+    let DeltaHornyCommand = DeltaHornyCommand_1 = class DeltaHornyCommand extends Command {
+      id;
+      delta;
+      constructor(id, delta) {
+        super();
+        this.id = id;
+        this.delta = delta;
+      }
+      get REGEX() {
+        return /deltaHorny\(\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        const delta = Number(args[1]);
+        return new DeltaHornyCommand_1(id, delta);
+      }
+      isValid() {
+        if (isNaN(this.delta)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        const character = state.getCharacter(this.id);
+        if (!character) return state;
+        character.deltaHorny(this.delta);
+        return state;
+      }
+    };
+    DeltaHornyCommand = DeltaHornyCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, Number ]) ], DeltaHornyCommand);
+    let SetRelationCommand = SetRelationCommand_1 = class SetRelationCommand extends Command {
+      from_id;
+      to_id;
+      relation;
+      constructor(from_id, to_id, relation) {
+        super();
+        this.from_id = from_id;
+        this.to_id = to_id;
+        this.relation = relation;
+      }
+      get REGEX() {
+        return /setRelation\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+      }
+      create(args) {
+        const from_id = args[0];
+        const to_id = args[1];
+        const relation = args[2];
+        return new SetRelationCommand_1(from_id, to_id, relation);
+      }
+      isValid() {
+        return true;
+      }
+      execute(state, _message_id) {
+        if (!state.hasCharacter(this.from_id)) return state;
+        if (!state.hasCharacter(this.to_id)) return state;
+        const character = state.getCharacter(this.from_id);
+        if (!character) return state;
+        character.relations.set(this.to_id, this.relation);
+        return state;
+      }
+    };
+    SetRelationCommand = SetRelationCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, String, String ]) ], SetRelationCommand);
+    let SetCharacterPropertyCommand = SetCharacterPropertyCommand_1 = class SetCharacterPropertyCommand extends Command {
+      id;
+      key;
+      value;
+      constructor(id, key, value) {
+        super();
+        this.id = id;
+        this.key = key;
+        this.value = value;
+      }
+      get REGEX() {
+        return /setCharacterProperty\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        const key = args[1];
+        const value = args[2];
+        return new SetCharacterPropertyCommand_1(id, key, value);
+      }
+      isValid() {
+        const allowed_keys = [ _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.IDENTITY_KEY, _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.INTRODUCTION_KEY, _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.PERSONALITY_KEY, _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.HAIRSTYLE_KEY, _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.APPEARANCE_KEY, _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.CLOTHES_KEY, _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.FAVOURITE_KEY, _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.EXTRA_INFORMATION_KEY ];
+        return allowed_keys.includes(this.key);
+      }
+      execute(state, _message_id) {
+        const character = state.getCharacter(this.id);
+        if (!character) return state;
+        switch (this.key) {
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.IDENTITY_KEY:
+          character.identity = this.value;
+          break;
+
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.INTRODUCTION_KEY:
+          character.introduction = this.value;
+          break;
+
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.PERSONALITY_KEY:
+          character.personality = this.value;
+          break;
+
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.HAIRSTYLE_KEY:
+          character.hairstyle = this.value;
+          break;
+
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.APPEARANCE_KEY:
+          character.appearance = this.value;
+          break;
+
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.CLOTHES_KEY:
+          character.clothes = this.value;
+          break;
+
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.FAVOURITE_KEY:
+          character.favourite = this.value;
+          break;
+
+         case _variables_character__WEBPACK_IMPORTED_MODULE_1__.Character.EXTRA_INFORMATION_KEY:
+          character.extra_information = this.value;
+          break;
+        }
+        return state;
+      }
+    };
+    SetCharacterPropertyCommand = SetCharacterPropertyCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, String, String ]) ], SetCharacterPropertyCommand);
+    let CreateItemCommand = CreateItemCommand_1 = class CreateItemCommand extends Command {
+      id;
+      name;
+      description;
+      value;
+      constructor(id, name, description, value) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.value = value;
+      }
+      get REGEX() {
+        return /createItem\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        const name = args[1];
+        const description = args[2];
+        const value = Number(args[3]);
+        return new CreateItemCommand_1(id, name, description, value);
+      }
+      isValid() {
+        if (isNaN(this.value)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        if (state.items.has(this.id)) return state;
+        const item = new _variables_item__WEBPACK_IMPORTED_MODULE_3__.Item(this.name, this.description, this.value);
+        state.items.set(this.id, item);
+        return state;
+      }
+    };
+    CreateItemCommand = CreateItemCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, String, String, Number ]) ], CreateItemCommand);
+    let DeltaItemCommand = DeltaItemCommand_1 = class DeltaItemCommand extends Command {
+      character_id;
+      item_id;
+      delta;
+      constructor(character_id, item_id, delta) {
+        super();
+        this.character_id = character_id;
+        this.item_id = item_id;
+        this.delta = delta;
+      }
+      get REGEX() {
+        return /deltaItem\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const character_id = args[0];
+        const item_id = args[1];
+        const delta = Number(args[2]);
+        return new DeltaItemCommand_1(character_id, item_id, delta);
+      }
+      isValid() {
+        if (isNaN(this.delta)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        if (!state.items.has(this.item_id)) return state;
+        const character = state.getCharacter(this.character_id);
+        if (!character) return state;
+        let quantity = character.inventory.get(this.item_id) || 0;
+        quantity += this.delta;
+        if (quantity <= 0) {
+          character.inventory.delete(this.item_id);
+        } else {
+          character.inventory.set(this.item_id, quantity);
+        }
+        return state;
+      }
+    };
+    DeltaItemCommand = DeltaItemCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, String, Number ]) ], DeltaItemCommand);
+    let CreatePromiseCommand = CreatePromiseCommand_1 = class CreatePromiseCommand extends Command {
+      deadline_year;
+      deadline_month;
+      deadline_date;
+      deadline_hours;
+      deadline_minutes;
+      character_ids;
+      location;
+      description;
+      constructor(deadline_year, deadline_month, deadline_date, deadline_hours, deadline_minutes, character_ids, location, description) {
+        super();
+        this.deadline_year = deadline_year;
+        this.deadline_month = deadline_month;
+        this.deadline_date = deadline_date;
+        this.deadline_hours = deadline_hours;
+        this.deadline_minutes = deadline_minutes;
+        this.character_ids = character_ids;
+        this.location = location;
+        this.description = description;
+      }
+      get REGEX() {
+        return /createPromise\(\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+      }
+      create(args) {
+        const deadline_year = Number(args[0]);
+        const deadline_month = Number(args[1]);
+        const deadline_date = Number(args[2]);
+        const deadline_hours = Number(args[3]);
+        const deadline_minutes = Number(args[4]);
+        const character_ids_str = args[5];
+        const location = args[6];
+        const description = args[7];
+        const character_ids = character_ids_str.split(",").map(s => s.trim());
+        return new CreatePromiseCommand_1(deadline_year, deadline_month, deadline_date, deadline_hours, deadline_minutes, character_ids, location, description);
+      }
+      isValid() {
+        if (isNaN(this.deadline_year)) return false;
+        if (isNaN(this.deadline_month)) return false;
+        if (isNaN(this.deadline_date)) return false;
+        if (isNaN(this.deadline_hours)) return false;
+        if (isNaN(this.deadline_minutes)) return false;
+        return true;
+      }
+      execute(state, _message_id) {
+        for (const id of this.character_ids) {
+          if (!state.hasCharacter(id)) return state;
+        }
+        const deadline = new _variables_datetime__WEBPACK_IMPORTED_MODULE_2__.Datetime(new Date(this.deadline_year, this.deadline_month - 1, this.deadline_date, this.deadline_hours, this.deadline_minutes));
+        state.addPromise(deadline, this.character_ids, this.location, this.description);
+        return state;
+      }
+    };
+    CreatePromiseCommand = CreatePromiseCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ Number, Number, Number, Number, Number, Array, String, String ]) ], CreatePromiseCommand);
+    let RemovePromiseCommand = RemovePromiseCommand_1 = class RemovePromiseCommand extends Command {
+      id;
+      constructor(id) {
+        super();
+        this.id = id;
+      }
+      get REGEX() {
+        return /removePromise\(\s*"([^,()]+)"\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        return new RemovePromiseCommand_1(id);
+      }
+      isValid() {
+        return this.id.trim() !== "";
+      }
+      execute(state, _message_id) {
+        if (!state.promises.has(this.id)) return state;
+        state.promises.delete(this.id);
+        return state;
+      }
+    };
+    RemovePromiseCommand = RemovePromiseCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String ]) ], RemovePromiseCommand);
+    let StartEventCommand = StartEventCommand_1 = class StartEventCommand extends Command {
+      event;
+      constructor(event) {
+        super();
+        this.event = event;
+      }
+      get REGEX() {
+        return /startEvent\(\s*"([^"]+)"\s*\)/g;
+      }
+      create(args) {
+        const event = args[0];
+        return new StartEventCommand_1(event);
+      }
+      isValid() {
+        return this.event.trim() !== "";
+      }
+      execute(state, _message_id) {
+        state.current_event = this.event;
+        return state;
+      }
+    };
+    StartEventCommand = StartEventCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String ]) ], StartEventCommand);
+    let FinishEventCommand = FinishEventCommand_1 = class FinishEventCommand extends Command {
+      summary;
+      weighting;
+      constructor(summary, weighting) {
+        super();
+        this.summary = summary;
+        this.weighting = weighting;
+      }
+      get REGEX() {
+        return /finishEvent\(\s*"([^"]+)"\s*,\s*([^,()]+)\s*\)/g;
+      }
+      create(args) {
+        const summary = args[0];
+        const weighting = Number(args[1]);
+        return new FinishEventCommand_1(summary, weighting);
+      }
+      isValid() {
+        if (this.summary.trim() === "") return false;
+        if (isNaN(this.weighting)) return false;
+        return true;
+      }
+      execute(state, message_id) {
+        state.addSummary(this.summary, this.weighting, message_id);
+        state.current_event = _variables_state__WEBPACK_IMPORTED_MODULE_4__.State.CURRENT_EVENT_NULL_VALUE;
+        return state;
+      }
+    };
+    FinishEventCommand = FinishEventCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String, Number ]) ], FinishEventCommand);
+    let ActivateCharacterCommand = ActivateCharacterCommand_1 = class ActivateCharacterCommand extends Command {
+      id;
+      constructor(id) {
+        super();
+        this.id = id;
+      }
+      get REGEX() {
+        return /activateCharacter\(\s*"([^"]+)"\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        return new ActivateCharacterCommand_1(id);
+      }
+      isValid() {
+        return this.id.trim() !== "";
+      }
+      execute(state, _message_id) {
+        if (!state.deactive_characters.has(this.id)) return state;
+        const character = state.deactive_characters.get(this.id);
+        state.active_characters.set(this.id, character);
+        state.deactive_characters.delete(this.id);
+        return state;
+      }
+    };
+    ActivateCharacterCommand = ActivateCharacterCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String ]) ], ActivateCharacterCommand);
+    let DeactivateCharacterCommand = DeactivateCharacterCommand_1 = class DeactivateCharacterCommand extends Command {
+      id;
+      constructor(id) {
+        super();
+        this.id = id;
+      }
+      get REGEX() {
+        return /deactivateCharacter\(\s*"([^"]+)"\s*\)/g;
+      }
+      create(args) {
+        const id = args[0];
+        return new DeactivateCharacterCommand_1(id);
+      }
+      isValid() {
+        return this.id.trim() !== "";
+      }
+      execute(state, _message_id) {
+        if (!state.active_characters.has(this.id)) return state;
+        const character = state.active_characters.get(this.id);
+        state.deactive_characters.set(this.id, character);
+        state.active_characters.delete(this.id);
+        return state;
+      }
+    };
+    DeactivateCharacterCommand = DeactivateCharacterCommand_1 = __decorate([ Command.registry.register(), __metadata("design:paramtypes", [ String ]) ], DeactivateCharacterCommand);
     class Commands {
       commands=[];
       constructor(commands) {
@@ -9329,9 +9870,9 @@
         console.log("[Commands] commands:", commands);
         return new Commands(commands);
       }
-      execute(state) {
+      execute(state, message_id) {
         for (const command of this.commands) {
-          command.execute(state);
+          command.execute(state, message_id);
         }
         return state;
       }
@@ -9354,9 +9895,7 @@
       const state = _variables_state__WEBPACK_IMPORTED_MODULE_1__.State.loadFromVariable(message_id - 1);
       const message = getChatMessages(message_id)[0].message;
       const commands = _command__WEBPACK_IMPORTED_MODULE_0__.Commands.fromString(message);
-      commands.execute(state);
-      state.weather = message_id.toString();
-      state.current_event = "0";
+      commands.execute(state, message_id);
       state.saveAsVariable(message_id);
       console.log("[event_listener] MESSAGE_SENT end");
     });
@@ -9365,9 +9904,7 @@
       const state = _variables_state__WEBPACK_IMPORTED_MODULE_1__.State.loadFromVariable(message_id - 1);
       const message = getChatMessages(message_id)[0].message;
       const commands = _command__WEBPACK_IMPORTED_MODULE_0__.Commands.fromString(message);
-      commands.execute(state);
-      state.weather = message_id.toString();
-      state.current_event = Date.now().toString();
+      commands.execute(state, message_id);
       state.saveAsVariable(message_id);
       console.log("[event_listener] MESSAGE_RECEIVED end");
     });
@@ -9502,6 +10039,30 @@
           [Character.INVENTORY_KEY]: Object.fromEntries(this.inventory)
         };
       }
+      deltaFriendship(character_id, delta) {
+        let friendship = this.friendships.get(character_id) || 0;
+        friendship += delta;
+        if (friendship < Character.FRIENDSHIP_LOW) friendship = Character.FRIENDSHIP_LOW;
+        if (friendship > Character.FRIENDSHIP_HIGH) friendship = Character.FRIENDSHIP_HIGH;
+        this.friendships.set(character_id, friendship);
+      }
+      deltaLove(character_id, delta) {
+        let love = this.loves.get(character_id) || 0;
+        love += delta;
+        if (love < Character.LOVE_LOW) love = Character.LOVE_LOW;
+        if (love > Character.LOVE_HIGH) love = Character.LOVE_HIGH;
+        if (love === 0) this.loves.delete(character_id); else this.loves.set(character_id, love);
+      }
+      deltaMood(delta) {
+        this.mood += delta;
+        if (this.mood < Character.MOOD_LOW) this.mood = Character.MOOD_LOW;
+        if (this.mood > Character.MOOD_HIGH) this.mood = Character.MOOD_HIGH;
+      }
+      deltaHorny(delta) {
+        this.horny += delta;
+        if (this.horny < Character.HORNY_LOW) this.horny = Character.HORNY_LOW;
+        if (this.horny > Character.HORNY_HIGH) this.horny = Character.HORNY_HIGH;
+      }
     }
   },
   "./src/現代模擬UI/variable_logic/variables/datetime.ts": 
@@ -9541,6 +10102,9 @@
       deltaMinutes(delta_minutes) {
         this._date.setMinutes(this._date.getMinutes() + delta_minutes);
       }
+      clone() {
+        return new Datetime(new Date(this._date));
+      }
     }
   },
   "./src/現代模擬UI/variable_logic/variables/item.ts": 
@@ -9575,6 +10139,43 @@
       }
     }
   },
+  "./src/現代模擬UI/variable_logic/variables/promise.ts": 
+  /*!********************************************************!*\
+  !*** ./src/現代模擬UI/variable_logic/variables/promise.ts ***!
+  \********************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      Promise: () => Promise
+    });
+    var _datetime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./datetime */ "./src/現代模擬UI/variable_logic/variables/datetime.ts");
+    class Promise {
+      deadline;
+      static DEADLINE_KEY="期限";
+      character_ids;
+      static CHARACTER_IDS_KEY="角色";
+      location;
+      static LOCATION_KEY="地點";
+      description;
+      static DESCRIPTION_KEY="內容";
+      constructor(deadline, character_ids, location, description) {
+        this.deadline = deadline;
+        this.character_ids = character_ids;
+        this.location = location;
+        this.description = description;
+      }
+      static fromRecord(record) {
+        return new Promise(new _datetime__WEBPACK_IMPORTED_MODULE_0__.Datetime(record[Promise.DEADLINE_KEY]), record[Promise.CHARACTER_IDS_KEY], record[Promise.LOCATION_KEY], record[Promise.DESCRIPTION_KEY]);
+      }
+      toRecord() {
+        return {
+          [Promise.DEADLINE_KEY]: this.deadline.toDate(),
+          [Promise.CHARACTER_IDS_KEY]: this.character_ids,
+          [Promise.LOCATION_KEY]: this.location,
+          [Promise.DESCRIPTION_KEY]: this.description
+        };
+      }
+    }
+  },
   "./src/現代模擬UI/variable_logic/variables/state.ts": 
   /*!******************************************************!*\
   !*** ./src/現代模擬UI/variable_logic/variables/state.ts ***!
@@ -9586,6 +10187,8 @@
     var _character__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./character */ "./src/現代模擬UI/variable_logic/variables/character.ts");
     var _datetime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./datetime */ "./src/現代模擬UI/variable_logic/variables/datetime.ts");
     var _item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./item */ "./src/現代模擬UI/variable_logic/variables/item.ts");
+    var _promise__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./promise */ "./src/現代模擬UI/variable_logic/variables/promise.ts");
+    var _summary__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./summary */ "./src/現代模擬UI/variable_logic/variables/summary.ts");
     class State {
       datetime;
       static DATETIME_KEY="當前時間";
@@ -9599,13 +10202,18 @@
       static WEATHER_KEY="天氣";
       current_event;
       static CURRENT_EVENT_KEY="當前事件";
+      static CURRENT_EVENT_NULL_VALUE="無";
       active_characters;
       static ACTIVE_CHARACTERS_KEY="當前角色";
       deactive_characters;
       static DEACTIVE_CHARACTERS_KEY="背景角色";
       items;
       static ITEMS_KEY="物品";
-      constructor(datetime, big_location, middle_location, small_location, weather, current_event, active_characters, deactive_characters, items) {
+      promises;
+      static PROMISES_KEY="約定";
+      summaries;
+      static SUMMARIES_KEY="總結";
+      constructor(datetime, big_location, middle_location, small_location, weather, current_event, active_characters, deactive_characters, items, promises, summaries) {
         this.datetime = datetime;
         this.big_location = big_location;
         this.middle_location = middle_location;
@@ -9615,6 +10223,8 @@
         this.active_characters = active_characters;
         this.deactive_characters = deactive_characters;
         this.items = items;
+        this.promises = promises;
+        this.summaries = summaries;
       }
       static loadFromVariable(message_id) {
         let variable;
@@ -9643,7 +10253,17 @@
         for (const [item_id, item_record] of Object.entries(item_variables)) {
           items.set(item_id, _item__WEBPACK_IMPORTED_MODULE_2__.Item.fromRecord(item_record));
         }
-        return new State(new _datetime__WEBPACK_IMPORTED_MODULE_1__.Datetime(variable[State.DATETIME_KEY]), variable[State.BIG_LOCATION_KEY], variable[State.MIDDLE_LOCATION_KEY], variable[State.SMALL_LOCATION_KEY], variable[State.WEATHER_KEY], variable[State.CURRENT_EVENT_KEY], active_characters, deactive_characters, items);
+        const promises = new Map;
+        const promise_variables = variable[State.PROMISES_KEY];
+        for (const [promise_id, promise_record] of Object.entries(promise_variables)) {
+          promises.set(promise_id, _promise__WEBPACK_IMPORTED_MODULE_3__.Promise.fromRecord(promise_record));
+        }
+        const summaries = new Array;
+        const summary_variables = variable[State.SUMMARIES_KEY];
+        for (const summary_record of summary_variables) {
+          summaries.push(_summary__WEBPACK_IMPORTED_MODULE_4__.Summary.fromRecord(summary_record));
+        }
+        return new State(new _datetime__WEBPACK_IMPORTED_MODULE_1__.Datetime(variable[State.DATETIME_KEY]), variable[State.BIG_LOCATION_KEY], variable[State.MIDDLE_LOCATION_KEY], variable[State.SMALL_LOCATION_KEY], variable[State.WEATHER_KEY], variable[State.CURRENT_EVENT_KEY], active_characters, deactive_characters, items, promises, summaries);
       }
       saveAsVariable(message_id) {
         const active_characters = {};
@@ -9658,6 +10278,14 @@
         for (const [item_id, item] of this.items) {
           items[item_id] = item.toRecord();
         }
+        const promises = {};
+        for (const [promise_id, promise] of this.promises) {
+          promises[promise_id] = promise.toRecord();
+        }
+        const summaries = [];
+        for (const summary of this.summaries) {
+          summaries.push(summary);
+        }
         const variable = {
           [State.DATETIME_KEY]: this.datetime.toDate(),
           [State.BIG_LOCATION_KEY]: this.big_location,
@@ -9667,7 +10295,9 @@
           [State.CURRENT_EVENT_KEY]: this.current_event,
           [State.ACTIVE_CHARACTERS_KEY]: active_characters,
           [State.DEACTIVE_CHARACTERS_KEY]: deactive_characters,
-          [State.ITEMS_KEY]: items
+          [State.ITEMS_KEY]: items,
+          [State.PROMISES_KEY]: promises,
+          [State.SUMMARIES_KEY]: summaries
         };
         if (message_id < 0) {
           const chat_variable = getVariables({
@@ -9683,6 +10313,24 @@
             message_id
           });
         }
+      }
+      getCharacter(character_id) {
+        return this.active_characters.get(character_id) || this.deactive_characters.get(character_id);
+      }
+      hasCharacter(character_id) {
+        return this.active_characters.has(character_id) || this.deactive_characters.has(character_id);
+      }
+      addPromise(deadline, character_ids, location, description) {
+        const existing_ids = Array.from(this.promises.keys());
+        const numbers = existing_ids.map(id => parseInt(id.substring(1))).filter(n => !isNaN(n));
+        const max_number = Math.max(...numbers, 0);
+        const promise_id = `p${max_number + 1}`;
+        const promise = new _promise__WEBPACK_IMPORTED_MODULE_3__.Promise(deadline, character_ids, location, description);
+        this.promises.set(promise_id, promise);
+      }
+      addSummary(summary, weighting, message_id) {
+        const datetime = this.datetime.clone();
+        this.summaries.push(new _summary__WEBPACK_IMPORTED_MODULE_4__.Summary(datetime, summary, weighting, message_id));
       }
       getGeneralStatusPrompt() {
         const year = this.datetime.year;
@@ -9843,6 +10491,43 @@
           content: prompt,
           should_scan: true
         } ]);
+      }
+    }
+  },
+  "./src/現代模擬UI/variable_logic/variables/summary.ts": 
+  /*!********************************************************!*\
+  !*** ./src/現代模擬UI/variable_logic/variables/summary.ts ***!
+  \********************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      Summary: () => Summary
+    });
+    var _datetime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./datetime */ "./src/現代模擬UI/variable_logic/variables/datetime.ts");
+    class Summary {
+      datetime;
+      static DATETIME_KEY="時間";
+      summary;
+      static SUMMARY_KEY="總結";
+      weighting;
+      static WEIGHTING_KEY="權重";
+      last_message_id;
+      static LAST_MESSAGE_ID_KEY="最後樓層";
+      constructor(datetime, summary, weighting, last_message_id) {
+        this.datetime = datetime;
+        this.summary = summary;
+        this.weighting = weighting;
+        this.last_message_id = last_message_id;
+      }
+      static fromRecord(record) {
+        return new Summary(new _datetime__WEBPACK_IMPORTED_MODULE_0__.Datetime(record[Summary.DATETIME_KEY]), record[Summary.SUMMARY_KEY], record[Summary.WEIGHTING_KEY], record[Summary.LAST_MESSAGE_ID_KEY]);
+      }
+      toRecord() {
+        return {
+          [Summary.DATETIME_KEY]: this.datetime.toDate(),
+          [Summary.SUMMARY_KEY]: this.summary,
+          [Summary.WEIGHTING_KEY]: this.weighting,
+          [Summary.LAST_MESSAGE_ID_KEY]: this.last_message_id
+        };
       }
     }
   },

@@ -45,23 +45,7 @@
             }}{{ generated_start_hour ? `時：${generated_start_hour}\n` : ''
             }}{{ generated_start_minute ? `分：${generated_start_minute}` : '' }}
           </div>
-          <button
-            class="replace-btn"
-            @click="
-              if (generated_start_year) start_year = generated_start_year;
-              if (generated_start_month) start_month = generated_start_month;
-              if (generated_start_date) start_date = generated_start_date;
-              if (generated_start_hour) start_hour = generated_start_hour;
-              if (generated_start_minute) start_minute = generated_start_minute;
-              generated_start_year = '';
-              generated_start_month = '';
-              generated_start_date = '';
-              generated_start_hour = '';
-              generated_start_minute = '';
-            "
-          >
-            使用
-          </button>
+          <button class="replace-btn" @click="applyGeneratedDatetime">使用</button>
         </div>
       </div>
 
@@ -269,16 +253,16 @@ const hasGeneratedResults = computed(() => {
 
 const isStartTabCompleted = computed(() => {
   return (
-    start_year.value.trim() !== '' &&
-    start_month.value.trim() !== '' &&
-    start_date.value.trim() !== '' &&
-    start_hour.value.trim() !== '' &&
-    start_minute.value.trim() !== '' &&
-    big_location.value.trim() !== '' &&
-    middle_location.value.trim() !== '' &&
-    small_location.value.trim() !== '' &&
-    weather.value.trim() !== '' &&
-    information.value.trim() !== ''
+    String(start_year.value).trim() !== '' &&
+    String(start_month.value).trim() !== '' &&
+    String(start_date.value).trim() !== '' &&
+    String(start_hour.value).trim() !== '' &&
+    String(start_minute.value).trim() !== '' &&
+    String(big_location.value).trim() !== '' &&
+    String(middle_location.value).trim() !== '' &&
+    String(small_location.value).trim() !== '' &&
+    String(weather.value).trim() !== '' &&
+    String(information.value).trim() !== ''
   );
 });
 
@@ -378,16 +362,16 @@ const loadStartData = () => {
   try {
     const variables = getVariables({ type: 'chat' });
     if (variables?.start_settings) {
-      start_year.value = variables.start_settings.start_year || '';
-      start_month.value = variables.start_settings.start_month || '';
-      start_date.value = variables.start_settings.start_date || '';
-      start_hour.value = variables.start_settings.start_hour || '';
-      start_minute.value = variables.start_settings.start_minute || '';
-      big_location.value = variables.start_settings.big_location || '';
-      middle_location.value = variables.start_settings.middle_location || '';
-      small_location.value = variables.start_settings.small_location || '';
-      weather.value = variables.start_settings.weather || '';
-      information.value = variables.start_settings.information || '';
+      start_year.value = String(variables.start_settings.start_year || '');
+      start_month.value = String(variables.start_settings.start_month || '');
+      start_date.value = String(variables.start_settings.start_date || '');
+      start_hour.value = String(variables.start_settings.start_hour || '');
+      start_minute.value = String(variables.start_settings.start_minute || '');
+      big_location.value = String(variables.start_settings.big_location || '');
+      middle_location.value = String(variables.start_settings.middle_location || '');
+      small_location.value = String(variables.start_settings.small_location || '');
+      weather.value = String(variables.start_settings.weather || '');
+      information.value = String(variables.start_settings.information || '');
     }
 
     // 從 localStorage 加載生成內容（用於切換標籤頁時恢復）
@@ -540,6 +524,7 @@ const getUserStatusPrompt = (): string => {
 const getCharacterStatusPrompt = (): string => {
   const variables = getVariables({ type: 'chat' });
   const characters = variables['characters'];
+  if (characters === undefined) return '';
   let character_status_prompt = `<CharacterStatus>\n`;
   for (const [key, character_state] of Object.entries(characters) as [string, any]) {
     if (key === 'c1') continue;
@@ -581,6 +566,7 @@ const getItemTablePrompt = (): string => {
   item_table_prompt += '|---|---|---|---|\n';
   const variables = getVariables({ type: 'chat' });
   const items = variables['items'];
+  if (items === undefined) return '';
   for (const [key, item] of Object.entries(items) as [string, any]) {
     item_table_prompt += `|${key}|${item.name}|${item.description}|${item.value}|\n`;
   }
@@ -592,6 +578,7 @@ const getExtraWorldInfoPrompt = (): string => {
   let extra_world_info_prompt = '';
   const variables = getVariables({ type: 'chat' });
   const extra_world_infos = variables['extra_world_info'];
+  if (extra_world_infos === undefined) return '';
   for (const extra_world_info of Array.from(extra_world_infos) as { name: string; content: string }[]) {
     if (extra_world_info.name === '' || extra_world_info.content === '') continue;
     extra_world_info_prompt += `<${extra_world_info.name}>\n`;
@@ -704,12 +691,23 @@ const parseAndFillGeneratedData = (result: string) => {
   Object.assign(generated_information, { value: data.generated_information || '' });
 };
 
-const applyAllGeneratedResults = () => {
+const applyGeneratedDatetime = () => {
   if (generated_start_year.value) start_year.value = generated_start_year.value;
   if (generated_start_month.value) start_month.value = generated_start_month.value;
   if (generated_start_date.value) start_date.value = generated_start_date.value;
   if (generated_start_hour.value) start_hour.value = generated_start_hour.value;
   if (generated_start_minute.value) start_minute.value = generated_start_minute.value;
+
+  // 清空生成結果
+  generated_start_year.value = '';
+  generated_start_month.value = '';
+  generated_start_date.value = '';
+  generated_start_hour.value = '';
+  generated_start_minute.value = '';
+};
+
+const applyAllGeneratedResults = () => {
+  applyGeneratedDatetime();
   if (generated_big_location.value) big_location.value = generated_big_location.value;
   if (generated_middle_location.value) middle_location.value = generated_middle_location.value;
   if (generated_small_location.value) small_location.value = generated_small_location.value;
@@ -717,11 +715,6 @@ const applyAllGeneratedResults = () => {
   if (generated_information.value) information.value = generated_information.value;
 
   // 清空所有生成結果
-  generated_start_year.value = '';
-  generated_start_month.value = '';
-  generated_start_date.value = '';
-  generated_start_hour.value = '';
-  generated_start_minute.value = '';
   generated_big_location.value = '';
   generated_middle_location.value = '';
   generated_small_location.value = '';
@@ -867,10 +860,12 @@ const startChat = () => {
     middle_location_string,
     small_location_string,
     weather_string,
-    '無',
+    State.CURRENT_EVENT_NULL_VALUE,
     active_characters,
     deactive_characters,
     items,
+    new Map(),
+    [],
   );
   state.saveAsVariable(-1);
   variable = getVariables({ type: 'chat' });

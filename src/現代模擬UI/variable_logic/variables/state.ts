@@ -1,6 +1,8 @@
 import { Character } from './character';
 import { Datetime } from './datetime';
 import { Item } from './item';
+import { Promise } from './promise';
+import { Summary } from './summary';
 
 export class State {
   public datetime: Datetime;
@@ -15,12 +17,17 @@ export class State {
   public static readonly WEATHER_KEY: string = '天氣';
   public current_event: string;
   public static readonly CURRENT_EVENT_KEY: string = '當前事件';
+  public static readonly CURRENT_EVENT_NULL_VALUE: string = '無';
   public active_characters: Map<string, Character>;
   public static readonly ACTIVE_CHARACTERS_KEY: string = '當前角色';
   public deactive_characters: Map<string, Character>;
   public static readonly DEACTIVE_CHARACTERS_KEY: string = '背景角色';
   public items: Map<string, Item>;
   public static readonly ITEMS_KEY: string = '物品';
+  public promises: Map<string, Promise>;
+  public static readonly PROMISES_KEY: string = '約定';
+  public summaries: Summary[];
+  public static readonly SUMMARIES_KEY: string = '總結';
 
   public constructor(
     datetime: Datetime,
@@ -32,6 +39,8 @@ export class State {
     active_characters: Map<string, Character>,
     deactive_characters: Map<string, Character>,
     items: Map<string, Item>,
+    promises: Map<string, Promise>,
+    summaries: Summary[],
   ) {
     this.datetime = datetime;
     this.big_location = big_location;
@@ -42,6 +51,8 @@ export class State {
     this.active_characters = active_characters;
     this.deactive_characters = deactive_characters;
     this.items = items;
+    this.promises = promises;
+    this.summaries = summaries;
   }
 
   public static loadFromVariable(message_id: number): State {
@@ -68,6 +79,16 @@ export class State {
     for (const [item_id, item_record] of Object.entries(item_variables)) {
       items.set(item_id, Item.fromRecord(item_record));
     }
+    const promises = new Map<string, Promise>();
+    const promise_variables: Record<string, any> = variable[State.PROMISES_KEY];
+    for (const [promise_id, promise_record] of Object.entries(promise_variables)) {
+      promises.set(promise_id, Promise.fromRecord(promise_record));
+    }
+    const summaries = new Array<Summary>();
+    const summary_variables: [string, any][] = variable[State.SUMMARIES_KEY];
+    for (const summary_record of summary_variables) {
+      summaries.push(Summary.fromRecord(summary_record));
+    }
     return new State(
       new Datetime(variable[State.DATETIME_KEY]),
       variable[State.BIG_LOCATION_KEY],
@@ -78,6 +99,8 @@ export class State {
       active_characters,
       deactive_characters,
       items,
+      promises,
+      summaries,
     );
   }
 
@@ -94,6 +117,14 @@ export class State {
     for (const [item_id, item] of this.items) {
       items[item_id] = item.toRecord();
     }
+    const promises: Record<string, any> = {};
+    for (const [promise_id, promise] of this.promises) {
+      promises[promise_id] = promise.toRecord();
+    }
+    const summaries: Summary[] = [];
+    for (const summary of this.summaries) {
+      summaries.push(summary);
+    }
     const variable = {
       [State.DATETIME_KEY]: this.datetime.toDate(),
       [State.BIG_LOCATION_KEY]: this.big_location,
@@ -104,6 +135,8 @@ export class State {
       [State.ACTIVE_CHARACTERS_KEY]: active_characters,
       [State.DEACTIVE_CHARACTERS_KEY]: deactive_characters,
       [State.ITEMS_KEY]: items,
+      [State.PROMISES_KEY]: promises,
+      [State.SUMMARIES_KEY]: summaries,
     };
     if (message_id < 0) {
       // If message_id < 0, store the state to chat variable
@@ -114,6 +147,28 @@ export class State {
       // Else store to respective message variable
       replaceVariables(variable, { type: 'message', message_id: message_id });
     }
+  }
+
+  public getCharacter(character_id: string): Character | undefined {
+    return this.active_characters.get(character_id) || this.deactive_characters.get(character_id);
+  }
+
+  public hasCharacter(character_id: string): boolean {
+    return this.active_characters.has(character_id) || this.deactive_characters.has(character_id);
+  }
+
+  public addPromise(deadline: Datetime, character_ids: string[], location: string, description: string) {
+    const existing_ids = Array.from(this.promises.keys());
+    const numbers = existing_ids.map(id => parseInt(id.substring(1))).filter(n => !isNaN(n));
+    const max_number = Math.max(...numbers, 0);
+    const promise_id = `p${max_number + 1}`;
+    const promise = new Promise(deadline, character_ids, location, description);
+    this.promises.set(promise_id, promise);
+  }
+
+  public addSummary(summary: string, weighting: number, message_id: number) {
+    const datetime = this.datetime.clone();
+    this.summaries.push(new Summary(datetime, summary, weighting, message_id));
   }
 
   private getGeneralStatusPrompt(): string {

@@ -209,4 +209,33 @@ export class Character {
       [Character.INVENTORY_KEY]: Object.fromEntries(this.inventory),
     };
   }
+
+  public deltaFriendship(character_id: string, delta: number) {
+    let friendship = this.friendships.get(character_id) || 0;
+    friendship += delta;
+    if (friendship < Character.FRIENDSHIP_LOW) friendship = Character.FRIENDSHIP_LOW;
+    if (friendship > Character.FRIENDSHIP_HIGH) friendship = Character.FRIENDSHIP_HIGH;
+    this.friendships.set(character_id, friendship);
+  }
+
+  public deltaLove(character_id: string, delta: number) {
+    let love = this.loves.get(character_id) || 0;
+    love += delta;
+    if (love < Character.LOVE_LOW) love = Character.LOVE_LOW;
+    if (love > Character.LOVE_HIGH) love = Character.LOVE_HIGH;
+    if (love === 0) this.loves.delete(character_id);
+    else this.loves.set(character_id, love);
+  }
+
+  public deltaMood(delta: number) {
+    this.mood += delta;
+    if (this.mood < Character.MOOD_LOW) this.mood = Character.MOOD_LOW;
+    if (this.mood > Character.MOOD_HIGH) this.mood = Character.MOOD_HIGH;
+  }
+
+  public deltaHorny(delta: number) {
+    this.horny += delta;
+    if (this.horny < Character.HORNY_LOW) this.horny = Character.HORNY_LOW;
+    if (this.horny > Character.HORNY_HIGH) this.horny = Character.HORNY_HIGH;
+  }
 }
