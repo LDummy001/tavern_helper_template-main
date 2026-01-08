@@ -13,7 +13,11 @@
           <button class="confirm-btn cancel-btn" @click="cancel_confirm_dialog">
             {{ confirmDialog.cancelText }}
           </button>
-          <button class="confirm-btn confirm-action-btn" @click="confirm_confirm_dialog">
+          <button
+            class="confirm-btn confirm-action-btn"
+            :data-confirm-text="confirmDialog.confirmText"
+            @click="confirm_confirm_dialog"
+          >
             {{ confirmDialog.confirmText }}
           </button>
         </div>
@@ -56,7 +60,6 @@ const handle_confirm_dialog_overlay_click = () => {
   // 點擊遮罩層時取消
   cancel_confirm_dialog();
 };
-
 
 // 導出組件供其他組件使用
 defineExpose({
@@ -145,7 +148,19 @@ defineExpose({
     &:active {
       background-color: #004085;
     }
+
+    // 如果是刪除操作，使用紅色按鈕
+    &[data-confirm-text='刪除'] {
+      background-color: #dc3545;
+
+      &:hover {
+        background-color: #c82333;
+      }
+
+      &:active {
+        background-color: #bd2130;
+      }
+    }
   }
 }
-
 </style>

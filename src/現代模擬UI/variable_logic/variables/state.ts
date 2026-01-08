@@ -90,7 +90,7 @@ export class State {
       summaries.push(Summary.fromRecord(summary_record));
     }
     return new State(
-      new Datetime(variable[State.DATETIME_KEY]),
+      Datetime.fromString(variable[State.DATETIME_KEY]),
       variable[State.BIG_LOCATION_KEY],
       variable[State.MIDDLE_LOCATION_KEY],
       variable[State.SMALL_LOCATION_KEY],
@@ -121,12 +121,14 @@ export class State {
     for (const [promise_id, promise] of this.promises) {
       promises[promise_id] = promise.toRecord();
     }
-    const summaries: Summary[] = [];
-    for (const summary of this.summaries) {
-      summaries.push(summary);
+    const summaries: Record<string, any>[] = [];
+    // 按 last_message_id 升序排列（最小的在前）
+    const sorted_summaries = [...this.summaries].sort((a, b) => a.last_message_id - b.last_message_id);
+    for (const summary of sorted_summaries) {
+      summaries.push(summary.toRecord());
     }
     const variable = {
-      [State.DATETIME_KEY]: this.datetime.toDate(),
+      [State.DATETIME_KEY]: this.datetime.toString(),
       [State.BIG_LOCATION_KEY]: this.big_location,
       [State.MIDDLE_LOCATION_KEY]: this.middle_location,
       [State.SMALL_LOCATION_KEY]: this.small_location,
@@ -169,6 +171,16 @@ export class State {
   public addSummary(summary: string, weighting: number, message_id: number) {
     const datetime = this.datetime.clone();
     this.summaries.push(new Summary(datetime, summary, weighting, message_id));
+  }
+
+  // 獲取最新的 summary 的 last_message_id，如果沒有 summary 則返回 -1
+  public getLatestSummaryLastMessageId(): number {
+    const variable = getVariables({ type: 'chat' });
+    const exclude_latest_summaries = variable.settings?.exclude_latest_summaries || 0;
+    // summaries 已經按時間升序排列，最新的在最後，排除最後的 exclude_latest_summaries 個
+    const effective_summaries = this.summaries.slice(0, this.summaries.length - exclude_latest_summaries);
+    if (effective_summaries.length === 0) return -1;
+    return effective_summaries[effective_summaries.length - 1].last_message_id;
   }
 
   private getGeneralStatusPrompt(): string {
@@ -311,6 +323,34 @@ export class State {
     return item_prompt;
   }
 
+  private getPromisePrompt(): string {
+    let promise_prompt = `<PromiseTable>\n`;
+    promise_prompt += `|id|${Promise.DEADLINE_KEY}|${Promise.CHARACTER_IDS_KEY}|${Promise.LOCATION_KEY}|${Promise.DESCRIPTION_KEY}|\n`;
+    promise_prompt += '|---|---|---|---|---|\n';
+    for (const [promise_id, promise] of this.promises) {
+      const deadline_str = `${promise.deadline.year}年${promise.deadline.month}月${promise.deadline.date}日 ${promise.deadline.hours.toString().padStart(2, '0')}:${promise.deadline.minutes.toString().padStart(2, '0')}`;
+      promise_prompt += `|${promise_id}|${deadline_str}|${promise.character_ids.join(',')}|${promise.location}|${promise.description}|\n`;
+    }
+    promise_prompt += `</PromiseTable>\n`;
+    return promise_prompt;
+  }
+
+  private getSummaryPrompt(): string {
+    const variable = getVariables({ type: 'chat' });
+    const exclude_latest_summaries = variable.settings?.exclude_latest_summaries || 0;
+    // summaries 已經保證最舊的在前面，最新的在最後，直接排除最後的 exclude_latest_summaries 個
+    const filtered_summaries = this.summaries.slice(0, this.summaries.length - exclude_latest_summaries);
+    let summary_prompt = `<HistorySummary>\n`;
+    summary_prompt += `|${Summary.DATETIME_KEY}|${Summary.SUMMARY_KEY}|${Summary.WEIGHTING_KEY}|\n`;
+    summary_prompt += '|---|---|---|\n';
+    for (const summary of filtered_summaries) {
+      const datetime_str = `${summary.datetime.year}年${summary.datetime.month}月${summary.datetime.date}日 ${summary.datetime.hours.toString().padStart(2, '0')}:${summary.datetime.minutes.toString().padStart(2, '0')}`;
+      summary_prompt += `|${datetime_str}|${summary.summary}|${summary.weighting.toFixed(1)}|\n`;
+    }
+    summary_prompt += `</HistorySummary>\n`;
+    return summary_prompt;
+  }
+
   private getStartingBackground(): string {
     const variable = getVariables({ type: 'chat' });
     let prompt = '<StartingBackground>\n';
@@ -324,7 +364,9 @@ export class State {
     prompt += `${this.getUserPrompt()}\n`;
     prompt += `${this.getActiveCharacterPrompt()}\n`;
     prompt += `${this.getDeactiveCharacterPrompt()}\n`;
-    prompt += `${this.getItemPrompt()}`;
+    prompt += `${this.getItemPrompt()}\n`;
+    prompt += `${this.getPromisePrompt()}\n`;
+    prompt += `${this.getSummaryPrompt()}`;
     if (is_first_generation) prompt += `\n${this.getStartingBackground()}`;
     injectPrompts([
       {

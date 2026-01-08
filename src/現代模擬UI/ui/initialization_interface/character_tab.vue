@@ -2398,8 +2398,9 @@ const removeCharacter = (character_id: string) => {
 .relation-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
   background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -2413,9 +2414,10 @@ const removeCharacter = (character_id: string) => {
   .relation-target {
     color: #4fc3f7;
     font-weight: 600;
-    font-size: 14px;
-    min-width: 80px;
-    padding: 4px 8px;
+    font-size: 13px;
+    flex-shrink: 0;
+    min-width: 60px;
+    padding: 6px 8px;
     background-color: #2a2a2a;
     border-radius: 4px;
     text-align: center;
@@ -2423,6 +2425,7 @@ const removeCharacter = (character_id: string) => {
 
   .relation-input {
     flex: 1;
+    min-width: 120px;
     padding: 10px 14px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2447,10 +2450,11 @@ const removeCharacter = (character_id: string) => {
     border: 1px solid #dc3545;
     border-radius: 6px;
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2473,9 +2477,10 @@ const removeCharacter = (character_id: string) => {
 
 .add-relation {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -2483,6 +2488,7 @@ const removeCharacter = (character_id: string) => {
 
   .relation-select {
     flex: 1;
+    min-width: 150px;
     padding: 12px 16px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2499,7 +2505,8 @@ const removeCharacter = (character_id: string) => {
   }
 
   .add-relation-btn {
-    padding: 12px 20px;
+    flex-shrink: 0;
+    padding: 10px 16px;
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     border: 1px solid #28a745;
     border-radius: 6px;
@@ -2540,8 +2547,9 @@ const removeCharacter = (character_id: string) => {
 .inventory-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
   background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -2555,9 +2563,10 @@ const removeCharacter = (character_id: string) => {
   .inventory-target {
     color: #4fc3f7;
     font-weight: 600;
-    font-size: 14px;
-    min-width: 80px;
-    padding: 4px 8px;
+    font-size: 13px;
+    flex-shrink: 0;
+    min-width: 60px;
+    padding: 6px 8px;
     background-color: #2a2a2a;
     border-radius: 4px;
     text-align: center;
@@ -2565,6 +2574,7 @@ const removeCharacter = (character_id: string) => {
 
   .inventory-input {
     flex: 1;
+    min-width: 120px;
     padding: 10px 14px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2589,10 +2599,11 @@ const removeCharacter = (character_id: string) => {
     border: 1px solid #dc3545;
     border-radius: 6px;
     color: white;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2615,9 +2626,10 @@ const removeCharacter = (character_id: string) => {
 
 .add-inventory {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -2625,6 +2637,7 @@ const removeCharacter = (character_id: string) => {
 
   .inventory-select {
     flex: 1;
+    min-width: 150px;
     padding: 12px 16px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2642,6 +2655,7 @@ const removeCharacter = (character_id: string) => {
 
   .quantity-input {
     flex: 1;
+    min-width: 80px;
     padding: 12px 16px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2668,7 +2682,8 @@ const removeCharacter = (character_id: string) => {
   }
 
   .add-inventory-btn {
-    padding: 12px 20px;
+    flex-shrink: 0;
+    padding: 10px 16px;
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     border: 1px solid #28a745;
     border-radius: 6px;
@@ -2900,26 +2915,27 @@ const removeCharacter = (character_id: string) => {
       width: auto;
       max-width: none;
     }
+  }
 
-    .add-character-section {
-      padding: 16px 0;
-      margin-top: 16px;
-    }
+  .add-character-section {
+    padding: 16px 0;
+    margin-top: 16px;
+  }
 
-    .add-character-btn {
-      padding: 10px 20px;
-      font-size: 14px;
+  .add-character-btn {
+    padding: 10px 20px;
+    font-size: 14px;
 
-      span {
-        font-size: 16px;
-      }
-    }
-
-    .remove-character-btn {
-      width: 20px;
-      height: 20px;
-      font-size: 14px;
+    span {
+      font-size: 16px;
     }
   }
+
+  .remove-character-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+  }
+
 }
 </style>

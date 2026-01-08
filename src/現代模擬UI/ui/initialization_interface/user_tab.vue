@@ -1938,8 +1938,9 @@ onBeforeUnmount(() => {
 .relation-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
   background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -1954,15 +1955,17 @@ onBeforeUnmount(() => {
     color: #4fc3f7;
     font-weight: 600;
     font-size: 14px;
-    min-width: 80px;
+    min-width: 60px;
     padding: 4px 8px;
     background-color: #2a2a2a;
     border-radius: 4px;
     text-align: center;
+    flex-shrink: 0;
   }
 
   .relation-input {
     flex: 1;
+    min-width: 120px;
     padding: 10px 14px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -1989,14 +1992,15 @@ onBeforeUnmount(() => {
     color: white;
     font-size: 16px;
     font-weight: bold;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+    flex-shrink: 0;
 
     &:hover {
       background: linear-gradient(135deg, #c82333 0%, #a02622 100%);
@@ -2013,9 +2017,10 @@ onBeforeUnmount(() => {
 
 .add-relation {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -2023,6 +2028,7 @@ onBeforeUnmount(() => {
 
   .relation-select {
     flex: 1;
+    min-width: 150px;
     padding: 12px 16px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2039,7 +2045,7 @@ onBeforeUnmount(() => {
   }
 
   .add-relation-btn {
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     border: 1px solid #28a745;
     border-radius: 6px;
@@ -2049,6 +2055,7 @@ onBeforeUnmount(() => {
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    flex-shrink: 0;
 
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, #218838 0%, #1aa085 100%);
@@ -2080,8 +2087,9 @@ onBeforeUnmount(() => {
 .inventory-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
   background: linear-gradient(135deg, #1e1e1e 0%, #252525 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -2096,15 +2104,17 @@ onBeforeUnmount(() => {
     color: #4fc3f7;
     font-weight: 600;
     font-size: 14px;
-    min-width: 80px;
+    min-width: 60px;
     padding: 4px 8px;
     background-color: #2a2a2a;
     border-radius: 4px;
     text-align: center;
+    flex-shrink: 0;
   }
 
   .inventory-input {
     flex: 1;
+    min-width: 80px;
     padding: 10px 14px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2131,14 +2141,15 @@ onBeforeUnmount(() => {
     color: white;
     font-size: 16px;
     font-weight: bold;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+    flex-shrink: 0;
 
     &:hover {
       background: linear-gradient(135deg, #c82333 0%, #a02622 100%);
@@ -2155,9 +2166,10 @@ onBeforeUnmount(() => {
 
 .add-inventory {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   background: linear-gradient(135deg, #252525 0%, #2a2a2a 100%);
   border: 1px solid #555;
   border-radius: 8px;
@@ -2165,6 +2177,7 @@ onBeforeUnmount(() => {
 
   .inventory-select {
     flex: 1;
+    min-width: 150px;
     padding: 12px 16px;
     background-color: #1a1a1a;
     border: 1px solid #404040;
@@ -2190,6 +2203,8 @@ onBeforeUnmount(() => {
     outline: none;
     transition: all 0.2s ease;
     width: 80px;
+    flex: 1;
+    min-width: 80px;
 
     &:focus {
       border-color: #007acc;
@@ -2208,7 +2223,7 @@ onBeforeUnmount(() => {
   }
 
   .add-inventory-btn {
-    padding: 12px 20px;
+    padding: 10px 16px;
     background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
     border: 1px solid #28a745;
     border-radius: 6px;
@@ -2218,6 +2233,7 @@ onBeforeUnmount(() => {
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    flex-shrink: 0;
 
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, #218838 0%, #1aa085 100%);

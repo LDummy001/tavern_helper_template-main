@@ -17,16 +17,31 @@
               </div>
             </div>
             <template v-else>
-              <div class="message-actions">
-                <button
-                  v-if="message.role === 'assistant' && !message.is_latest_assistant"
-                  class="rewind-message-btn"
-                  title="從此點回退對話"
-                  @click="rewindConversation(message, msg_index)"
-                >
-                  ⏪
-                </button>
-                <button class="edit-message-btn" title="編輯消息" @click="startEdit(message, msg_index)">✏️</button>
+              <div class="message-header">
+                <div class="message-header-row">
+                  <span class="message-id"
+                    >#{{ last_message_id - (messages.length - 1 - msg_index) }} ({{
+                      getMessageTokenDisplay(last_message_id - (messages.length - 1 - msg_index), message.content)
+                    }}
+                    tokens)</span
+                  >
+                  <div class="message-actions">
+                    <button
+                      v-if="message.role === 'assistant' && !message.is_latest_assistant"
+                      class="rewind-message-btn"
+                      title="從此點回退對話"
+                      @click="rewindConversation(message, msg_index)"
+                    >
+                      ⏪
+                    </button>
+                    <button class="edit-message-btn" title="編輯消息" @click="startEdit(message, msg_index)">✏️</button>
+                  </div>
+                </div>
+                <div class="message-status-row">
+                  <div class="status-info">
+                    {{ getMessageStatusDisplay(last_message_id - (messages.length - 1 - msg_index)) }}
+                  </div>
+                </div>
               </div>
               <div class="message-content">
                 <template v-for="(segment, index) in parseMessageText(message.content)" :key="index">
@@ -65,7 +80,7 @@
         </div>
       </div>
 
-      <div class="input-area">
+      <div ref="input_area_ref" class="input-area">
         <div class="input-container">
           <textarea
             ref="message_input_ref"
@@ -74,7 +89,7 @@
             placeholder="輸入您的訊息..."
             rows="1"
             @keydown="handleKeyDown"
-            @input="adjustTextareaHeight"
+            @input="handleInput"
           ></textarea>
           <div v-if="is_generating || is_generating_new_swipe" class="loading-spinner"></div>
           <button
@@ -97,8 +112,9 @@
 </template>
 
 <script setup lang="ts">
+import { generationManager } from '@/現代模擬UI/variable_logic/generation_manager';
 import { State } from '@/現代模擬UI/variable_logic/variables/state';
-import { nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import ConfirmationWindow from '../common_elements/confirmation_window.vue';
 import FoldBarComponent from '../common_elements/fold_bar.vue';
 
@@ -118,14 +134,36 @@ const messages = ref<
     is_latest_assistant?: boolean;
   }[]
 >([]);
-const is_generating = ref(false);
-const current_generation_id = ref<string | null>(null);
-const last_user_message_id = ref<number | null>(null);
-const last_user_message_text = ref('');
-const is_generating_new_swipe = ref(false);
-const swipe_generation_message_id = ref<number | null>(null);
+const generationState = generationManager.getState();
+const is_generating = computed(() => generationState.value.is_generating);
+const is_generating_new_swipe = computed(() => generationState.value.is_generating_new_swipe);
+
+// 本地存儲鍵名
+const USER_INPUT_STORAGE_KEY = 'conversation_user_input';
+
+// 保存用戶輸入到本地存儲
+const saveUserInput = () => {
+  try {
+    localStorage.setItem(USER_INPUT_STORAGE_KEY, user_input.value);
+  } catch (error) {
+    console.error('Failed to save user input to localStorage:', error);
+  }
+};
+
+// 從本地存儲恢復用戶輸入
+const restoreUserInput = () => {
+  try {
+    const savedInput = localStorage.getItem(USER_INPUT_STORAGE_KEY);
+    if (savedInput) {
+      user_input.value = savedInput;
+    }
+  } catch (error) {
+    console.error('Failed to restore user input from localStorage:', error);
+  }
+};
 const message_input_ref = ref<HTMLTextAreaElement | null>(null);
 const messages_container_ref = ref<HTMLDivElement | null>(null);
+const input_area_ref = ref<HTMLDivElement | null>(null);
 const editing_message_index = ref<number | null>(null);
 const editing_text = ref('');
 const confirm_dialog = ref({
@@ -138,6 +176,126 @@ const confirm_dialog = ref({
 const render_size = ref(10); // 默認渲染大小
 const rendered_messages_count = ref(0); // 當前已渲染的消息總數
 const has_more_messages = ref(false); // 是否還有更多消息
+const tab_navigation_height = ref(0); // 頂部標籤導航高度
+const input_area_height = ref(0); // 輸入區域高度
+const resize_observer = ref<ResizeObserver | null>(null);
+
+// 動態計算消息容器的最大高度
+const messages_container_max_height = computed(() => {
+  const total_fixed_height = tab_navigation_height.value + input_area_height.value;
+  return `calc(100vh - ${total_fixed_height}px)`;
+});
+
+// 最後消息ID（響應式ref）
+const last_message_id = ref(0);
+
+// 計算指定消息ID的狀態顯示
+const getMessageStatusDisplay = (message_id: number) => {
+  try {
+    const state = State.loadFromVariable(message_id); // 從消息變數載入狀態
+    const datetime = state.datetime;
+    const year = datetime.year;
+    const month = datetime.month;
+    const date = datetime.date;
+    const hours = datetime.hours;
+    const minutes = datetime.minutes;
+
+    // 獲取星期幾
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    const weekday = weekdays[datetime.toDate().getDay()];
+
+    // 格式化時間
+    const time_str = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+
+    // 組合顯示字符串
+    return `${year}年${month}月${date}日 (${weekday}) ${time_str} ${state.weather} ${state.big_location}-${state.middle_location}-${state.small_location}`;
+  } catch (error) {
+    console.error('Failed to load message status:', error);
+    return '載入狀態中...';
+  }
+};
+
+// 消息 token 數量緩存
+const messageTokenCache = ref<Map<number, number>>(new Map());
+const messageTokenLoading = ref<Set<number>>(new Set());
+
+// 獲取消息的 token 數量顯示
+const getMessageTokenDisplay = (message_id: number, message_content: string): string => {
+  if (messageTokenCache.value.has(message_id)) {
+    return `${messageTokenCache.value.get(message_id)}`;
+  }
+
+  if (messageTokenLoading.value.has(message_id)) {
+    return '...';
+  }
+
+  // 異步加載 token 數量
+  getMessageTokenCount(message_id, message_content);
+  return '...';
+};
+
+// 獲取消息的 token 數量
+const getMessageTokenCount = async (message_id: number, message_content: string): Promise<void> => {
+  if (messageTokenCache.value.has(message_id) || messageTokenLoading.value.has(message_id)) {
+    return;
+  }
+
+  messageTokenLoading.value.add(message_id);
+
+  try {
+    // 使用 SillyTavern 的 API 獲取 token 數量
+    const tokenCount = await SillyTavern.getTokenCountAsync(message_content);
+    // 存儲到緩存
+    messageTokenCache.value.set(message_id, tokenCount);
+  } catch (error) {
+    console.error('Failed to get token count:', error);
+    messageTokenCache.value.set(message_id, 0);
+  } finally {
+    messageTokenLoading.value.delete(message_id);
+  }
+};
+
+// 設置 ResizeObserver 來監聽高度變化
+const setupResizeObserver = () => {
+  if (typeof ResizeObserver === 'undefined') {
+    // 降級方案：使用固定高度
+    tab_navigation_height.value = 80; // 估計的標籤導航高度
+    input_area_height.value = 68; // 估計的輸入區域高度
+    return;
+  }
+
+  resize_observer.value = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const target = entry.target as HTMLElement;
+      if (target.classList.contains('tab-navigation')) {
+        tab_navigation_height.value = target.offsetHeight;
+      } else if (target.classList.contains('input-area')) {
+        input_area_height.value = target.offsetHeight;
+      }
+    }
+  });
+
+  // 監聽父元素的標籤導航
+  const tabNavigation = document.querySelector('.tab-navigation.top') as HTMLElement;
+  if (tabNavigation) {
+    resize_observer.value.observe(tabNavigation);
+    tab_navigation_height.value = tabNavigation.offsetHeight;
+  }
+
+  // 監聽輸入區域
+  if (input_area_ref.value) {
+    resize_observer.value.observe(input_area_ref.value);
+    input_area_height.value = input_area_ref.value.offsetHeight;
+  }
+};
+
+// 清理 ResizeObserver
+const cleanupResizeObserver = () => {
+  if (resize_observer.value) {
+    resize_observer.value.disconnect();
+    resize_observer.value = null;
+  }
+};
 
 // 載入聊天設置
 const loadChatSettings = () => {
@@ -201,6 +359,11 @@ const adjustTextareaHeight = () => {
     const newHeight = Math.min(message_input_ref.value.scrollHeight, 120);
     message_input_ref.value.style.height = `${newHeight}px`;
   }
+};
+
+const handleInput = () => {
+  adjustTextareaHeight();
+  saveUserInput();
 };
 
 const startEdit = (message: any, index: number) => {
@@ -393,6 +556,18 @@ const scrollToBottom = () => {
   }
 };
 
+const scrollToNewMessage = () => {
+  if (messages_container_ref.value) {
+    // 找到所有消息元素
+    const messageElements = messages_container_ref.value.querySelectorAll('.message');
+    if (messageElements.length > 0) {
+      // 滾動到最後一個消息（新消息）的起始位置
+      const lastMessageElement = messageElements[messageElements.length - 1] as HTMLElement;
+      lastMessageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+};
+
 const showConfirmDialog = (title: string, message: string, confirmCallback?: () => void) => {
   confirm_dialog.value = {
     visible: true,
@@ -431,6 +606,13 @@ const sendMessage = async (force?: boolean) => {
     const message = user_input.value.trim();
     user_input.value = '';
 
+    // 清除本地存儲中的輸入
+    try {
+      localStorage.removeItem(USER_INPUT_STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear user input from localStorage:', error);
+    }
+
     try {
       await createChatMessages(
         [
@@ -443,65 +625,31 @@ const sendMessage = async (force?: boolean) => {
       );
 
       const last_message_id = getLastMessageId();
-      last_user_message_id.value = last_message_id;
-      last_user_message_text.value = message;
 
       // 生成新消息後重置渲染狀態，只顯示最新的消息
       resetRenderState();
       loadMessages();
 
       injectPrompt(getLastMessageId() - 1);
-      is_generating.value = true;
-      const generation_id = `generation_${Date.now()}`;
-      current_generation_id.value = generation_id;
-      generate({ generation_id: generation_id });
-      eventEmit('MESSAGE_SENT', last_message_id);
+      generationManager.startGeneration(message, last_message_id);
     } catch (error) {
       console.error('Failed to send message:', error);
-      is_generating.value = false;
-      current_generation_id.value = null;
-      last_user_message_id.value = null;
-      last_user_message_text.value = '';
+      generationManager.stopGeneration();
     }
   }
 };
 
 const stopGeneration = async () => {
-  if (current_generation_id.value) {
-    try {
-      await stopGenerationById(current_generation_id.value);
-
-      if (is_generating_new_swipe.value) {
-        is_generating_new_swipe.value = false;
-        swipe_generation_message_id.value = null;
-      } else if (last_user_message_id.value !== null) {
-        user_input.value = last_user_message_text.value;
-        await deleteChatMessages([last_user_message_id.value], { refresh: 'none' });
-        last_user_message_id.value = null;
-        last_user_message_text.value = '';
-        loadMessages();
-      }
-
-      is_generating.value = false;
-      current_generation_id.value = null;
-    } catch (error) {
-      console.error('Failed to stop generation:', error);
-      is_generating.value = false;
-      is_generating_new_swipe.value = false;
-      current_generation_id.value = null;
-      swipe_generation_message_id.value = null;
-    }
-  }
+  await generationManager.stopGeneration();
 };
 
 const generateNewSwipe = async (_message: any) => {
-  is_generating_new_swipe.value = true;
-  swipe_generation_message_id.value = getLastMessageId();
+  const message_id = getLastMessageId();
 
   await setChatMessages(
     [
       {
-        message_id: swipe_generation_message_id.value,
+        message_id: message_id,
         is_hidden: true,
       },
     ],
@@ -509,9 +657,7 @@ const generateNewSwipe = async (_message: any) => {
   );
 
   injectPrompt(getLastMessageId() - 1);
-  const generationId = `swipe_generation_${Date.now()}`;
-  current_generation_id.value = generationId;
-  generate({ generation_id: generationId });
+  generationManager.startSwipeGeneration(message_id);
 };
 
 const previousSwipe = async (message: any) => {
@@ -556,7 +702,6 @@ const nextSwipe = async (message: any) => {
 };
 
 const deleteSwipe = async (message: any) => {
-  console.log('[deleteSwipe] message:', message);
   const current_swipe_id = message.swipe_id || 0;
   const swipes = message.swipes;
   const swipes_data = message.swipes_data;
@@ -583,9 +728,6 @@ const performDeleteSwipe = async (
   swipes_info: Record<string, any>[],
 ) => {
   // 創建新的swipes數組，移除當前swipe
-  console.log('[performDeleteSwipe] swipes:', swipes);
-  console.log('[performDeleteSwipe] swipes_data:', swipes_data);
-  console.log('[performDeleteSwipe] swipes_info:', swipes_info);
   const new_swipes = swipes.filter((_: any, index: number) => index !== current_swipe_id);
   const new_swipes_data = swipes_data.filter((_: any, index: number) => index !== current_swipe_id);
   const new_swipes_info = swipes_info.filter((_: any, index: number) => index !== current_swipe_id);
@@ -616,6 +758,9 @@ const performDeleteSwipe = async (
 const loadMessages = () => {
   try {
     const lastMessageId = getLastMessageId();
+    // 更新響應式的 last_message_id
+    last_message_id.value = lastMessageId;
+
     if (lastMessageId >= 0) {
       // 計算要渲染的消息範圍
       const totalRendered = rendered_messages_count.value;
@@ -682,67 +827,48 @@ onMounted(() => {
   loadChatSettings();
   // 初始化渲染狀態
   rendered_messages_count.value = render_size.value;
+  // 初始化最後消息ID
+  last_message_id.value = getLastMessageId();
   loadMessages();
+
+  // 恢復用戶輸入
+  restoreUserInput();
+
+  // 設置動態高度監聽
+  nextTick(() => {
+    setupResizeObserver();
+  });
+
+  // 確保生成管理器已初始化
+  generationManager.getState();
 
   // 監聽初始化完成事件
   eventOn('initialization_completed', () => {
-    console.log('[conversation_tab] initialization_completed start');
     sendMessage(true);
   });
 
-  // 監聽生成結束事件
-  eventOn(iframe_events.GENERATION_ENDED, async (text: string) => {
-    try {
-      if (is_generating_new_swipe.value && swipe_generation_message_id.value !== null) {
-        const message_id = swipe_generation_message_id.value;
-        const existing_message = getChatMessages(message_id, { include_swipes: true })[0] as any;
-
-        if (existing_message && existing_message.swipes) {
-          // 添加新的swipe到數組
-          const new_swipes = [...existing_message.swipes, text];
-          const new_swipe_id = new_swipes.length - 1;
-
-          await setChatMessages(
-            [
-              {
-                message_id: message_id,
-                swipes: new_swipes,
-                swipe_id: new_swipe_id,
-                is_hidden: false, // 重新顯示消息
-              },
-            ],
-            { refresh: 'none' },
-          );
-        }
-      } else {
-        // 正常生成：創建新的助手消息
-        await createChatMessages(
-          [
-            {
-              role: 'assistant',
-              message: text,
-            },
-          ],
-          { refresh: 'none' },
-        );
-      }
-
-      // 刷新UI
-      loadMessages();
-      // 新消息到來後滾動到底部
-      scrollToBottom();
-      eventEmit('MESSAGE_RECEIVED', getLastMessageId());
-    } catch (error) {
-      console.error('Failed to handle generation end:', error);
-    } finally {
-      is_generating.value = false;
-      is_generating_new_swipe.value = false;
-      current_generation_id.value = null;
-      swipe_generation_message_id.value = null;
-      last_user_message_id.value = null;
-      last_user_message_text.value = '';
-    }
+  // 監聽消息接收處理完成事件（用於UI更新）
+  eventOn('MESSAGE_RECEIVED_PROCESSED', () => {
+    // 刷新UI
+    loadMessages();
+    nextTick(() => {
+      // 新消息到來後滾動到新消息起始位置
+      scrollToNewMessage();
+    });
   });
+
+  eventOn(tavern_events.GENERATION_ENDED, (_message_id: number) => {
+    generationManager.stopGeneration();
+  });
+
+  // 監聽用戶輸入恢復事件
+  eventOn('RESTORE_USER_INPUT', (text: string) => {
+    user_input.value = text;
+  });
+});
+
+onUnmounted(() => {
+  cleanupResizeObserver();
 });
 </script>
 
@@ -771,9 +897,27 @@ onMounted(() => {
 .messages-container {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
   background-color: #1a1a1a;
-  max-height: calc(100vh - 140px);
+  max-height: v-bind(messages_container_max_height);
+
+  // 自定義滾動條樣式，與用戶標籤對齊
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #2a2a2a;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+
+    &:hover {
+      background: #666;
+    }
+  }
 }
 
 .load-more-container {
@@ -801,25 +945,17 @@ onMounted(() => {
 }
 
 .message {
-  margin-bottom: 16px;
-  padding: 12px;
-  background-color: #2a2a2a;
-  border-radius: 12px;
-  max-width: 90%;
   position: relative; /* 為編輯按鈕提供定位基準 */
+  border-bottom: 1px solid #404040;
 
   &.user {
-    border-right: 4px solid #007acc;
-    margin-left: auto;
-    margin-right: 0;
-    text-align: left;
+    background: linear-gradient(135deg, rgba(0, 122, 204, 0.05) 0%, rgba(0, 122, 204, 0.02) 100%);
+    border-left: 3px solid #007acc;
   }
 
   &.assistant {
-    border-left: 4px solid #28a745;
-    margin-left: 0;
-    margin-right: auto;
-    text-align: left;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(40, 167, 69, 0.02) 100%);
+    border-left: 3px solid #28a745;
   }
 }
 
@@ -827,6 +963,7 @@ onMounted(() => {
   line-height: 1.5;
   word-wrap: break-word;
   white-space: pre-wrap;
+  padding: 16px 16px 24px 16px;
 }
 
 :deep(.dialogue-text) {
@@ -834,14 +971,47 @@ onMounted(() => {
   font-weight: 500;
 }
 
+.message-header {
+  margin-bottom: 8px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+
+.message-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+}
+
+.message-status-row {
+  padding: 4px 16px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.message-id {
+  color: #b0b0b0;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.status-info {
+  color: #e0e0e0;
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.9;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .message-actions {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
-  padding: 4px 12px 0 12px;
-  justify-content: flex-end; /* 將按鈕對齊到右側 */
-  background-color: rgba(0, 0, 0, 0.25); /* 更明顯的背景色區分 */
-  border-radius: 8px 8px 0 0; /* 圓角，只在上方 */
 }
 
 .edit-message-btn,
@@ -875,6 +1045,7 @@ onMounted(() => {
 
 .edit-mode {
   width: 100%;
+  padding-left: 16px;
 }
 
 .edit-textarea {
@@ -945,10 +1116,10 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
-  padding: 4px 8px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 16px;
+  padding: 12px 16px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
 }
 
 .swipe-btn {
@@ -1021,6 +1192,14 @@ onMounted(() => {
   min-height: 20px;
   max-height: 120px;
 
+  // 隱藏滾動條
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
   &:focus {
     border-color: #007acc;
   }
@@ -1071,10 +1250,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .messages-container {
-    padding: 12px;
-  }
-
   .input-area {
     padding: 12px;
   }

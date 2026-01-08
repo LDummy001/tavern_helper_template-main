@@ -13,13 +13,44 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import InitializationInterface from './initialization_interface/initialization_interface.vue';
 import MainInterface from './main_interface/main_interface.vue';
 
 const mounted = ref(false);
 const is_initialized = ref(false);
 const parent_height = ref('100vh');
+
+// 檢查是否處於全屏狀態
+const isFullscreen = () => {
+  return !!(
+    document.fullscreenElement ||
+    (document as any).webkitFullscreenElement ||
+    (document as any).mozFullScreenElement ||
+    (document as any).msFullscreenElement
+  );
+};
+
+// 更新父窗口高度
+const updateParentHeight = () => {
+  if (isFullscreen()) {
+    parent_height.value = '100vh';
+  } else {
+    try {
+      if (window.parent && window.parent.innerHeight) {
+        parent_height.value = `${window.parent.innerHeight * 0.8}px`;
+      }
+    } catch (error) {
+      // 如果無法訪問父窗口，保持默認值
+      console.warn('Unable to access parent window height:', error);
+    }
+  }
+};
+
+// 全屏狀態變化處理函數
+const handleFullscreenChange = () => {
+  updateParentHeight();
+};
 
 // 載入聊天設置
 const loadChatSettings = () => {
@@ -66,15 +97,22 @@ onMounted(() => {
     { deep: true },
   );
 
-  // 獲取父窗口高度
-  try {
-    if (window.parent && window.parent.innerHeight) {
-      parent_height.value = `${window.parent.innerHeight * 0.8}px`;
-    }
-  } catch (error) {
-    // 如果無法訪問父窗口，保持默認值
-    console.warn('Unable to access parent window height:', error);
-  }
+  // 初始化父窗口高度
+  updateParentHeight();
+
+  // 添加全屏事件監聽器
+  document.addEventListener('fullscreenchange', handleFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+  document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+  document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+});
+
+// 組件卸載時清理監聽器
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+  document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+  document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
 });
 </script>
 

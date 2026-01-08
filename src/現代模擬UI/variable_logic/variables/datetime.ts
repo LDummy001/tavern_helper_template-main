@@ -5,6 +5,14 @@ export class Datetime {
     this._date = date;
   }
 
+  public static fromString(str: string): Datetime {
+    return new Datetime(new Date(str));
+  }
+
+  public toString(): string {
+    return this._date.toString();
+  }
+
   public get year(): number {
     return this._date.getFullYear();
   }

@@ -868,6 +868,7 @@ const startChat = () => {
     [],
   );
   state.saveAsVariable(-1);
+  state.saveAsVariable(0);
   variable = getVariables({ type: 'chat' });
   variable['is_initialized'] = true;
   replaceVariables(variable, { type: 'chat' });

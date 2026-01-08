@@ -36,6 +36,23 @@
         </div>
       </div>
 
+      <!-- 排除最新總結數量 -->
+      <div class="setting-item">
+        <div class="setting-label">
+          <span class="setting-title">排除最新總結數量</span>
+          <span class="setting-description">設置不使用最新n個總結的數量</span>
+        </div>
+        <div class="setting-control">
+          <input
+            v-model.number="exclude_latest_summaries"
+            type="number"
+            class="number-input"
+            min="0"
+            @input="handleExcludeLatestSummariesChange"
+          />
+        </div>
+      </div>
+
       <!-- XML內容摺疊規則 -->
       <div class="setting-item xml-rules-item">
         <div class="setting-label">
@@ -158,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onUnmounted, ref } from 'vue';
 
 const emit = defineEmits<{
   renderSizeChanged: [newSize: number];
@@ -167,6 +184,7 @@ const emit = defineEmits<{
 // 設置數據
 const fullscreen_enabled = ref(false);
 const render_size = ref(10);
+const exclude_latest_summaries = ref(1);
 
 // XML內容摺疊規則
 interface TagRule {
@@ -186,6 +204,7 @@ const loadSettings = () => {
     if (settings && settings.settings) {
       fullscreen_enabled.value = settings.settings.fullscreen_enabled || false;
       render_size.value = settings.settings.render_size || 10;
+      exclude_latest_summaries.value = settings.settings.exclude_latest_summaries || 1;
       tag_rules.value = settings.settings.tag_rules || [];
     } else {
       // 如果沒有設置，保存默認值
@@ -202,6 +221,7 @@ const saveSettings = () => {
     const settings = {
       fullscreen_enabled: fullscreen_enabled.value,
       render_size: render_size.value,
+      exclude_latest_summaries: exclude_latest_summaries.value,
       tag_rules: tag_rules.value,
     };
     insertOrAssignVariables({ settings }, { type: 'chat' });
@@ -210,16 +230,79 @@ const saveSettings = () => {
   }
 };
 
+// 全屏API函數
+const enterFullscreen = async () => {
+  try {
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen();
+    } else if ((document.documentElement as any).webkitRequestFullscreen) {
+      await (document.documentElement as any).webkitRequestFullscreen();
+    } else if ((document.documentElement as any).mozRequestFullScreen) {
+      await (document.documentElement as any).mozRequestFullScreen();
+    } else if ((document.documentElement as any).msRequestFullscreen) {
+      await (document.documentElement as any).msRequestFullscreen();
+    }
+  } catch (error) {
+    console.error('Failed to enter fullscreen:', error);
+  }
+};
+
+const exitFullscreen = async () => {
+  try {
+    if (document.exitFullscreen) {
+      await document.exitFullscreen();
+    } else if ((document as any).webkitExitFullscreen) {
+      await (document as any).webkitExitFullscreen();
+    } else if ((document as any).mozCancelFullScreen) {
+      await (document as any).mozCancelFullScreen();
+    } else if ((document as any).msExitFullscreen) {
+      await (document as any).msExitFullscreen();
+    }
+  } catch (error) {
+    console.error('Failed to exit fullscreen:', error);
+  }
+};
+
+const isFullscreen = () => {
+  return !!(
+    document.fullscreenElement ||
+    (document as any).webkitFullscreenElement ||
+    (document as any).mozFullScreenElement ||
+    (document as any).msFullscreenElement
+  );
+};
+
 // 事件處理函數
-const handleFullscreenChange = () => {
+const handleFullscreenChange = async () => {
+  if (fullscreen_enabled.value) {
+    await enterFullscreen();
+  } else {
+    await exitFullscreen();
+  }
   saveSettings();
-  console.log('全屏模式切換:', fullscreen_enabled.value);
 };
 
 const handleRenderSizeChange = () => {
+  // 約束為正整數 (>=1，不接受負數、0、十進制數)
+  let constrainedValue = Math.floor(Number(render_size.value));
+  if (isNaN(constrainedValue) || constrainedValue < 1) {
+    constrainedValue = 10; // 默認值
+  }
+  render_size.value = constrainedValue;
+
   saveSettings();
-  console.log('渲染大小變更:', render_size.value);
   emit('renderSizeChanged', render_size.value);
+};
+
+const handleExcludeLatestSummariesChange = () => {
+  // 約束為非負整數 (>=0，不接受負數、十進制數)
+  let constrainedValue = Math.floor(Number(exclude_latest_summaries.value));
+  if (isNaN(constrainedValue) || constrainedValue < 0) {
+    constrainedValue = 1; // 默認值
+  }
+  exclude_latest_summaries.value = constrainedValue;
+
+  saveSettings();
 };
 
 // XML內容摺疊規則管理
@@ -249,8 +332,43 @@ const updateFoldingRule = (ruleIndex: number, updates: Partial<TagRule>) => {
   }
 };
 
+// 監聽全屏狀態變化 - 強制同步全屏狀態
+const handleFullscreenChangeEvent = () => {
+  const currentlyFullscreen = isFullscreen();
+  // 始終設置為實際全屏狀態，無論當前值是什麼
+  fullscreen_enabled.value = currentlyFullscreen;
+  saveSettings();
+};
+
+// 添加全屏事件監聽器
+const addFullscreenListeners = () => {
+  document.addEventListener('fullscreenchange', handleFullscreenChangeEvent);
+  document.addEventListener('webkitfullscreenchange', handleFullscreenChangeEvent);
+  document.addEventListener('mozfullscreenchange', handleFullscreenChangeEvent);
+  document.addEventListener('MSFullscreenChange', handleFullscreenChangeEvent);
+};
+
+// 移除全屏事件監聽器
+const removeFullscreenListeners = () => {
+  document.removeEventListener('fullscreenchange', handleFullscreenChangeEvent);
+  document.removeEventListener('webkitfullscreenchange', handleFullscreenChangeEvent);
+  document.removeEventListener('mozfullscreenchange', handleFullscreenChangeEvent);
+  document.removeEventListener('MSFullscreenChange', handleFullscreenChangeEvent);
+};
+
 // 初始化時載入設置
 loadSettings();
+addFullscreenListeners();
+
+// 監聽聊天切換事件，切換聊天時重置全屏狀態
+eventOn(tavern_events.APP_READY, () => {
+  handleFullscreenChangeEvent();
+});
+
+// 組件卸載時清理監聽器
+onUnmounted(() => {
+  removeFullscreenListeners();
+});
 
 // 導出重新載入設置的方法，供CHAT_CHANGED事件使用
 defineExpose({
@@ -262,10 +380,10 @@ defineExpose({
 .settings-container {
   display: flex;
   flex-direction: column;
-  height: 600px; /* 設置固定高度來測試滾動 */
   background-color: #1a1a1a;
   color: #e0e0e0;
   overflow: hidden; /* 確保滾動只在子元素中發生 */
+  max-height: calc(100vh - 74px);
 }
 
 .settings-header {

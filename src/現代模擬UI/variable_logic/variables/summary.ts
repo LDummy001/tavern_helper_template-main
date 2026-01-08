@@ -19,7 +19,7 @@ export class Summary {
 
   public static fromRecord(record: Record<string, any>): Summary {
     return new Summary(
-      new Datetime(record[Summary.DATETIME_KEY]),
+      Datetime.fromString(record[Summary.DATETIME_KEY]),
       record[Summary.SUMMARY_KEY],
       record[Summary.WEIGHTING_KEY],
       record[Summary.LAST_MESSAGE_ID_KEY],
@@ -28,7 +28,7 @@ export class Summary {
 
   public toRecord(): Record<string, any> {
     return {
-      [Summary.DATETIME_KEY]: this.datetime.toDate(),
+      [Summary.DATETIME_KEY]: this.datetime.toString(),
       [Summary.SUMMARY_KEY]: this.summary,
       [Summary.WEIGHTING_KEY]: this.weighting,
       [Summary.LAST_MESSAGE_ID_KEY]: this.last_message_id,
