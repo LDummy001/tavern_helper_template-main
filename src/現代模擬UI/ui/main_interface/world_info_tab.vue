@@ -4,89 +4,94 @@
       <h3>世界資訊</h3>
 
       <div class="section">
-      <div class="sortable-container">
-        <template v-for="(item, index) in fold_items" :key="item.id">
-          <div
-            v-if="drop_target_index === index && dragged_index !== null && dragged_index !== index"
-            class="drop-indicator"
-          ></div>
+        <div class="sortable-container">
+          <template v-for="(item, index) in fold_items" :key="item.id">
+            <div
+              v-if="drop_target_index === index && dragged_index !== null && dragged_index !== index"
+              class="drop-indicator"
+            ></div>
 
-          <div
-            class="sortable-item"
-            :class="{ dragging: dragged_index === index }"
-            :data-id="item.id"
-            draggable="true"
-            @dragstart="onDragStart($event, index)"
-            @dragover.prevent="onDragOver($event, index)"
-            @drop="onDrop($event, index)"
-            @dragend="onDragEnd"
-            @dragleave="onDragLeave"
-          >
-            <FoldBar
-              :title="item.name || '未設定'"
-              :is-open="item.is_open"
-              :class="['draggable-fold-bar', { incomplete: !item.name || !item.content }]"
-              @toggle="toggleFoldItem(index)"
+            <div
+              class="sortable-item"
+              :class="{ dragging: dragged_index === index }"
+              :data-id="item.id"
+              draggable="true"
+              @dragstart="onDragStart($event, index)"
+              @dragover.prevent="onDragOver($event, index)"
+              @drop="onDrop($event, index)"
+              @dragend="onDragEnd"
+              @dragleave="onDragLeave"
             >
-              <template #title-actions>
-                <button class="remove-btn" title="移除此項目" @click.stop="deleteItem(index)">
-                  <span>×</span>
-                </button>
-              </template>
-
-              <div class="fold-content">
-                <div class="input-group">
-                  <label>名稱</label>
-                  <input v-model="item.name" type="text" class="form-input" placeholder="輸入項目名稱" />
-                </div>
-
-                <div class="input-group">
-                  <label>內容</label>
-                  <textarea v-model="item.content" class="form-textarea" placeholder="輸入項目內容" rows="3"></textarea>
-                </div>
-
-                <div class="input-group">
-                  <label>生成要求</label>
-                  <textarea
-                    v-model="item.generation_requirement"
-                    class="form-textarea"
-                    placeholder="輸入生成此項目的要求"
-                    rows="2"
-                  ></textarea>
-                </div>
-
-                <div v-if="item.generated_content" class="generated-result">
-                  <label>生成結果：</label>
-                  <div class="generated-text">{{ item.generated_content }}</div>
-                  <button class="replace-btn" @click="applyGeneratedContent(index)">使用</button>
-                </div>
-
-                <div class="item-actions">
-                  <button
-                    class="action-btn generate"
-                    :disabled="!has_world_info || is_generating.get(item.id)"
-                    @click="generateItem(index)"
-                  >
-                    <span v-if="is_generating.get(item.id)" class="loading-spinner"></span>
-                    {{
-                      is_generating.get(item.id) ? '生成中...' : has_world_info ? '生成內容' : '請先完成世界背景設定'
-                    }}
+              <FoldBar
+                :title="item.name || '未設定'"
+                :is-open="item.is_open"
+                :class="['draggable-fold-bar', { incomplete: !item.name || !item.content }]"
+                @toggle="toggleFoldItem(index)"
+              >
+                <template #title-actions>
+                  <button class="remove-btn" title="移除此項目" @click.stop="deleteItem(index)">
+                    <span>×</span>
                   </button>
-                  <button
-                    class="action-btn apply"
-                    :disabled="!item.generated_content"
-                    @click="applyGeneratedContent(index)"
-                  >
-                    應用結果
-                  </button>
-                </div>
-              </div>
-            </FoldBar>
-          </div>
-        </template>
+                </template>
 
-        <div v-if="drop_target_index === fold_items.length && dragged_index !== null" class="drop-indicator"></div>
-      </div>
+                <div class="fold-content">
+                  <div class="input-group">
+                    <label>名稱</label>
+                    <input v-model="item.name" type="text" class="form-input" placeholder="輸入項目名稱" />
+                  </div>
+
+                  <div class="input-group">
+                    <label>內容</label>
+                    <textarea
+                      v-model="item.content"
+                      class="form-textarea"
+                      placeholder="輸入項目內容"
+                      rows="3"
+                    ></textarea>
+                  </div>
+
+                  <div class="input-group">
+                    <label>生成要求</label>
+                    <textarea
+                      v-model="item.generation_requirement"
+                      class="form-textarea"
+                      placeholder="輸入生成此項目的要求"
+                      rows="2"
+                    ></textarea>
+                  </div>
+
+                  <div v-if="item.generated_content" class="generated-result">
+                    <label>生成結果：</label>
+                    <div class="generated-text">{{ item.generated_content }}</div>
+                    <button class="replace-btn" @click="applyGeneratedContent(index)">使用</button>
+                  </div>
+
+                  <div class="item-actions">
+                    <button
+                      class="action-btn generate"
+                      :disabled="!has_world_info || is_generating.get(item.id)"
+                      @click="generateItem(index)"
+                    >
+                      <span v-if="is_generating.get(item.id)" class="loading-spinner"></span>
+                      {{
+                        is_generating.get(item.id) ? '生成中...' : has_world_info ? '生成內容' : '請先完成世界背景設定'
+                      }}
+                    </button>
+                    <button
+                      class="action-btn apply"
+                      :disabled="!item.generated_content"
+                      @click="applyGeneratedContent(index)"
+                    >
+                      應用結果
+                    </button>
+                  </div>
+                </div>
+              </FoldBar>
+            </div>
+          </template>
+
+          <div v-if="drop_target_index === fold_items.length && dragged_index !== null" class="drop-indicator"></div>
+        </div>
         <div class="add-item-section">
           <button class="add-btn" @click="addNewItem">+ 添加新項目</button>
         </div>
@@ -96,8 +101,53 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import FoldBar from '../common_elements/fold_bar.vue';
+
+// 動態高度相關
+const tab_navigation_height = ref(0); // 頂部標籤導航高度
+const resize_observer = ref<ResizeObserver | null>(null);
+
+// 動態計算世界資訊內容的最大高度
+const world_info_content_max_height = computed(() => {
+  return `calc(100vh - ${tab_navigation_height.value}px)`;
+});
+
+// 設置 ResizeObserver 監聽標籤導航高度變化
+const setupResizeObserver = async () => {
+  await nextTick();
+  const tab_navigation = document.querySelector('.tab-navigation') as HTMLElement;
+  if (tab_navigation && window.ResizeObserver) {
+    resize_observer.value = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        tab_navigation_height.value = entry.contentRect.height;
+      }
+    });
+    resize_observer.value.observe(tab_navigation);
+  } else {
+    // 降級支援：如果不支持 ResizeObserver，使用估計值
+    tab_navigation_height.value = 74;
+  }
+};
+
+// 清理 ResizeObserver
+const cleanupResizeObserver = () => {
+  if (resize_observer.value) {
+    resize_observer.value.disconnect();
+    resize_observer.value = null;
+  }
+};
+
+// 生命週期鉤子
+onMounted(() => {
+  loadWorldInfo();
+  loadGenerationRequirements();
+  setupResizeObserver();
+});
+
+onUnmounted(() => {
+  cleanupResizeObserver();
+});
 
 interface fold_item {
   id: string;
@@ -301,11 +351,6 @@ const onDragEnd = () => {
   dragged_index.value = null;
   drop_target_index.value = null;
 };
-
-onMounted(() => {
-  loadWorldInfo();
-  loadGenerationRequirements();
-});
 
 const saveGenerationRequirements = () => {
   try {
@@ -544,7 +589,8 @@ const parseAndFillGeneratedData = (result: string, item: fold_item) => {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 74px);
+  min-height: v-bind(world_info_content_max_height);
+  max-height: v-bind(world_info_content_max_height);
 
   &::-webkit-scrollbar {
     width: 8px;

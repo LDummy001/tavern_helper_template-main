@@ -106,14 +106,18 @@ watch(
   padding-bottom: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  position: relative;
 }
 
 .fold-bar-header-actions {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-left: 8px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .fold-bar-btn {

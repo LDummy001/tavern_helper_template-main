@@ -360,21 +360,35 @@ export class State {
   }
 
   public injectPrompt(is_first_generation: boolean): void {
-    let prompt = `${this.getGeneralStatusPrompt()}\n`;
-    prompt += `${this.getUserPrompt()}\n`;
-    prompt += `${this.getActiveCharacterPrompt()}\n`;
-    prompt += `${this.getDeactiveCharacterPrompt()}\n`;
-    prompt += `${this.getItemPrompt()}\n`;
-    prompt += `${this.getPromisePrompt()}\n`;
-    prompt += `${this.getSummaryPrompt()}`;
-    if (is_first_generation) prompt += `\n${this.getStartingBackground()}`;
+    let pre_chat_prompt = '';
+    if (is_first_generation) pre_chat_prompt += `${this.getStartingBackground()}\n`;
+    pre_chat_prompt += `${this.getSummaryPrompt()}`;
+
+    let post_chat_prompt = `${this.getGeneralStatusPrompt()}\n`;
+    post_chat_prompt += `${this.getUserPrompt()}\n`;
+    post_chat_prompt += `${this.getActiveCharacterPrompt()}\n`;
+    post_chat_prompt += `${this.getDeactiveCharacterPrompt()}\n`;
+    post_chat_prompt += `${this.getItemPrompt()}\n`;
+    post_chat_prompt += `${this.getPromisePrompt()}`;
+
     injectPrompts([
       {
-        id: 'prompt',
+        id: 'pre-chat_prompt',
         position: 'in_chat',
         depth: 9999,
         role: 'system',
-        content: prompt,
+        content: pre_chat_prompt,
+        should_scan: true,
+      },
+    ]);
+
+    injectPrompts([
+      {
+        id: 'post-chat_prompt',
+        position: 'in_chat',
+        depth: 0,
+        role: 'system',
+        content: post_chat_prompt,
         should_scan: true,
       },
     ]);

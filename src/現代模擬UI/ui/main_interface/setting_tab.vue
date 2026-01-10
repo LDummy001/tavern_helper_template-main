@@ -175,7 +175,7 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 
 const emit = defineEmits<{
   renderSizeChanged: [newSize: number];
@@ -192,10 +192,19 @@ interface TagRule {
   match_mode: 'both' | 'end_only'; // 匹配開始和結束標籤 vs 只匹配結束標籤
   match_strategy: 'first' | 'last'; // 匹配第一個 vs 匹配最後一個
   display_mode: 'invisible' | 'fold_bar'; // 隱藏 vs 摺疊欄
-  title_name: string; // 摺疊欄標題名稱
+  title_name: string; // 摣疊欄標題名稱
 }
 
 const tag_rules = ref<TagRule[]>([]);
+
+// 動態高度相關
+const tab_navigation_height = ref(0); // 頂部標籤導航高度
+const resize_observer = ref<ResizeObserver | null>(null);
+
+// 動態計算設置容器的最大高度
+const settings_container_max_height = computed(() => {
+  return `calc(100vh - ${tab_navigation_height.value}px)`;
+});
 
 // 從聊天變數恢復設置
 const loadSettings = () => {
@@ -332,6 +341,39 @@ const updateFoldingRule = (ruleIndex: number, updates: Partial<TagRule>) => {
   }
 };
 
+// 設置 ResizeObserver 來監聽高度變化
+const setupResizeObserver = () => {
+  if (typeof ResizeObserver === 'undefined') {
+    // 降級方案：使用固定高度
+    tab_navigation_height.value = 74; // 估計的標籤導航高度
+    return;
+  }
+
+  resize_observer.value = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const target = entry.target as HTMLElement;
+      if (target.classList.contains('tab-navigation')) {
+        tab_navigation_height.value = target.offsetHeight;
+      }
+    }
+  });
+
+  // 監聽父元素的標籤導航
+  const tabNavigation = document.querySelector('.tab-navigation.top') as HTMLElement;
+  if (tabNavigation) {
+    resize_observer.value.observe(tabNavigation);
+    tab_navigation_height.value = tabNavigation.offsetHeight;
+  }
+};
+
+// 清理 ResizeObserver
+const cleanupResizeObserver = () => {
+  if (resize_observer.value) {
+    resize_observer.value.disconnect();
+    resize_observer.value = null;
+  }
+};
+
 // 監聽全屏狀態變化 - 強制同步全屏狀態
 const handleFullscreenChangeEvent = () => {
   const currentlyFullscreen = isFullscreen();
@@ -360,6 +402,18 @@ const removeFullscreenListeners = () => {
 loadSettings();
 addFullscreenListeners();
 
+// 生命週期鉤子
+onMounted(() => {
+  // 初始化完成
+  nextTick(() => {
+    setupResizeObserver();
+  });
+});
+
+onUnmounted(() => {
+  cleanupResizeObserver();
+});
+
 // 監聽聊天切換事件，切換聊天時重置全屏狀態
 eventOn(tavern_events.APP_READY, () => {
   handleFullscreenChangeEvent();
@@ -383,7 +437,8 @@ defineExpose({
   background-color: #1a1a1a;
   color: #e0e0e0;
   overflow: hidden; /* 確保滾動只在子元素中發生 */
-  max-height: calc(100vh - 74px);
+  min-height: v-bind(settings_container_max_height);
+  max-height: v-bind(settings_container_max_height);
 }
 
 .settings-header {

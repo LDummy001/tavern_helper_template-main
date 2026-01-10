@@ -606,6 +606,11 @@ const sendMessage = async (force?: boolean) => {
     const message = user_input.value.trim();
     user_input.value = '';
 
+    // 重置輸入框高度到默認值
+    if (message_input_ref.value) {
+      message_input_ref.value.style.height = 'auto';
+    }
+
     // 清除本地存儲中的輸入
     try {
       localStorage.removeItem(USER_INPUT_STORAGE_KEY);
@@ -898,6 +903,7 @@ onUnmounted(() => {
   flex: 1;
   overflow-y: auto;
   background-color: #1a1a1a;
+  min-height: v-bind(messages_container_max_height);
   max-height: v-bind(messages_container_max_height);
 
   // 自定義滾動條樣式，與用戶標籤對齊

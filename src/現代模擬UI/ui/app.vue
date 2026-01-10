@@ -38,7 +38,7 @@ const updateParentHeight = () => {
   } else {
     try {
       if (window.parent && window.parent.innerHeight) {
-        parent_height.value = `${window.parent.innerHeight * 0.8}px`;
+        parent_height.value = `${window.parent.innerHeight * 0.7}px`;
       }
     } catch (error) {
       // 如果無法訪問父窗口，保持默認值

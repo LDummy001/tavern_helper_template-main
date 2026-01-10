@@ -182,15 +182,6 @@ const other_items_entries = computed(() => {
   return Array.from(other_items.value.entries());
 });
 
-// 計算每個物品的完成狀態
-const itemCompletions = computed(() => {
-  const completions: Record<string, boolean> = {};
-  for (const [item_id, item_data] of chat_items.value.entries()) {
-    completions[item_id] = isItemComplete(item_data);
-  }
-  return completions;
-});
-
 // 獲取物品顯示名稱
 const getItemDisplayName = (item_data: ItemData): string => {
   return item_data?.name || '未知物品';

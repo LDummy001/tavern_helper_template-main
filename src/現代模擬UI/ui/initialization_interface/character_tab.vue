@@ -1038,15 +1038,6 @@ const other_characters_entries = computed(() => {
   return Array.from(other_characters.value.entries());
 });
 
-// 計算每個角色的完成狀態
-const characterCompletions = computed(() => {
-  const completions: Record<string, boolean> = {};
-  for (const [char_id, char_data] of chat_characters.value.entries()) {
-    completions[char_id] = isCharacterComplete(char_data);
-  }
-  return completions;
-});
-
 // 獲取所有其他角色（包括用戶）
 const getAllOtherCharacters = (current_character_id: string) => {
   const all = new Map(chat_characters.value);
@@ -1143,7 +1134,7 @@ const isCharacterComplete = (character_data: CharacterData): boolean => {
       return true;
     }
     // 如果有關係，檢查所有關係的值是否都已設置（不為空）
-    for (const [target_id, relation_desc] of character_data.關係) {
+    for (const [_target_id, relation_desc] of character_data.關係) {
       if (!relation_desc || !relation_desc.trim()) {
         return false;
       }

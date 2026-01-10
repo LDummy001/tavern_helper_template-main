@@ -306,7 +306,7 @@ deactivateCharacter("alice")
 createItem("book1", "小說書", "一本有趣的小說", 500)
 ```
 
-#### `deltaItem("角色ID", "物品ID", 數量變化)`
+#### `deltaInventory("角色ID", "物品ID", 數量變化)`
 
 調整角色擁有的物品數量。
 
@@ -319,7 +319,7 @@ createItem("book1", "小說書", "一本有趣的小說", 500)
 **範例：**
 
 ```text
-deltaItem("alice", "book1", 1)
+deltaInventory("alice", "book1", 1)
 ```
 
 ---

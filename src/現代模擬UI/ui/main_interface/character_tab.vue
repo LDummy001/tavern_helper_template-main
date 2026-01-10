@@ -483,7 +483,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { Character } from '../../variable_logic/variables/character';
 import { State } from '../../variable_logic/variables/state';
 import ConfirmationWindow from '../common_elements/confirmation_window.vue';
@@ -502,6 +502,15 @@ const confirm_dialog = ref({
   message: '',
   confirmText: '',
   cancelText: '',
+});
+
+// 動態高度相關
+const tab_navigation_height = ref(0); // 頂部標籤導航高度
+const resize_observer = ref<ResizeObserver | null>(null);
+
+// 動態計算角色內容的最大高度
+const character_content_max_height = computed(() => {
+  return `calc(100vh - ${tab_navigation_height.value}px)`;
 });
 
 // 暴露方法給父組件調用
@@ -611,6 +620,18 @@ const loadState = () => {
 
 // 初始化載入state
 loadState();
+
+// 生命週期鉤子
+onMounted(() => {
+  // 初始化完成
+  nextTick(() => {
+    setupResizeObserver();
+  });
+});
+
+onUnmounted(() => {
+  cleanupResizeObserver();
+});
 
 // 活躍角色
 const active_characters = computed(() => {
@@ -993,6 +1014,39 @@ const cancelEditing = () => {
   edited_character_id.value = '';
 };
 
+// 設置 ResizeObserver 來監聽高度變化
+const setupResizeObserver = () => {
+  if (typeof ResizeObserver === 'undefined') {
+    // 降級方案：使用固定高度
+    tab_navigation_height.value = 74; // 估計的標籤導航高度
+    return;
+  }
+
+  resize_observer.value = new ResizeObserver(entries => {
+    for (const entry of entries) {
+      const target = entry.target as HTMLElement;
+      if (target.classList.contains('tab-navigation')) {
+        tab_navigation_height.value = target.offsetHeight;
+      }
+    }
+  });
+
+  // 監聽父元素的標籤導航
+  const tabNavigation = document.querySelector('.tab-navigation.top') as HTMLElement;
+  if (tabNavigation) {
+    resize_observer.value.observe(tabNavigation);
+    tab_navigation_height.value = tabNavigation.offsetHeight;
+  }
+};
+
+// 清理 ResizeObserver
+const cleanupResizeObserver = () => {
+  if (resize_observer.value) {
+    resize_observer.value.disconnect();
+    resize_observer.value = null;
+  }
+};
+
 const confirmEditing = () => {
   if (state.value && edited_character.value) {
     // 檢查新ID是否與現有角色衝突（排除當前編輯的角色）
@@ -1203,7 +1257,8 @@ const confirmEditing = () => {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 74px);
+  min-height: v-bind(character_content_max_height);
+  max-height: v-bind(character_content_max_height);
 
   &::-webkit-scrollbar {
     width: 8px;

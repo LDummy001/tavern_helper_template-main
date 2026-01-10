@@ -90,10 +90,53 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { Item } from '../../variable_logic/variables/item';
 import { State } from '../../variable_logic/variables/state';
 import ConfirmationWindow from '../common_elements/confirmation_window.vue';
+
+// 動態高度相關
+const tab_navigation_height = ref(0); // 頂部標籤導航高度
+const resize_observer = ref<ResizeObserver | null>(null);
+
+// 動態計算物品內容的最大高度
+const item_content_max_height = computed(() => {
+  return `calc(100vh - ${tab_navigation_height.value}px)`;
+});
+
+// 設置 ResizeObserver 監聽標籤導航高度變化
+const setupResizeObserver = async () => {
+  await nextTick();
+  const tab_navigation = document.querySelector('.tab-navigation') as HTMLElement;
+  if (tab_navigation && window.ResizeObserver) {
+    resize_observer.value = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        tab_navigation_height.value = entry.contentRect.height;
+      }
+    });
+    resize_observer.value.observe(tab_navigation);
+  } else {
+    // 降級支援：如果不支持 ResizeObserver，使用估計值
+    tab_navigation_height.value = 74;
+  }
+};
+
+// 清理 ResizeObserver
+const cleanupResizeObserver = () => {
+  if (resize_observer.value) {
+    resize_observer.value.disconnect();
+    resize_observer.value = null;
+  }
+};
+
+// 生命週期鉤子
+onMounted(() => {
+  setupResizeObserver();
+});
+
+onUnmounted(() => {
+  cleanupResizeObserver();
+});
 
 // 創建空的表單對象
 const createEmptyForm = () => ({
@@ -272,7 +315,8 @@ const cancelDeleteItem = () => {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 74px);
+  min-height: v-bind(item_content_max_height);
+  max-height: v-bind(item_content_max_height);
 
   &::-webkit-scrollbar {
     width: 8px;

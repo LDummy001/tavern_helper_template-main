@@ -616,7 +616,7 @@ export class CreateItemCommand extends Command {
 }
 
 @Command.registry.register()
-export class DeltaItemCommand extends Command {
+export class DeltaInventoryCommand extends Command {
   private character_id: string;
   private item_id: string;
   private delta: number;
@@ -627,13 +627,13 @@ export class DeltaItemCommand extends Command {
     this.delta = delta;
   }
   protected get REGEX(): RegExp {
-    return /deltaItem\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
+    return /deltaInventory\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
   }
   protected create(args: string[]): Command {
     const character_id = args[0];
     const item_id = args[1];
     const delta = Number(args[2]);
-    return new DeltaItemCommand(character_id, item_id, delta);
+    return new DeltaInventoryCommand(character_id, item_id, delta);
   }
   protected isValid(): boolean {
     if (isNaN(this.delta)) return false;
