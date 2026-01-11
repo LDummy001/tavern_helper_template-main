@@ -340,12 +340,7 @@
             :key="characterId"
             class="friendship-item"
           >
-            <div class="friendship-name">
-              <span class="friendship-highlight"
-                >{{ state?.getCharacter(characterId)?.name || '未知' }} ({{ characterId }})</span
-              >
-            </div>
-            <ProgressBar label="" :value="friendship" attributeType="friendship" />
+            <ProgressBar :label="`${state?.getCharacter(characterId)?.name || '未知'} (${characterId})`" :value="friendship" attributeType="friendship" />
           </div>
           <div v-if="!selected_character?.friendships || selected_character.friendships.size === 0" class="no-message">
             沒有任何友好度
@@ -384,12 +379,7 @@
         <h3 class="section-title">愛情度</h3>
         <div v-if="!is_editing && !is_adding" class="loves-list">
           <div v-for="[characterId, love] in selected_character?.loves || []" :key="characterId" class="love-item">
-            <div class="love-name">
-              <span class="love-highlight"
-                >{{ state?.getCharacter(characterId)?.name || '未知' }} ({{ characterId }})</span
-              >
-            </div>
-            <ProgressBar label="" :value="love" attributeType="love" />
+            <ProgressBar :label="`${state?.getCharacter(characterId)?.name || '未知'} (${characterId})`" :value="love" attributeType="love" />
           </div>
           <div v-if="!selected_character?.loves || selected_character.loves.size === 0" class="no-message">
             沒有任何愛情度

@@ -5426,38 +5426,76 @@ var __webpack_modules__ = {
         const processTagRule = (tag_rule, message_segments) => {
           const result = [];
           for (const message_segment of message_segments) {
-            result.push(message_segment);
-            if (message_segment.type !== "plain_text") continue;
+            if (message_segment.type !== "plain_text") {
+              result.push(message_segment);
+              continue;
+            }
             const message = message_segment.message;
             const start_tag = `<${tag_rule.tag_name}>`;
             const end_tag = `</${tag_rule.tag_name}>`;
-            const start_index = message.indexOf(start_tag);
-            const end_index = tag_rule.match_strategy === "first" ? message.indexOf(end_tag) : message.lastIndexOf(end_tag);
-            if (end_index < 0) continue;
-            if (tag_rule.match_mode === "both" && start_index < 0) continue;
-            const front_message = start_index < 0 ? "" : message.substring(0, start_index);
-            const target_message = message.substring(start_index + start_tag.length, end_index);
-            const end_message = message.substring(end_index + end_tag.length);
-            result.pop();
-            if (tag_rule.display_mode === "invisible") {
-              result.push({
-                type: "plain_text",
-                message: front_message + end_message
-              });
-            } else if (tag_rule.display_mode === "fold_bar") {
-              if (front_message !== "") result.push({
-                type: "plain_text",
-                message: front_message
-              });
-              result.push({
-                type: "fold_bar",
-                message: target_message,
-                fold_bar_title: tag_rule.title_name || tag_rule.tag_name
-              });
-              if (end_message !== "") result.push({
-                type: "plain_text",
-                message: end_message
-              });
+            const process_all_matches = tag_rule.match_mode === "both" && tag_rule.match_strategy === "first";
+            if (process_all_matches) {
+              let remaining_message = message;
+              let offset = 0;
+              while (true) {
+                const start_index = remaining_message.indexOf(start_tag);
+                const end_index = remaining_message.indexOf(end_tag);
+                if (start_index < 0 || end_index < 0 || end_index <= start_index) {
+                  if (remaining_message !== "") {
+                    result.push({
+                      type: "plain_text",
+                      message: remaining_message
+                    });
+                  }
+                  break;
+                }
+                const front_message = remaining_message.substring(0, start_index);
+                if (front_message !== "") {
+                  result.push({
+                    type: "plain_text",
+                    message: front_message
+                  });
+                }
+                const target_message = remaining_message.substring(start_index + start_tag.length, end_index);
+                if (tag_rule.display_mode === "invisible") {} else if (tag_rule.display_mode === "fold_bar") {
+                  result.push({
+                    type: "fold_bar",
+                    message: target_message,
+                    fold_bar_title: tag_rule.title_name || tag_rule.tag_name
+                  });
+                }
+                remaining_message = remaining_message.substring(end_index + end_tag.length);
+              }
+            } else {
+              const start_index = message.indexOf(start_tag);
+              const end_index = tag_rule.match_strategy === "first" ? message.indexOf(end_tag) : message.lastIndexOf(end_tag);
+              if (end_index < 0 || tag_rule.match_mode === "both" && start_index < 0) {
+                result.push(message_segment);
+                continue;
+              }
+              const front_message = start_index < 0 ? "" : message.substring(0, start_index);
+              const target_message = message.substring(start_index + start_tag.length, end_index);
+              const end_message = message.substring(end_index + end_tag.length);
+              if (tag_rule.display_mode === "invisible") {
+                result.push({
+                  type: "plain_text",
+                  message: front_message + end_message
+                });
+              } else if (tag_rule.display_mode === "fold_bar") {
+                if (front_message !== "") result.push({
+                  type: "plain_text",
+                  message: front_message
+                });
+                result.push({
+                  type: "fold_bar",
+                  message: target_message,
+                  fold_bar_title: tag_rule.title_name || tag_rule.tag_name
+                });
+                if (end_message !== "") result.push({
+                  type: "plain_text",
+                  message: end_message
+                });
+              }
             }
           }
           return result;
@@ -11036,85 +11074,73 @@ var __webpack_modules__ = {
       class: "friendships-list"
     };
     const _hoisted_78 = {
-      class: "friendship-name"
-    };
-    const _hoisted_79 = {
-      class: "friendship-highlight"
-    };
-    const _hoisted_80 = {
       key: 0,
       class: "no-message"
     };
-    const _hoisted_81 = {
+    const _hoisted_79 = {
       key: 1,
       class: "friendships-edit-list"
     };
-    const _hoisted_82 = [ "value", "onChange" ];
-    const _hoisted_83 = [ "value" ];
-    const _hoisted_84 = [ "onUpdate:modelValue", "onInput", "onBlur" ];
-    const _hoisted_85 = [ "onClick" ];
-    const _hoisted_86 = {
+    const _hoisted_80 = [ "value", "onChange" ];
+    const _hoisted_81 = [ "value" ];
+    const _hoisted_82 = [ "onUpdate:modelValue", "onInput", "onBlur" ];
+    const _hoisted_83 = [ "onClick" ];
+    const _hoisted_84 = {
       key: 1,
       class: "loves-section"
     };
-    const _hoisted_87 = {
+    const _hoisted_85 = {
       key: 0,
       class: "loves-list"
     };
-    const _hoisted_88 = {
-      class: "love-name"
-    };
-    const _hoisted_89 = {
-      class: "love-highlight"
-    };
-    const _hoisted_90 = {
+    const _hoisted_86 = {
       key: 0,
       class: "no-message"
     };
-    const _hoisted_91 = {
+    const _hoisted_87 = {
       key: 1,
       class: "loves-edit-list"
     };
-    const _hoisted_92 = [ "value", "onChange" ];
-    const _hoisted_93 = [ "value" ];
-    const _hoisted_94 = [ "onUpdate:modelValue", "onInput", "onBlur" ];
-    const _hoisted_95 = [ "onClick" ];
-    const _hoisted_96 = {
+    const _hoisted_88 = [ "value", "onChange" ];
+    const _hoisted_89 = [ "value" ];
+    const _hoisted_90 = [ "onUpdate:modelValue", "onInput", "onBlur" ];
+    const _hoisted_91 = [ "onClick" ];
+    const _hoisted_92 = {
       class: "inventory-section"
     };
-    const _hoisted_97 = {
+    const _hoisted_93 = {
       key: 0,
       class: "inventory-list"
     };
-    const _hoisted_98 = {
+    const _hoisted_94 = {
       class: "inventory-first-row"
     };
-    const _hoisted_99 = {
+    const _hoisted_95 = {
       class: "item-name-id"
     };
-    const _hoisted_100 = {
+    const _hoisted_96 = {
       class: "item-quantity"
     };
-    const _hoisted_101 = {
+    const _hoisted_97 = {
       class: "inventory-second-row"
     };
-    const _hoisted_102 = {
+    const _hoisted_98 = {
       key: 0,
       class: "no-message"
     };
-    const _hoisted_103 = {
+    const _hoisted_99 = {
       key: 1,
       class: "inventory-edit-list"
     };
-    const _hoisted_104 = [ "value", "onChange" ];
-    const _hoisted_105 = [ "value" ];
-    const _hoisted_106 = [ "onUpdate:modelValue" ];
-    const _hoisted_107 = [ "onClick" ];
-    const _hoisted_108 = {
+    const _hoisted_100 = [ "value", "onChange" ];
+    const _hoisted_101 = [ "value" ];
+    const _hoisted_102 = [ "onUpdate:modelValue" ];
+    const _hoisted_103 = [ "onClick" ];
+    const _hoisted_104 = {
       key: 2,
       class: "edit-buttons"
     };
-    const _hoisted_109 = [ "disabled" ];
+    const _hoisted_105 = [ "disabled" ];
     function render(_ctx, _cache, $props, $setup, $data, $options) {
       return (0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 角色列表視圖 "), !$setup.selected_character_id && !$setup.is_adding ? ((0, 
@@ -11651,17 +11677,14 @@ var __webpack_modules__ = {
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
         key: characterId,
         class: "friendship-item"
-      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_78, [ (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_79, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state?.getCharacter(characterId)?.name || "未知") + " (" + (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(characterId) + ")", 1) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["ProgressBar"], {
-        label: "",
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["ProgressBar"], {
+        label: `${$setup.state?.getCharacter(characterId)?.name || "未知"} (${characterId})`,
         value: friendship,
         attributeType: "friendship"
-      }, null, 8, [ "value" ]) ]))), 128)), !$setup.selected_character?.friendships || $setup.selected_character.friendships.size === 0 ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_80, " 沒有任何友好度 ")) : (0, 
+      }, null, 8, [ "label", "value" ]) ]))), 128)), !$setup.selected_character?.friendships || $setup.selected_character.friendships.size === 0 ? ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_78, " 沒有任何友好度 ")) : (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ])) : ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
-      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_81, [ ((0, 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_79, [ ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.edited_friendships, (_, characterId) => ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
@@ -11680,7 +11703,7 @@ var __webpack_modules__ = {
         key: char.id,
         value: char.id
       }, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(char.name) + " (" + (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(char.id) + ") ", 9, _hoisted_83))), 128)) ], 40, _hoisted_82), _cache[54] || (_cache[54] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(char.id) + ") ", 9, _hoisted_81))), 128)) ], 40, _hoisted_80), _cache[54] || (_cache[54] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "edit-connector"
       }, " : ", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -11692,36 +11715,33 @@ var __webpack_modules__ = {
         placeholder: "友好度",
         onInput: $event => $setup.clampFriendshipValue(String(characterId)),
         onBlur: $event => $setup.clampFriendshipValue(String(characterId))
-      }, null, 40, _hoisted_84), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.edited_friendships[characterId], void 0, {
+      }, null, 40, _hoisted_82), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.edited_friendships[characterId], void 0, {
         number: true
       } ] ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "friendship-remove-btn",
         onClick: $event => $setup.removeFriendship(String(characterId))
-      }, "×", 8, _hoisted_85) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      }, "×", 8, _hoisted_83) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "add-friendship-btn",
         onClick: $setup.addFriendship
       }, "+ 添加友好度") ])) ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $setup.selected_character_id !== "c1" || $setup.is_adding ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_86, [ _cache[58] || (_cache[58] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_84, [ _cache[58] || (_cache[58] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", {
         class: "section-title"
       }, "愛情度", -1)), !$setup.is_editing && !$setup.is_adding ? ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
-      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_87, [ ((0, 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_85, [ ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.selected_character?.loves || [], ([characterId, love]) => ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
         key: characterId,
         class: "love-item"
-      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_88, [ (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_89, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state?.getCharacter(characterId)?.name || "未知") + " (" + (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(characterId) + ")", 1) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["ProgressBar"], {
-        label: "",
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["ProgressBar"], {
+        label: `${$setup.state?.getCharacter(characterId)?.name || "未知"} (${characterId})`,
         value: love,
         attributeType: "love"
-      }, null, 8, [ "value" ]) ]))), 128)), !$setup.selected_character?.loves || $setup.selected_character.loves.size === 0 ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_90, " 沒有任何愛情度 ")) : (0, 
+      }, null, 8, [ "label", "value" ]) ]))), 128)), !$setup.selected_character?.loves || $setup.selected_character.loves.size === 0 ? ((0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_86, " 沒有任何愛情度 ")) : (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ])) : ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
-      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_91, [ ((0, 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_87, [ ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.edited_loves, (_, characterId) => ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
@@ -11740,7 +11760,7 @@ var __webpack_modules__ = {
         key: char.id,
         value: char.id
       }, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(char.name) + " (" + (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(char.id) + ") ", 9, _hoisted_93))), 128)) ], 40, _hoisted_92), _cache[57] || (_cache[57] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(char.id) + ") ", 9, _hoisted_89))), 128)) ], 40, _hoisted_88), _cache[57] || (_cache[57] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "edit-connector"
       }, " : ", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -11752,33 +11772,33 @@ var __webpack_modules__ = {
         placeholder: "愛情度",
         onInput: $event => $setup.clampLoveValue(String(characterId)),
         onBlur: $event => $setup.clampLoveValue(String(characterId))
-      }, null, 40, _hoisted_94), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.edited_loves[characterId], void 0, {
+      }, null, 40, _hoisted_90), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.edited_loves[characterId], void 0, {
         number: true
       } ] ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "love-remove-btn",
         onClick: $event => $setup.removeLove(String(characterId))
-      }, "×", 8, _hoisted_95) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      }, "×", 8, _hoisted_91) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "add-love-btn",
         onClick: $setup.addLove
       }, "+ 添加愛情度") ])) ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_96, [ _cache[61] || (_cache[61] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_92, [ _cache[61] || (_cache[61] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", {
         class: "section-title"
       }, "所持物", -1)), !$setup.is_editing && !$setup.is_adding ? ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
-      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_97, [ ((0, 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_93, [ ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.selected_character?.inventory || [], ([itemId, quantity]) => ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
         key: itemId,
         class: "inventory-item"
-      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_98, [ (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_99, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state?.items.get(itemId)?.name || "未知") + " (" + (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(itemId) + ")", 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_100, "× " + (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(quantity), 1) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_101, (0, 
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_94, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_95, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state?.items.get(itemId)?.name || "未知") + " (" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(itemId) + ")", 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_96, "× " + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(quantity), 1) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_97, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.state?.items.get(itemId)?.description || "無描述"), 1) ]))), 128)), !$setup.selected_character?.inventory || $setup.selected_character.inventory.size === 0 ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_102, " 沒有任何物品 ")) : (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_98, " 沒有任何物品 ")) : (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ])) : ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
-      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_103, [ ((0, 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_99, [ ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.edited_inventory, (_, itemId) => ((0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
@@ -11797,7 +11817,7 @@ var __webpack_modules__ = {
         key: item.id,
         value: item.id
       }, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.name) + " (" + (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.id) + ") ", 9, _hoisted_105))), 128)) ], 40, _hoisted_104), _cache[60] || (_cache[60] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.id) + ") ", 9, _hoisted_101))), 128)) ], 40, _hoisted_100), _cache[60] || (_cache[60] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "inventory-edit-connector"
       }, "×", -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -11806,21 +11826,21 @@ var __webpack_modules__ = {
         type: "number",
         min: "0",
         placeholder: "數量"
-      }, null, 8, _hoisted_106), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.edited_inventory[itemId], void 0, {
+      }, null, 8, _hoisted_102), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.edited_inventory[itemId], void 0, {
         number: true
       } ] ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "inventory-remove-btn",
         onClick: $event => $setup.removeInventoryItem(String(itemId))
-      }, "×", 8, _hoisted_107) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      }, "×", 8, _hoisted_103) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "add-inventory-btn",
         onClick: $setup.addInventoryItem
       }, "+ 添加物品") ])) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 編輯按鈕 "), $setup.is_editing ? ((0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_108, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_104, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "confirm-button",
         disabled: $setup.isConfirmDisabled,
         onClick: $setup.confirmEditing
-      }, "確認", 8, _hoisted_109), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      }, "確認", 8, _hoisted_105), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "cancel-button",
         onClick: $setup.cancelEditing
       }, "取消") ])) : (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true) ]) ], 2112)), (0, 
@@ -16812,7 +16832,7 @@ var __webpack_exports__ = {};
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-133.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/現代模擬UI/ui/common_elements/progress_bar.vue?vue&type=style&index=0&id=2522da64&lang=scss&scoped=true ***!
   \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-.progress-bar-container[data-v-2522da64]{display:flex;flex-direction:row;align-items:center;gap:12px;width:100%}.progress-bar-label[data-v-2522da64]{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.5px;font-weight:500;min-width:60px;flex-shrink:0}.progress-bar-wrapper[data-v-2522da64]{position:relative;height:20px;background:#333;border-radius:10px;border:1px solid #555;overflow:hidden;display:flex;align-items:center;padding:0 8px;flex:1}.progress-bar-fill[data-v-2522da64]{position:absolute;left:0;top:0;height:100%;border-radius:10px;transition:width 0.3s ease;z-index:1}.progress-bar-value[data-v-2522da64]{position:relative;z-index:2;font-size:13px;font-weight:700;color:#ffffff;white-space:nowrap;text-shadow:0 0 2px rgb(0,0,0),0 0 4px rgba(0,0,0,0.9),0 0 8px rgba(0,0,0,0.7),0 1px 2px rgba(0,0,0,0.8);-webkit-text-stroke:0.5px rgba(0,0,0,0.5)}
+.progress-bar-container[data-v-2522da64]{display:flex;flex-direction:row;align-items:center;gap:12px;width:100%}.progress-bar-label[data-v-2522da64]{font-size:12px;color:#888;letter-spacing:0.5px;font-weight:500;min-width:100px;flex-shrink:0}.progress-bar-wrapper[data-v-2522da64]{position:relative;height:20px;background:#333;border-radius:10px;border:1px solid #555;overflow:hidden;display:flex;align-items:center;padding:0 8px;flex:1}.progress-bar-fill[data-v-2522da64]{position:absolute;left:0;top:0;height:100%;border-radius:10px;transition:width 0.3s ease;z-index:1}.progress-bar-value[data-v-2522da64]{position:relative;z-index:2;font-size:13px;font-weight:700;color:#ffffff;white-space:nowrap;text-shadow:0 0 2px rgb(0,0,0),0 0 4px rgba(0,0,0,0.9),0 0 8px rgba(0,0,0,0.7),0 1px 2px rgba(0,0,0,0.8);-webkit-text-stroke:0.5px rgba(0,0,0,0.5)}
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-133.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/現代模擬UI/ui/main_interface/character_tab.vue?vue&type=style&index=0&id=32c708ac&lang=scss&scoped=true ***!
   \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/

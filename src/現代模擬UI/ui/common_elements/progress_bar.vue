@@ -82,10 +82,9 @@ const fillColor = computed(() => {
 .progress-bar-label {
   font-size: 12px;
   color: #888;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 500;
-  min-width: 60px;
+  min-width: 100px;
   flex-shrink: 0;
 }
 

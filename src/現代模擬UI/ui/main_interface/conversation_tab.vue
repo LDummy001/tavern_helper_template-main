@@ -522,29 +522,83 @@ const parseMessageText = (text: string): MessageSegment[] => {
 const processTagRule = (tag_rule: tagRule, message_segments: MessageSegment[]) => {
   const result: MessageSegment[] = [];
   for (const message_segment of message_segments) {
-    result.push(message_segment);
-    if (message_segment.type !== 'plain_text') continue;
+    if (message_segment.type !== 'plain_text') {
+      result.push(message_segment);
+      continue;
+    }
+
     const message = message_segment.message;
     const start_tag = `<${tag_rule.tag_name}>`;
     const end_tag = `</${tag_rule.tag_name}>`;
-    const start_index = message.indexOf(start_tag);
-    const end_index = tag_rule.match_strategy === 'first' ? message.indexOf(end_tag) : message.lastIndexOf(end_tag);
-    if (end_index < 0) continue;
-    if (tag_rule.match_mode === 'both' && start_index < 0) continue;
-    const front_message = start_index < 0 ? '' : message.substring(0, start_index);
-    const target_message = message.substring(start_index + start_tag.length, end_index);
-    const end_message = message.substring(end_index + end_tag.length);
-    result.pop();
-    if (tag_rule.display_mode === 'invisible') {
-      result.push({ type: 'plain_text', message: front_message + end_message });
-    } else if (tag_rule.display_mode === 'fold_bar') {
-      if (front_message !== '') result.push({ type: 'plain_text', message: front_message });
-      result.push({
-        type: 'fold_bar',
-        message: target_message,
-        fold_bar_title: tag_rule.title_name || tag_rule.tag_name,
-      });
-      if (end_message !== '') result.push({ type: 'plain_text', message: end_message });
+
+    // 檢查是否需要處理所有匹配的標籤
+    const process_all_matches = tag_rule.match_mode === 'both' && tag_rule.match_strategy === 'first';
+
+    if (process_all_matches) {
+      // 處理所有匹配的標籤
+      let remaining_message = message;
+      let offset = 0;
+
+      while (true) {
+        const start_index = remaining_message.indexOf(start_tag);
+        const end_index = remaining_message.indexOf(end_tag);
+
+        if (start_index < 0 || end_index < 0 || end_index <= start_index) {
+          // 沒有更多匹配的標籤對
+          if (remaining_message !== '') {
+            result.push({ type: 'plain_text', message: remaining_message });
+          }
+          break;
+        }
+
+        // 添加標籤前的文本
+        const front_message = remaining_message.substring(0, start_index);
+        if (front_message !== '') {
+          result.push({ type: 'plain_text', message: front_message });
+        }
+
+        // 提取標籤內容
+        const target_message = remaining_message.substring(start_index + start_tag.length, end_index);
+
+        // 添加摺疊欄或隱藏內容
+        if (tag_rule.display_mode === 'invisible') {
+          // 對於 invisible 模式，不添加任何內容（標籤內容被隱藏）
+        } else if (tag_rule.display_mode === 'fold_bar') {
+          result.push({
+            type: 'fold_bar',
+            message: target_message,
+            fold_bar_title: tag_rule.title_name || tag_rule.tag_name,
+          });
+        }
+
+        // 更新剩餘消息
+        remaining_message = remaining_message.substring(end_index + end_tag.length);
+      }
+    } else {
+      // 原來的邏輯：只處理第一個匹配
+      const start_index = message.indexOf(start_tag);
+      const end_index = tag_rule.match_strategy === 'first' ? message.indexOf(end_tag) : message.lastIndexOf(end_tag);
+
+      if (end_index < 0 || (tag_rule.match_mode === 'both' && start_index < 0)) {
+        result.push(message_segment);
+        continue;
+      }
+
+      const front_message = start_index < 0 ? '' : message.substring(0, start_index);
+      const target_message = message.substring(start_index + start_tag.length, end_index);
+      const end_message = message.substring(end_index + end_tag.length);
+
+      if (tag_rule.display_mode === 'invisible') {
+        result.push({ type: 'plain_text', message: front_message + end_message });
+      } else if (tag_rule.display_mode === 'fold_bar') {
+        if (front_message !== '') result.push({ type: 'plain_text', message: front_message });
+        result.push({
+          type: 'fold_bar',
+          message: target_message,
+          fold_bar_title: tag_rule.title_name || tag_rule.tag_name,
+        });
+        if (end_message !== '') result.push({ type: 'plain_text', message: end_message });
+      }
     }
   }
   return result;
