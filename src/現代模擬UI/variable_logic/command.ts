@@ -875,9 +875,8 @@ export class Commands {
 
   static fromString(s: string): Commands {
     if (!s.includes('<VariableUpdate>')) return new Commands();
-    let s_split = s.split('</UserPerspective>');
-    s_split = s_split[s_split.length - 1].split(`<VariableUpdate>`);
-    const command_string = s_split[s_split.length - 1].split(`</VariableUpdate>`)[0];
+    const s_split = s.split('<VariableUpdate>');
+    const command_string = s_split[s_split.length - 1].split('</VariableUpdate>')[0];
     let command_index_array: { command: Command; index: number }[] = [];
     for (const command_class of Command.registry.getAll().values()) {
       command_index_array = command_index_array.concat(command_class.parseString(command_string));
