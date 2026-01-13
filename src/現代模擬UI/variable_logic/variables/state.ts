@@ -189,7 +189,9 @@ export class State {
     const date = this.datetime.date;
     const hours = this.datetime.hours;
     const minutes = this.datetime.minutes;
-    const datetime_string = `${year}年${month}月${date}日 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    const weekday = weekdays[this.datetime.toDate().getDay()];
+    const datetime_string = `${year}年${month}月${date}日 (星期${weekday}) ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     let general_status_prompt = '<GeneralStatus>\n';
     general_status_prompt += `  ${State.DATETIME_KEY}:${datetime_string}\n`;
     general_status_prompt += `  ${State.BIG_LOCATION_KEY}:${this.big_location}\n`;
