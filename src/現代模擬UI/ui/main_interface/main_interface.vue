@@ -22,6 +22,9 @@
       </div>
       <!-- 第二行標籤 -->
       <div class="tab-row">
+        <button class="tab-button" :class="{ active: active_tab === 'location' }" @click="switchToTab('location')">
+          地點
+        </button>
         <button class="tab-button" :class="{ active: active_tab === 'promise' }" @click="switchToTab('promise')">
           約定
         </button>
@@ -63,6 +66,10 @@
           <ItemTab />
         </div>
 
+        <div v-else-if="active_tab === 'location'" key="location" class="location-area">
+          <LocationTab />
+        </div>
+
         <div v-else-if="active_tab === 'promise'" key="promise" class="promise-area">
           <PromiseTab />
         </div>
@@ -88,6 +95,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import CharacterTab from './character_tab.vue';
 import ConversationTab from './conversation_tab.vue';
 import ItemTab from './item_tab.vue';
+import LocationTab from './location_tab.vue';
 import PromiseTab from './promise_tab.vue';
 import SettingTab from './setting_tab.vue';
 import SummaryTab from './summary_tab.vue';
@@ -102,7 +110,7 @@ const dialogue_scroll_position = ref(0);
 const current_time = ref('');
 
 // 標籤頁順序定義
-const tab_order = ['conversation', 'user', 'character', 'item', 'promise', 'summary', 'world_info', 'settings'];
+const tab_order = ['conversation', 'user', 'character', 'item', 'location', 'promise', 'summary', 'world_info', 'settings'];
 
 // 滑動相關變數
 const touch_start_x = ref(0);
@@ -300,6 +308,13 @@ const handleMouseUp = (event: MouseEvent) => {
 }
 
 .item-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #1a1a1a;
+}
+
+.location-area {
   display: flex;
   flex-direction: column;
   flex: 1;

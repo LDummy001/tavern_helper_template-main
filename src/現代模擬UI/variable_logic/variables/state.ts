@@ -1,18 +1,15 @@
 import { Character } from './character';
 import { Datetime } from './datetime';
 import { Item } from './item';
+import { Location } from './location';
 import { Promise } from './promise';
 import { Summary } from './summary';
 
 export class State {
   public datetime: Datetime;
   public static readonly DATETIME_KEY: string = '當前時間';
-  public big_location: string;
-  public static readonly BIG_LOCATION_KEY: string = '大地點';
-  public middle_location: string;
-  public static readonly MIDDLE_LOCATION_KEY: string = '中地點';
-  public small_location: string;
-  public static readonly SMALL_LOCATION_KEY: string = '小地點';
+  public current_location_id: string;
+  public static readonly CURRENT_LOCATION_ID_KEY: string = '當前地點';
   public weather: string;
   public static readonly WEATHER_KEY: string = '天氣';
   public current_event: string;
@@ -24,6 +21,8 @@ export class State {
   public static readonly DEACTIVE_CHARACTERS_KEY: string = '背景角色';
   public items: Map<string, Item>;
   public static readonly ITEMS_KEY: string = '物品';
+  public locations: Map<string, Location>;
+  public static readonly LOCATIONS_KEY: string = '地點';
   public promises: Map<string, Promise>;
   public static readonly PROMISES_KEY: string = '約定';
   public summaries: Summary[];
@@ -31,26 +30,24 @@ export class State {
 
   public constructor(
     datetime: Datetime,
-    big_location: string,
-    middle_location: string,
-    small_location: string,
+    current_location_id: string,
     weather: string,
     current_event: string,
     active_characters: Map<string, Character>,
     deactive_characters: Map<string, Character>,
     items: Map<string, Item>,
+    locations: Map<string, Location>,
     promises: Map<string, Promise>,
     summaries: Summary[],
   ) {
     this.datetime = datetime;
-    this.big_location = big_location;
-    this.middle_location = middle_location;
-    this.small_location = small_location;
+    this.current_location_id = current_location_id;
     this.weather = weather;
     this.current_event = current_event;
     this.active_characters = active_characters;
     this.deactive_characters = deactive_characters;
     this.items = items;
+    this.locations = locations;
     this.promises = promises;
     this.summaries = summaries;
   }
@@ -79,6 +76,11 @@ export class State {
     for (const [item_id, item_record] of Object.entries(item_variables)) {
       items.set(item_id, Item.fromRecord(item_record));
     }
+    const locations = new Map<string, Location>();
+    const location_variables: Record<string, any> = variable[State.LOCATIONS_KEY];
+    for (const [location_id, location_record] of Object.entries(location_variables)) {
+      locations.set(location_id, Location.fromRecord(location_record));
+    }
     const promises = new Map<string, Promise>();
     const promise_variables: Record<string, any> = variable[State.PROMISES_KEY];
     for (const [promise_id, promise_record] of Object.entries(promise_variables)) {
@@ -91,14 +93,13 @@ export class State {
     }
     return new State(
       Datetime.fromString(variable[State.DATETIME_KEY]),
-      variable[State.BIG_LOCATION_KEY],
-      variable[State.MIDDLE_LOCATION_KEY],
-      variable[State.SMALL_LOCATION_KEY],
+      variable[State.CURRENT_LOCATION_ID_KEY],
       variable[State.WEATHER_KEY],
       variable[State.CURRENT_EVENT_KEY],
       active_characters,
       deactive_characters,
       items,
+      locations,
       promises,
       summaries,
     );
@@ -117,6 +118,10 @@ export class State {
     for (const [item_id, item] of this.items) {
       items[item_id] = item.toRecord();
     }
+    const locations: Record<string, any> = {};
+    for (const [location_id, location] of this.locations) {
+      locations[location_id] = location.toRecord();
+    }
     const promises: Record<string, any> = {};
     for (const [promise_id, promise] of this.promises) {
       promises[promise_id] = promise.toRecord();
@@ -129,14 +134,13 @@ export class State {
     }
     const variable = {
       [State.DATETIME_KEY]: this.datetime.toString(),
-      [State.BIG_LOCATION_KEY]: this.big_location,
-      [State.MIDDLE_LOCATION_KEY]: this.middle_location,
-      [State.SMALL_LOCATION_KEY]: this.small_location,
+      [State.CURRENT_LOCATION_ID_KEY]: this.current_location_id,
       [State.WEATHER_KEY]: this.weather,
       [State.CURRENT_EVENT_KEY]: this.current_event,
       [State.ACTIVE_CHARACTERS_KEY]: active_characters,
       [State.DEACTIVE_CHARACTERS_KEY]: deactive_characters,
       [State.ITEMS_KEY]: items,
+      [State.LOCATIONS_KEY]: locations,
       [State.PROMISES_KEY]: promises,
       [State.SUMMARIES_KEY]: summaries,
     };
@@ -159,12 +163,25 @@ export class State {
     return this.active_characters.has(character_id) || this.deactive_characters.has(character_id);
   }
 
-  public addPromise(deadline: Datetime, character_ids: string[], location: string, description: string) {
+  public getCurrentLocations(): Location[] {
+    const location_ids = new Set<string>();
+    const locations: Location[] = [];
+    let location = this.locations.get(this.current_location_id);
+    while (location) {
+      if (location_ids.has(location.id)) break;
+      locations.push(location);
+      location_ids.add(location.id);
+      location = this.locations.get(location.parent_location_id || '');
+    }
+    return locations.reverse();
+  }
+
+  public addPromise(deadline: Datetime, character_ids: string[], location_id: string, description: string) {
     const existing_ids = Array.from(this.promises.keys());
     const numbers = existing_ids.map(id => parseInt(id.substring(1))).filter(n => !isNaN(n));
     const max_number = Math.max(...numbers, 0);
     const promise_id = `p${max_number + 1}`;
-    const promise = new Promise(deadline, character_ids, location, description);
+    const promise = new Promise(deadline, character_ids, location_id, description);
     this.promises.set(promise_id, promise);
   }
 
@@ -192,11 +209,15 @@ export class State {
     const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
     const weekday = weekdays[this.datetime.toDate().getDay()];
     const datetime_string = `${year}年${month}月${date}日 (星期${weekday}) ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    const locations = this.getCurrentLocations();
+    const current_location_string = locations
+      .map((location: Location) => {
+        return `${location.name}(${location.id})`;
+      })
+      .join('-');
     let general_status_prompt = '<GeneralStatus>\n';
     general_status_prompt += `  ${State.DATETIME_KEY}:${datetime_string}\n`;
-    general_status_prompt += `  ${State.BIG_LOCATION_KEY}:${this.big_location}\n`;
-    general_status_prompt += `  ${State.MIDDLE_LOCATION_KEY}:${this.middle_location}\n`;
-    general_status_prompt += `  ${State.SMALL_LOCATION_KEY}:${this.small_location}\n`;
+    general_status_prompt += `  ${State.CURRENT_LOCATION_ID_KEY}:${current_location_string}\n`;
     general_status_prompt += `  ${State.WEATHER_KEY}:${this.weather}\n`;
     general_status_prompt += `  ${State.CURRENT_EVENT_KEY}:${this.current_event}\n`;
     general_status_prompt += '</GeneralStatus>\n';
@@ -325,13 +346,24 @@ export class State {
     return item_prompt;
   }
 
+  private getLocationPrompt(): string {
+    let location_prompt = `<LocationTable>\n`;
+    location_prompt += `|id|${Location.NAME_KEY}|${Location.LOCATION_KEY}|${Location.DESCRIPTION_KEY}|${Location.SUB_LOCATION_IDS_KEY}|\n`;
+    location_prompt += '|---|---|---|---|---|\n';
+    for (const [location_id, location] of this.locations) {
+      location_prompt += `|${location_id}|${location.name}|${location.location}|${location.description}|${location.sub_location_ids.join(',')}|\n`;
+    }
+    location_prompt += `</LocationTable>\n`;
+    return location_prompt;
+  }
+
   private getPromisePrompt(): string {
     let promise_prompt = `<PromiseTable>\n`;
-    promise_prompt += `|id|${Promise.DEADLINE_KEY}|${Promise.CHARACTER_IDS_KEY}|${Promise.LOCATION_KEY}|${Promise.DESCRIPTION_KEY}|\n`;
+    promise_prompt += `|id|${Promise.DEADLINE_KEY}|${Promise.CHARACTER_IDS_KEY}|${Promise.LOCATION_ID_KEY}|${Promise.DESCRIPTION_KEY}|\n`;
     promise_prompt += '|---|---|---|---|---|\n';
     for (const [promise_id, promise] of this.promises) {
       const deadline_str = `${promise.deadline.year}年${promise.deadline.month}月${promise.deadline.date}日 ${promise.deadline.hours.toString().padStart(2, '0')}:${promise.deadline.minutes.toString().padStart(2, '0')}`;
-      promise_prompt += `|${promise_id}|${deadline_str}|${promise.character_ids.join(',')}|${promise.location}|${promise.description}|\n`;
+      promise_prompt += `|${promise_id}|${deadline_str}|${promise.character_ids.join(',')}|${promise.location_id}|${promise.description}|\n`;
     }
     promise_prompt += `</PromiseTable>\n`;
     return promise_prompt;
@@ -371,6 +403,7 @@ export class State {
     post_chat_prompt += `${this.getActiveCharacterPrompt()}\n`;
     post_chat_prompt += `${this.getDeactiveCharacterPrompt()}\n`;
     post_chat_prompt += `${this.getItemPrompt()}\n`;
+    post_chat_prompt += `${this.getLocationPrompt()}\n`;
     post_chat_prompt += `${this.getPromisePrompt()}`;
 
     injectPrompts([

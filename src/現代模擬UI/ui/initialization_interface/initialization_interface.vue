@@ -1,6 +1,7 @@
 <template>
   <div class="initializations-container">
-    <div class="tab-navigation top">
+    <!-- 第一行標籤 -->
+    <div class="tab-navigation top first-row">
       <button class="tab-button" :class="{ active: active_tab === 'world_info' }" @click="switchToTab('world_info')">
         世界背景
       </button>
@@ -9,6 +10,11 @@
         角色
       </button>
       <button class="tab-button" :class="{ active: active_tab === 'item' }" @click="switchToTab('item')">物品</button>
+    </div>
+
+    <!-- 第二行標籤 -->
+    <div class="tab-navigation top second-row">
+      <button class="tab-button" :class="{ active: active_tab === 'location' }" @click="switchToTab('location')">地點</button>
       <button class="tab-button" :class="{ active: active_tab === 'extra' }" @click="switchToTab('extra')">其他</button>
       <button class="tab-button" :class="{ active: active_tab === 'start' }" @click="switchToTab('start')">開始</button>
     </div>
@@ -34,6 +40,10 @@
         <ItemInitialization />
       </div>
 
+      <div v-else-if="active_tab === 'location'" class="initialization-area">
+        <LocationInitialization />
+      </div>
+
       <div v-else-if="active_tab === 'extra'" class="initialization-area">
         <ExtraInitialization />
       </div>
@@ -46,6 +56,7 @@ import { ref } from 'vue';
 import CharacterInitialization from './character_tab.vue';
 import ExtraInitialization from './extra_tab.vue';
 import ItemInitialization from './item_tab.vue';
+import LocationInitialization from './location_tab.vue';
 import StartInitialization from './start_tab.vue';
 import UserInitialization from './user_tab.vue';
 import WorldInfoInitialization from './world_info_tab.vue';
@@ -90,6 +101,14 @@ const switchToTab = (tab: string) => {
   flex-shrink: 0;
 
   &.top {
+    border-top: none;
+  }
+
+  &.first-row {
+    border-bottom: none;
+  }
+
+  &.second-row {
     border-top: none;
   }
 }

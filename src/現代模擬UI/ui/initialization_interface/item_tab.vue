@@ -571,6 +571,21 @@ const getItemTablePrompt = (): string => {
   return item_table_prompt;
 };
 
+const getLocationTablePrompt = (): string => {
+  let location_table_prompt = '<LocationTable>\n';
+  location_table_prompt += '|id|地點|位置|描述|子地點|\n';
+  location_table_prompt += '|---|---|---|---|---|\n';
+  const variables = getVariables({ type: 'chat' });
+  const locations = variables['locations'];
+  if (locations === undefined) return '';
+  for (const [key, location] of Object.entries(locations) as [string, any]) {
+    const subLocations = location.sub_location ? location.sub_location.join(', ') : '';
+    location_table_prompt += `|${key}|${location.name}|${location.location || ''}|${location.description}|${subLocations}|\n`;
+  }
+  location_table_prompt += '</LocationTable>';
+  return location_table_prompt;
+};
+
 const getExtraWorldInfoPrompt = (): string => {
   let extra_world_info_prompt = '';
   const variables = getVariables({ type: 'chat' });
@@ -595,6 +610,8 @@ const getPostWorldInfoSystemPrompt = (item_data: ItemData): string => {
   post_world_info_system_prompt += `${getCharacterStatusPrompt()}\n`;
   post_world_info_system_prompt += '\n';
   post_world_info_system_prompt += `${getItemTablePrompt()}\n`;
+  post_world_info_system_prompt += '\n';
+  post_world_info_system_prompt += `${getLocationTablePrompt()}\n`;
   post_world_info_system_prompt += '\n';
   post_world_info_system_prompt += `${getExtraWorldInfoPrompt()}\n`;
   post_world_info_system_prompt += '\n';

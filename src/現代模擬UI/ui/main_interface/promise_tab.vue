@@ -111,13 +111,21 @@
           <div class="promise-location-row">
             <div class="promise-location-group">
               <span class="promise-location-label">地點：</span>
-              <div v-if="!editing_promise_ids.has(promise_id)" class="promise-location">{{ promise.location }}</div>
-              <input
+              <div v-if="!editing_promise_ids.has(promise_id)" class="promise-location">{{ locations.find(l => l.id === promise.location_id)?.name || promise.location_id }}</div>
+              <select
                 v-else
-                v-model="edit_forms[promise_id].location"
+                v-model="edit_forms[promise_id].location_id"
                 class="promise-location-input promise-location-input-edit"
-                placeholder="約定地點"
-              />
+              >
+                <option value="" disabled>選擇地點...</option>
+                <option
+                  v-for="location in locations"
+                  :key="location.id"
+                  :value="location.id"
+                >
+                  {{ location.name }} ({{ location.id }})
+                </option>
+              </select>
             </div>
             <div v-if="editing_promise_ids.has(promise_id)" class="promise-edit-actions">
               <button class="confirm-button" @click="savePromiseEdit(promise_id)">保存</button>
@@ -228,11 +236,19 @@
           <div class="promise-location-row">
             <div class="promise-location-group">
               <span class="promise-location-label">地點：</span>
-              <input
-                v-model="add_form.location"
+              <select
+                v-model="add_form.location_id"
                 class="promise-location-input promise-location-input-edit"
-                placeholder="約定地點"
-              />
+              >
+                <option value="" disabled>選擇地點...</option>
+                <option
+                  v-for="location in locations"
+                  :key="location.id"
+                  :value="location.id"
+                >
+                  {{ location.name }} ({{ location.id }})
+                </option>
+              </select>
             </div>
             <div class="promise-edit-actions">
               <button class="confirm-button" @click="addNewPromise">添加</button>
@@ -340,7 +356,7 @@ onUnmounted(() => {
 const createEmptyForm = () => ({
   id: '',
   deadline: { year: '', month: '', day: '', hour: '', minute: '' },
-  location: '',
+  location_id: '',
   character_ids: [] as string[],
   description: '',
 });
@@ -383,7 +399,7 @@ const edit_forms = ref<
     {
       id: string;
       deadline: { year: string; month: string; day: string; hour: string; minute: string };
-      location: string;
+      location_id: string;
       character_ids: string[];
       description: string;
     }
@@ -443,6 +459,11 @@ const characters = computed(() => {
   return Array.from(all_characters.entries()).map(([id, name]) => ({ id, name }));
 });
 
+const locations = computed(() => {
+  if (!state.value) return [];
+  return Array.from(state.value.locations.values());
+});
+
 // 生成下一個可用的約定ID
 const generateNextPromiseId = () => {
   const existing_ids = Array.from(promises.value.keys());
@@ -464,18 +485,18 @@ const startAddingPromise = () => {
 const validateAndCreatePromise = (form: {
   id: string;
   deadline: { year: string; month: string; day: string; hour: string; minute: string };
-  location: string;
+  location_id: string;
   character_ids: string[];
   description: string;
 }) => {
-  if (!form.id || !form.deadline || !form.location || !form.description) {
+  if (!form.id || !form.deadline || !form.location_id || !form.description) {
     return null;
   }
 
   try {
     const deadline = createDatetimeFromDeadline(form.deadline);
     const character_ids = form.character_ids.filter(id => id);
-    return new Promise(deadline, character_ids, form.location, form.description);
+    return new Promise(deadline, character_ids, form.location_id, form.description);
   } catch (error) {
     console.error('Failed to create promise:', error);
     return null;
@@ -516,7 +537,7 @@ const startEditingPromise = (promise_id: string) => {
     edit_forms.value[promise_id] = {
       id: promise_id,
       deadline: parseDatetimeToDeadline(promise.deadline),
-      location: promise.location,
+      location_id: promise.location_id,
       character_ids: [...promise.character_ids],
       description: promise.description,
     };
@@ -546,7 +567,7 @@ const savePromiseEdit = (promise_id: string) => {
       } else {
         // 更新現有約定的屬性
         existing_promise.deadline = updated_promise.deadline;
-        existing_promise.location = updated_promise.location;
+        existing_promise.location_id = updated_promise.location_id;
         existing_promise.character_ids = updated_promise.character_ids;
         existing_promise.description = updated_promise.description;
       }
@@ -784,7 +805,7 @@ const formatDeadline = (datetime: Datetime) => {
   font-weight: 500;
   color: #ffffff;
   font-size: 16px;
-  width: 35px;
+  width: 200px;
   flex-shrink: 0;
 }
 
@@ -865,7 +886,6 @@ const formatDeadline = (datetime: Datetime) => {
 
 .promise-id-input,
 .promise-deadline-input,
-.promise-location-input,
 .promise-character-ids-input {
   background: #333;
   border: 1px solid #555;
@@ -949,7 +969,7 @@ const formatDeadline = (datetime: Datetime) => {
   font-weight: 500;
   color: #ffffff;
   font-size: 16px;
-  width: 120px;
+  width: 200px;
   flex-shrink: 0;
 }
 
@@ -1100,7 +1120,7 @@ const formatDeadline = (datetime: Datetime) => {
 
   .promise-location-input {
     font-size: 15px;
-    width: 100px;
+    width: 200px;
   }
 
   .promise-edit-actions {

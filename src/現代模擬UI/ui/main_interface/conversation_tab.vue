@@ -38,9 +38,7 @@
                   </div>
                 </div>
                 <div class="message-status-row">
-                  <div class="status-info">
-                    {{ getMessageStatusDisplay(last_message_id - (messages.length - 1 - msg_index)) }}
-                  </div>
+                  <div class="status-info" v-html="getMessageStatusDisplay(last_message_id - (messages.length - 1 - msg_index))"></div>
                 </div>
               </div>
               <div class="message-content">
@@ -207,8 +205,15 @@ const getMessageStatusDisplay = (message_id: number) => {
     // 格式化時間
     const time_str = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
-    // 組合顯示字符串
-    return `${year}年${month}月${date}日 (${weekday}) ${time_str} ${state.weather} ${state.big_location}-${state.middle_location}-${state.small_location}`;
+    // 第一行：日期時間和天氣
+    const datetimeLine = `${year}年${month}月${date}日 (${weekday}) ${time_str} ${state.weather}`;
+
+    // 獲取當前位置鏈
+    const currentLocations = state.getCurrentLocations();
+    const locationString = currentLocations.map(location => location.name).join('-');
+
+    // 返回兩行顯示
+    return `${datetimeLine}<br>${locationString}`;
   } catch (error) {
     console.error('Failed to load message status:', error);
     return '載入狀態中...';
@@ -816,6 +821,9 @@ const performDeleteSwipe = async (
 
 const loadMessages = () => {
   try {
+    // 清除 token 緩存，因為消息內容可能改變了
+    messageTokenCache.value.clear();
+
     const lastMessageId = getLastMessageId();
     // 更新響應式的 last_message_id
     last_message_id.value = lastMessageId;
@@ -1064,7 +1072,6 @@ onUnmounted(() => {
   font-weight: 400;
   opacity: 0.9;
   text-align: center;
-  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }

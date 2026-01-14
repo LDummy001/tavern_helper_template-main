@@ -2,6 +2,7 @@ import { ClassRegistry } from '@/util/class_registry';
 import { Character } from './variables/character';
 import { Datetime } from './variables/datetime';
 import { Item } from './variables/item';
+import { Location } from './variables/location';
 import { State } from './variables/state';
 
 export abstract class Command {
@@ -51,70 +52,24 @@ export class DeltaMinutesCommand extends Command {
 }
 
 @Command.registry.register()
-export class SetBigLocationCommand extends Command {
-  private big_location: string;
-  constructor(big_location: string) {
+export class SetCurrentLocationCommand extends Command {
+  private current_location_id: string;
+  constructor(current_location_id: string) {
     super();
-    this.big_location = big_location;
+    this.current_location_id = current_location_id;
   }
   protected get REGEX(): RegExp {
-    return /setBigLocation\(\s*"([^"]+?)"\s*\s*\)/g;
+    return /setCurrentLocation\(\s*"([^"]+?)"\s*\s*\)/g;
   }
   protected create(args: string[]): Command {
-    const big_location = args[0];
-    return new SetBigLocationCommand(big_location);
+    const current_location_id = args[0];
+    return new SetCurrentLocationCommand(current_location_id);
   }
   protected isValid(): boolean {
     return true;
   }
   public execute(state: State, _message_id: number): State {
-    state.big_location = this.big_location;
-    return state;
-  }
-}
-
-@Command.registry.register()
-export class SetMiddleLocationCommand extends Command {
-  private middle_location: string;
-  constructor(middle_location: string) {
-    super();
-    this.middle_location = middle_location;
-  }
-  protected get REGEX(): RegExp {
-    return /setMiddleLocation\(\s*"([^"]+?)"\s*\s*\)/g;
-  }
-  protected create(args: string[]): Command {
-    const middle_location = args[0];
-    return new SetMiddleLocationCommand(middle_location);
-  }
-  protected isValid(): boolean {
-    return true;
-  }
-  public execute(state: State, _message_id: number): State {
-    state.middle_location = this.middle_location;
-    return state;
-  }
-}
-
-@Command.registry.register()
-export class SetSmallLocationCommand extends Command {
-  private small_location: string;
-  constructor(small_location: string) {
-    super();
-    this.small_location = small_location;
-  }
-  protected get REGEX(): RegExp {
-    return /setSmallLocation\(\s*"([^"]+?)"\s*\s*\)/g;
-  }
-  protected create(args: string[]): Command {
-    const small_location = args[0];
-    return new SetSmallLocationCommand(small_location);
-  }
-  protected isValid(): boolean {
-    return true;
-  }
-  public execute(state: State, _message_id: number): State {
-    state.small_location = this.small_location;
+    state.current_location_id = this.current_location_id;
     return state;
   }
 }
@@ -655,6 +610,105 @@ export class DeltaInventoryCommand extends Command {
 }
 
 @Command.registry.register()
+export class CreateLocationCommand extends Command {
+  private id: string;
+  private name: string;
+  private location: string;
+  private description: string;
+  constructor(id: string, name: string, location: string, description: string) {
+    super();
+    this.id = id;
+    this.name = name;
+    this.location = location;
+    this.description = description;
+  }
+  protected get REGEX(): RegExp {
+    return /createLocation\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const name = args[1];
+    const location = args[2];
+    const description = args[3];
+    return new CreateLocationCommand(id, name, location, description);
+  }
+  protected isValid(): boolean {
+    if (this.id.trim() === '') return false;
+    if (this.name.trim() === '') return false;
+    if (this.location.trim() === '') return false;
+    if (this.description.trim() === '') return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    if (state.locations.has(this.id)) return state;
+    const location = new Location(this.id, this.name, this.location, this.description, null, []);
+    state.locations.set(this.id, location);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class AddSubLocationCommand extends Command {
+  private parent_location_id: string;
+  private sub_location_id: string;
+  constructor(parent_location_id: string, sub_location_id: string) {
+    super();
+    this.parent_location_id = parent_location_id;
+    this.sub_location_id = sub_location_id;
+  }
+  protected get REGEX(): RegExp {
+    return /addSubLocation\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const parent_location_id = args[0];
+    const sub_location_id = args[1];
+    return new AddSubLocationCommand(parent_location_id, sub_location_id);
+  }
+  protected isValid(): boolean {
+    if (this.parent_location_id.trim() === '') return false;
+    if (this.sub_location_id.trim() === '') return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    const parent_location = state.locations.get(this.parent_location_id);
+    if (!parent_location) return state;
+    if (!state.locations.has(this.sub_location_id)) return state;
+    if (parent_location.sub_location_ids.includes(this.sub_location_id)) return state;
+    parent_location.sub_location_ids.push(this.sub_location_id);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class SetLocationDescriptionCommand extends Command {
+  private id: string;
+  private description: string;
+  constructor(id: string, description: string) {
+    super();
+    this.id = id;
+    this.description = description;
+  }
+  protected get REGEX(): RegExp {
+    return /setLocationDescription\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const description = args[1];
+    return new SetLocationDescriptionCommand(id, description);
+  }
+  protected isValid(): boolean {
+    if (this.id.trim() === '') return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    const location = state.locations.get(this.id);
+    if (!location) return state;
+    location.description = this.description;
+    return state;
+  }
+}
+
+@Command.registry.register()
 export class CreatePromiseCommand extends Command {
   private deadline_year: number;
   private deadline_month: number;
@@ -662,7 +716,7 @@ export class CreatePromiseCommand extends Command {
   private deadline_hours: number;
   private deadline_minutes: number;
   private character_ids: string[];
-  private location: string;
+  private location_id: string;
   private description: string;
   constructor(
     deadline_year: number,
@@ -671,7 +725,7 @@ export class CreatePromiseCommand extends Command {
     deadline_hours: number,
     deadline_minutes: number,
     character_ids: string[],
-    location: string,
+    location_id: string,
     description: string,
   ) {
     super();
@@ -681,7 +735,7 @@ export class CreatePromiseCommand extends Command {
     this.deadline_hours = deadline_hours;
     this.deadline_minutes = deadline_minutes;
     this.character_ids = character_ids;
-    this.location = location;
+    this.location_id = location_id;
     this.description = description;
   }
   protected get REGEX(): RegExp {
@@ -694,7 +748,7 @@ export class CreatePromiseCommand extends Command {
     const deadline_hours = Number(args[3]);
     const deadline_minutes = Number(args[4]);
     const character_ids_str = args[5];
-    const location = args[6];
+    const location_id = args[6];
     const description = args[7];
     const character_ids = character_ids_str.split(',').map(s => s.trim());
     return new CreatePromiseCommand(
@@ -704,7 +758,7 @@ export class CreatePromiseCommand extends Command {
       deadline_hours,
       deadline_minutes,
       character_ids,
-      location,
+      location_id,
       description,
     );
   }
@@ -717,6 +771,7 @@ export class CreatePromiseCommand extends Command {
     return true;
   }
   public execute(state: State, _message_id: number): State {
+    if (!state.locations.has(this.location_id)) return state;
     for (const id of this.character_ids) {
       if (!state.hasCharacter(id)) return state;
     }
@@ -729,7 +784,7 @@ export class CreatePromiseCommand extends Command {
         this.deadline_minutes,
       ),
     );
-    state.addPromise(deadline, this.character_ids, this.location, this.description);
+    state.addPromise(deadline, this.character_ids, this.location_id, this.description);
     return state;
   }
 }

@@ -50,52 +50,21 @@
       </div>
 
       <div class="input-group">
-        <label>大地點</label>
-        <input v-model="big_location" type="text" class="form-input" placeholder="輸入大地點" />
-        <div v-if="generated_big_location" class="generated-result">
+        <label>起始地點</label>
+        <select v-model="selected_location" class="form-input">
+          <option value="">請選擇起始地點</option>
+          <option v-for="[location_id, location] in available_locations" :key="location_id" :value="location_id">
+            {{ location.name }} ({{ location_id }})
+          </option>
+        </select>
+        <div v-if="generated_location" class="generated-result">
           <label>生成結果：</label>
-          <div class="generated-text">{{ generated_big_location }}</div>
+          <div class="generated-text">{{ generated_location }}</div>
           <button
             class="replace-btn"
             @click="
-              big_location = generated_big_location;
-              generated_big_location = '';
-            "
-          >
-            使用
-          </button>
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label>中地點</label>
-        <input v-model="middle_location" type="text" class="form-input" placeholder="輸入中地點" />
-        <div v-if="generated_middle_location" class="generated-result">
-          <label>生成結果：</label>
-          <div class="generated-text">{{ generated_middle_location }}</div>
-          <button
-            class="replace-btn"
-            @click="
-              middle_location = generated_middle_location;
-              generated_middle_location = '';
-            "
-          >
-            使用
-          </button>
-        </div>
-      </div>
-
-      <div class="input-group">
-        <label>小地點</label>
-        <input v-model="small_location" type="text" class="form-input" placeholder="輸入小地點" />
-        <div v-if="generated_small_location" class="generated-result">
-          <label>生成結果：</label>
-          <div class="generated-text">{{ generated_small_location }}</div>
-          <button
-            class="replace-btn"
-            @click="
-              small_location = generated_small_location;
-              generated_small_location = '';
+              selected_location = generated_location;
+              generated_location = '';
             "
           >
             使用
@@ -182,10 +151,23 @@
         <span class="status-label">額外設定：</span>
         <span class="status-value">{{ isExtraTabCompleted() ? '已完成' : '未完成' }}</span>
       </div>
+      <div class="status-item" :class="{ completed: isLocationTabCompleted() }">
+        <span class="status-label">地點設定：</span>
+        <span class="status-value">{{ isLocationTabCompleted() ? '已完成' : '未完成' }}</span>
+      </div>
       <div class="status-item" :class="{ completed: isStartTabCompleted }">
         <span class="status-label">開始設定：</span>
         <span class="status-value">{{ isStartTabCompleted ? '已完成' : '未完成' }}</span>
       </div>
+    </div>
+
+    <!-- 設定匯出/匯入按鈕 -->
+    <div class="settings-actions">
+      <button class="action-btn export" @click="exportInitializationSettings">匯出初始化設定</button>
+      <label class="action-btn import">
+        匯入初始化設定
+        <input type="file" accept=".json" @change="importInitializationSettings" style="display: none;" />
+      </label>
     </div>
 
     <!-- 開始按鈕 -->
@@ -199,6 +181,7 @@
 import { Character } from '@/現代模擬UI/variable_logic/variables/character';
 import { Datetime } from '@/現代模擬UI/variable_logic/variables/datetime';
 import { Item } from '@/現代模擬UI/variable_logic/variables/item';
+import { Location } from '@/現代模擬UI/variable_logic/variables/location';
 import { State } from '@/現代模擬UI/variable_logic/variables/state';
 import { onMounted, ref, watch } from 'vue';
 
@@ -207,9 +190,7 @@ const start_month = ref('');
 const start_date = ref('');
 const start_hour = ref('');
 const start_minute = ref('');
-const big_location = ref('');
-const middle_location = ref('');
-const small_location = ref('');
+const selected_location = ref('');
 const weather = ref('');
 const information = ref('');
 const generation_requirement = ref('');
@@ -221,9 +202,7 @@ const generated_start_month = ref('');
 const generated_start_date = ref('');
 const generated_start_hour = ref('');
 const generated_start_minute = ref('');
-const generated_big_location = ref('');
-const generated_middle_location = ref('');
-const generated_small_location = ref('');
+const generated_location = ref('');
 const generated_weather = ref('');
 const generated_information = ref('');
 
@@ -236,6 +215,20 @@ const has_world_info = computed(() => {
   }
 });
 
+const available_locations = computed(() => {
+  try {
+    const variables = getVariables({ type: 'chat' });
+    const locations = variables?.locations || {};
+    const locations_map = new Map<string, any>();
+    for (const [location_id, location_data] of Object.entries(locations)) {
+      locations_map.set(location_id, location_data);
+    }
+    return locations_map;
+  } catch {
+    return new Map();
+  }
+});
+
 const hasGeneratedResults = computed(() => {
   return (
     generated_start_year.value ||
@@ -243,9 +236,7 @@ const hasGeneratedResults = computed(() => {
     generated_start_date.value ||
     generated_start_hour.value ||
     generated_start_minute.value ||
-    generated_big_location.value ||
-    generated_middle_location.value ||
-    generated_small_location.value ||
+    generated_location.value ||
     generated_weather.value ||
     generated_information.value
   );
@@ -258,9 +249,7 @@ const isStartTabCompleted = computed(() => {
     String(start_date.value).trim() !== '' &&
     String(start_hour.value).trim() !== '' &&
     String(start_minute.value).trim() !== '' &&
-    String(big_location.value).trim() !== '' &&
-    String(middle_location.value).trim() !== '' &&
-    String(small_location.value).trim() !== '' &&
+    String(selected_location.value).trim() !== '' &&
     String(weather.value).trim() !== '' &&
     String(information.value).trim() !== ''
   );
@@ -273,6 +262,7 @@ const allTabsCompleted = computed(() => {
     isCharacterTabCompleted() &&
     isItemTabCompleted() &&
     isExtraTabCompleted() &&
+    isLocationTabCompleted() &&
     isStartTabCompleted.value
   );
 });
@@ -310,9 +300,7 @@ const generateStartData = async () => {
         start_date: start_date.value,
         start_hour: start_hour.value,
         start_minute: start_minute.value,
-        big_location: big_location.value,
-        middle_location: middle_location.value,
-        small_location: small_location.value,
+        selected_location: selected_location.value,
         weather: weather.value,
         information: information.value,
         generated_start_year: generated_start_year.value,
@@ -320,9 +308,7 @@ const generateStartData = async () => {
         generated_start_date: generated_start_date.value,
         generated_start_hour: generated_start_hour.value,
         generated_start_minute: generated_start_minute.value,
-        generated_big_location: generated_big_location.value,
-        generated_middle_location: generated_middle_location.value,
-        generated_small_location: generated_small_location.value,
+        generated_location: generated_location.value,
         generated_weather: generated_weather.value,
         generated_information: generated_information.value,
       };
@@ -346,9 +332,7 @@ const saveStartData = () => {
       start_date: start_date.value,
       start_hour: start_hour.value,
       start_minute: start_minute.value,
-      big_location: big_location.value,
-      middle_location: middle_location.value,
-      small_location: small_location.value,
+      selected_location: selected_location.value,
       weather: weather.value,
       information: information.value,
     };
@@ -367,9 +351,7 @@ const loadStartData = () => {
       start_date.value = String(variables.start_settings.start_date || '');
       start_hour.value = String(variables.start_settings.start_hour || '');
       start_minute.value = String(variables.start_settings.start_minute || '');
-      big_location.value = String(variables.start_settings.big_location || '');
-      middle_location.value = String(variables.start_settings.middle_location || '');
-      small_location.value = String(variables.start_settings.small_location || '');
+      selected_location.value = String(variables.start_settings.selected_location || '');
       weather.value = String(variables.start_settings.weather || '');
       information.value = String(variables.start_settings.information || '');
     }
@@ -386,9 +368,7 @@ const loadStartData = () => {
         if (!start_date.value) start_date.value = generated_data.start_date || '';
         if (!start_hour.value) start_hour.value = generated_data.start_hour || '';
         if (!start_minute.value) start_minute.value = generated_data.start_minute || '';
-        if (!big_location.value) big_location.value = generated_data.big_location || '';
-        if (!middle_location.value) middle_location.value = generated_data.middle_location || '';
-        if (!small_location.value) small_location.value = generated_data.small_location || '';
+        if (!selected_location.value) selected_location.value = generated_data.selected_location || '';
         if (!weather.value) weather.value = generated_data.weather || '';
         if (!information.value) information.value = generated_data.information || '';
 
@@ -398,9 +378,7 @@ const loadStartData = () => {
         generated_start_date.value = generated_data.generated_start_date || '';
         generated_start_hour.value = generated_data.generated_start_hour || '';
         generated_start_minute.value = generated_data.generated_start_minute || '';
-        generated_big_location.value = generated_data.generated_big_location || '';
-        generated_middle_location.value = generated_data.generated_middle_location || '';
-        generated_small_location.value = generated_data.generated_small_location || '';
+        generated_location.value = generated_data.generated_location || '';
         generated_weather.value = generated_data.generated_weather || '';
         generated_information.value = generated_data.generated_information || '';
       } catch (parse_error) {
@@ -428,9 +406,7 @@ watch(
     start_date,
     start_hour,
     start_minute,
-    big_location,
-    middle_location,
-    small_location,
+    selected_location,
     weather,
     information,
     generation_requirement,
@@ -467,9 +443,7 @@ const getStartDataPrompt = (): string => {
   start_prompt += `起始時間(日)：${start_date.value || '未設定'}\n`;
   start_prompt += `起始時間(時)：${start_hour.value || '未設定'}\n`;
   start_prompt += `起始時間(分)：${start_minute.value || '未設定'}\n`;
-  start_prompt += `大地點：${big_location.value || '未設定'}\n`;
-  start_prompt += `中地點：${middle_location.value || '未設定'}\n`;
-  start_prompt += `小地點：${small_location.value || '未設定'}\n`;
+  start_prompt += `起始地點：${selected_location.value || '未設定'}\n`;
   start_prompt += `天氣：${weather.value || '未設定'}\n`;
   start_prompt += `起始資訊：${information.value || '未設定'}\n`;
   return start_prompt;
@@ -589,6 +563,21 @@ const getExtraWorldInfoPrompt = (): string => {
   return extra_world_info_prompt;
 };
 
+const getLocationTablePrompt = (): string => {
+  let location_table_prompt = '<LocationTable>\n';
+  location_table_prompt += '|id|名稱|描述|子地點|\n';
+  location_table_prompt += '|---|---|---|---|\n';
+  const variables = getVariables({ type: 'chat' });
+  const locations = variables['locations'];
+  if (locations === undefined) return '';
+  for (const [key, location] of Object.entries(locations) as [string, any]) {
+    const subLocations = location.sub_location ? location.sub_location.join(', ') : '';
+    location_table_prompt += `|${key}|${location.name}|${location.description}|${subLocations}|\n`;
+  }
+  location_table_prompt += '</LocationTable>';
+  return location_table_prompt;
+};
+
 const getPostWorldInfoSystemPrompt = (): string => {
   let post_world_info_system_prompt = '\n</世界背景>\n';
   post_world_info_system_prompt += '\n';
@@ -597,6 +586,8 @@ const getPostWorldInfoSystemPrompt = (): string => {
   post_world_info_system_prompt += `${getCharacterStatusPrompt()}\n`;
   post_world_info_system_prompt += '\n';
   post_world_info_system_prompt += `${getItemTablePrompt()}\n`;
+  post_world_info_system_prompt += '\n';
+  post_world_info_system_prompt += `${getLocationTablePrompt()}\n`;
   post_world_info_system_prompt += '\n';
   post_world_info_system_prompt += `${getExtraWorldInfoPrompt()}\n`;
   post_world_info_system_prompt += '\n';
@@ -612,9 +603,7 @@ const getPostWorldInfoSystemPrompt = (): string => {
   post_world_info_system_prompt += `起始時間(日)：number[1~31]\n`;
   post_world_info_system_prompt += `起始時間(時)：number[0~23]\n`;
   post_world_info_system_prompt += `起始時間(分)：number[0~59]\n`;
-  post_world_info_system_prompt += `大地點：'所在大區域，如：住宅區/市中心等'\n`;
-  post_world_info_system_prompt += `中地點：'具體建築物，如：家中/學校等'\n`;
-  post_world_info_system_prompt += `小地點：'具體房間/位置，如：客廳/便利店等'\n`;
+  post_world_info_system_prompt += `起始地點：location id\n`;
   post_world_info_system_prompt += `天氣：'天氣描述，如：晴朗，雨天'\n`;
   post_world_info_system_prompt += `起始資訊：'遊戲開始時的場景描述或重要資訊'\n`;
   post_world_info_system_prompt += '</example>\n';
@@ -659,14 +648,8 @@ const parseAndFillGeneratedData = (result: string) => {
         case '起始時間(分)':
           data.generated_start_minute = cleanValue;
           break;
-        case '大地點':
-          data.generated_big_location = cleanValue;
-          break;
-        case '中地點':
-          data.generated_middle_location = cleanValue;
-          break;
-        case '小地點':
-          data.generated_small_location = cleanValue;
+        case '起始地點':
+          data.generated_location = cleanValue;
           break;
         case '天氣':
           data.generated_weather = cleanValue;
@@ -684,9 +667,7 @@ const parseAndFillGeneratedData = (result: string) => {
   Object.assign(generated_start_date, { value: data.generated_start_date || '' });
   Object.assign(generated_start_hour, { value: data.generated_start_hour || '' });
   Object.assign(generated_start_minute, { value: data.generated_start_minute || '' });
-  Object.assign(generated_big_location, { value: data.generated_big_location || '' });
-  Object.assign(generated_middle_location, { value: data.generated_middle_location || '' });
-  Object.assign(generated_small_location, { value: data.generated_small_location || '' });
+  Object.assign(generated_location, { value: data.generated_location || '' });
   Object.assign(generated_weather, { value: data.generated_weather || '' });
   Object.assign(generated_information, { value: data.generated_information || '' });
 };
@@ -708,16 +689,12 @@ const applyGeneratedDatetime = () => {
 
 const applyAllGeneratedResults = () => {
   applyGeneratedDatetime();
-  if (generated_big_location.value) big_location.value = generated_big_location.value;
-  if (generated_middle_location.value) middle_location.value = generated_middle_location.value;
-  if (generated_small_location.value) small_location.value = generated_small_location.value;
+  if (generated_location.value) selected_location.value = generated_location.value;
   if (generated_weather.value) weather.value = generated_weather.value;
   if (generated_information.value) information.value = generated_information.value;
 
   // 清空所有生成結果
-  generated_big_location.value = '';
-  generated_middle_location.value = '';
-  generated_small_location.value = '';
+  generated_location.value = '';
   generated_weather.value = '';
   generated_information.value = '';
 
@@ -792,15 +769,38 @@ const isExtraTabCompleted = (): boolean => {
   return true;
 };
 
+const isLocationTabCompleted = (): boolean => {
+  const variable = getVariables({ type: 'chat' });
+  const locations = variable?.locations;
+  if (!locations) return false;
+
+  // 至少需要有一個地點，且所有地點都必須完整填寫
+  const locationKeys = Object.keys(locations);
+  if (locationKeys.length === 0) return false;
+
+  // 檢查每個地點是否都有名稱、位置和描述
+  for (const location_id of locationKeys) {
+    const location_data = locations[location_id];
+    if (!location_data?.name?.trim() || !location_data?.location?.trim() || !location_data?.description?.trim()) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 const startChat = () => {
   const start_year_num = parseInt(start_year.value);
   const start_month_num = parseInt(start_month.value);
   const start_date_num = parseInt(start_date.value);
   const start_hour_num = parseInt(start_hour.value);
   const start_minute_num = parseInt(start_minute.value);
-  const big_location_string = big_location.value;
-  const middle_location_string = middle_location.value;
-  const small_location_string = small_location.value;
+
+  // 從選中的地點 ID 獲取地點名稱
+  const variables = getVariables({ type: 'chat' });
+  const location_records = variables?.locations || {};
+  const current_location_id = selected_location.value
+
   const weather_string = weather.value;
   let variable = getVariables({ type: 'chat' });
   const character_records = variable.characters;
@@ -854,16 +854,32 @@ const startChat = () => {
     const item = new Item(item_record.name, item_record.description, item_record.value);
     items.set(item_id, item);
   }
+  const locations = new Map<string, Location>();
+  for (const [location_id, location_record] of Object.entries(location_records) as [string, any]) {
+    const location = new Location(
+      location_id,
+      location_record.name,
+      location_record.location,
+      location_record.description,
+      null,
+      location_record.sub_location,
+    );
+    locations.set(location_id, location);
+  }
+  for (const [location_id, location] of locations.entries()) {
+    for (const sub_location_id of location.sub_location_ids) {
+      if (locations.has(sub_location_id)) locations.get(sub_location_id)!.parent_location_id = location_id;
+    }
+  }
   const state = new State(
     new Datetime(new Date(start_year_num, start_month_num - 1, start_date_num, start_hour_num, start_minute_num)),
-    big_location_string,
-    middle_location_string,
-    small_location_string,
+    current_location_id,
     weather_string,
     State.CURRENT_EVENT_NULL_VALUE,
     active_characters,
     deactive_characters,
     items,
+    locations,
     new Map(),
     [],
   );
@@ -874,6 +890,80 @@ const startChat = () => {
   replaceVariables(variable, { type: 'chat' });
   // 發送初始化完成事件
   eventEmit('initialization_completed');
+};
+
+const exportInitializationSettings = () => {
+  try {
+    const variables = getVariables({ type: 'chat' });
+    const settings = {
+      world_info: variables.world_info || '',
+      characters: variables.characters || {},
+      items: variables.items || {},
+      locations: variables.locations || {},
+      extra_world_info: variables.extra_world_info || [],
+      extra_world_info_prompt: variables.extra_world_info_prompt || '',
+      start_settings: variables.start_settings || {},
+    };
+
+    const json = JSON.stringify(settings, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `initialization_settings_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toastr.success('初始化設定已匯出');
+  } catch (error) {
+    console.error('匯出初始化設定失敗:', error);
+    toastr.error('匯出失敗');
+  }
+};
+
+const importInitializationSettings = (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const json = e.target?.result as string;
+      const settings = JSON.parse(json);
+
+      // 驗證必要的鍵
+      const requiredKeys = ['world_info', 'characters', 'items', 'locations', 'extra_world_info', 'extra_world_info_prompt', 'start_settings'];
+      for (const key of requiredKeys) {
+        if (!(key in settings)) {
+          throw new Error(`缺少必要的鍵: ${key}`);
+        }
+      }
+
+      // 設置變數
+      const variables = getVariables({ type: 'chat' });
+      variables.world_info = settings.world_info;
+      variables.characters = settings.characters;
+      variables.items = settings.items;
+      variables.locations = settings.locations;
+      variables.extra_world_info = settings.extra_world_info;
+      variables.extra_world_info_prompt = settings.extra_world_info_prompt;
+      variables.start_settings = settings.start_settings;
+
+      replaceVariables(variables, { type: 'chat' });
+
+      // 重新載入資料
+      loadStartData();
+
+      toastr.success('初始化設定已匯入');
+    } catch (error) {
+      console.error('匯入初始化設定失敗:', error);
+      toastr.error('匯入失敗：檔案格式錯誤');
+    }
+  };
+  reader.readAsText(file);
 };
 </script>
 
@@ -981,6 +1071,27 @@ const startChat = () => {
     justify-content: center;
     gap: 6px;
     min-width: 0;
+  }
+}
+
+.settings-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+
+  .action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .import {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -1148,6 +1259,37 @@ const startChat = () => {
       }
     }
   }
+
+  &.export {
+    background: linear-gradient(135deg, #007acc, #005999);
+    border-color: #007acc;
+    color: white;
+
+    &:hover {
+      background: linear-gradient(135deg, #005999, #004477);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &.import {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    border-color: #ffc107;
+    color: #212529;
+    cursor: pointer;
+
+    &:hover {
+      background: linear-gradient(135deg, #e0a800, #d39e00);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
 }
 
 // 響應式設計
@@ -1181,6 +1323,15 @@ const startChat = () => {
     .action-btn {
       padding: 6px 12px;
       font-size: 12px;
+    }
+  }
+
+  .settings-actions {
+    gap: 6px;
+
+    .action-btn {
+      padding: 8px 12px;
+      font-size: 13px;
     }
   }
 
