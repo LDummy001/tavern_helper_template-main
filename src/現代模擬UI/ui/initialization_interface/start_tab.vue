@@ -166,7 +166,7 @@
       <button class="action-btn export" @click="exportInitializationSettings">匯出初始化設定</button>
       <label class="action-btn import">
         匯入初始化設定
-        <input type="file" accept=".json" @change="importInitializationSettings" style="display: none;" />
+        <input type="file" accept=".json" style="display: none" @change="importInitializationSettings" />
       </label>
     </div>
 
@@ -799,7 +799,7 @@ const startChat = () => {
   // 從選中的地點 ID 獲取地點名稱
   const variables = getVariables({ type: 'chat' });
   const location_records = variables?.locations || {};
-  const current_location_id = selected_location.value
+  const current_location_id = selected_location.value;
 
   const weather_string = weather.value;
   let variable = getVariables({ type: 'chat' });
@@ -929,13 +929,21 @@ const importInitializationSettings = (event: Event) => {
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = e => {
     try {
       const json = e.target?.result as string;
       const settings = JSON.parse(json);
 
       // 驗證必要的鍵
-      const requiredKeys = ['world_info', 'characters', 'items', 'locations', 'extra_world_info', 'extra_world_info_prompt', 'start_settings'];
+      const requiredKeys = [
+        'world_info',
+        'characters',
+        'items',
+        'locations',
+        'extra_world_info',
+        'extra_world_info_prompt',
+        'start_settings',
+      ];
       for (const key of requiredKeys) {
         if (!(key in settings)) {
           throw new Error(`缺少必要的鍵: ${key}`);
