@@ -69,6 +69,7 @@ export class SetCurrentLocationCommand extends Command {
     return true;
   }
   public execute(state: State, _message_id: number): State {
+    if (!state.locations.has(this.current_location_id)) return state;
     state.current_location_id = this.current_location_id;
     return state;
   }
@@ -672,9 +673,12 @@ export class AddSubLocationCommand extends Command {
   public execute(state: State, _message_id: number): State {
     const parent_location = state.locations.get(this.parent_location_id);
     if (!parent_location) return state;
-    if (!state.locations.has(this.sub_location_id)) return state;
+    const sub_location = state.locations.get(this.sub_location_id);
+    if (!sub_location) return state;
+    if (sub_location.parent_location_id !== null) return state;
     if (parent_location.sub_location_ids.includes(this.sub_location_id)) return state;
     parent_location.sub_location_ids.push(this.sub_location_id);
+    sub_location.parent_location_id = this.parent_location_id;
     return state;
   }
 }

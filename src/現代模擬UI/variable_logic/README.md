@@ -52,46 +52,65 @@ deltaMinutes(30)
 
 ### 位置相關命令
 
-#### `setBigLocation("大位置名稱")`
+#### `setCurrentLocation("當前位置ID")`
 
-設置當前的大位置。
+設置當前的位置。
 
 **參數：**
 
-- `大位置名稱`: string - 大位置的名稱
+- `當前位置ID`: string - 位置的唯一識別碼
 
 **範例：**
 
 ```text
-setBigLocation("東京")
+setCurrentLocation("l1")
 ```
 
-#### `setMiddleLocation("中位置名稱")`
+#### `createLocation("ID", "名稱", "位置", "描述")`
 
-設置當前的中位置。
+創建新位置。
 
 **參數：**
 
-- `中位置名稱`: string - 中位置的名稱
+- `ID`: string - 位置唯一識別碼
+- `名稱`: string - 位置名稱
+- `位置`: string - 位置描述
+- `描述`: string - 位置詳細描述
 
 **範例：**
 
 ```text
-setMiddleLocation("澀谷區")
+createLocation("l1", "東京車站", "東京", "繁忙的交通樞紐")
 ```
 
-#### `setSmallLocation("小位置名稱")`
+#### `addSubLocation("父位置ID", "子位置ID")`
 
-設置當前的小位置。
+將一個位置設為另一個位置的子位置。
 
 **參數：**
 
-- `小位置名稱`: string - 小位置的名稱
+- `父位置ID`: string - 父位置的ID
+- `子位置ID`: string - 子位置的ID
 
 **範例：**
 
 ```text
-setSmallLocation("澀谷站")
+addSubLocation("l1", "l2")
+```
+
+#### `setLocationDescription("位置ID", "描述")`
+
+設置位置的描述。
+
+**參數：**
+
+- `位置ID`: string - 目標位置ID
+- `描述`: string - 新的描述
+
+**範例：**
+
+```text
+setLocationDescription("l1", "東京車站是日本最繁忙的交通樞紐之一")
 ```
 
 #### `setWeather("天氣")`
@@ -326,25 +345,25 @@ deltaInventory("alice", "book1", 1)
 
 ### 約定相關命令
 
-#### `createPromise(年, 月, 日, 時, 分, "角色ID列表", "地點", "描述")`
+#### `createPromise(截止年, 截止月, 截止日, 截止時, 截止分, "角色ID列表", "位置ID", "描述")`
 
 創建新約定。
 
 **參數：**
 
-- `年`: number - 截止年份
-- `月`: number - 截止月份(1-12)
-- `日`: number - 截止日期(1-31)
-- `時`: number - 截止小時(0-23)
-- `分`: number - 截止分鐘(0-59)
+- `截止年`: number - 截止年份
+- `截止月`: number - 截止月份(1-12)
+- `截止日`: number - 截止日期(1-31)
+- `截止時`: number - 截止小時(0-23)
+- `截止分`: number - 截止分鐘(0-59)
 - `角色ID列表`: string - 參與角色ID，用逗號分隔
-- `地點`: string - 約定地點
+- `位置ID`: string - 約定位置ID
 - `描述`: string - 約定描述
 
 **範例：**
 
 ```text
-createPromise(2024, 12, 25, 18, 30, "alice,bob", "咖啡廳", "聖誕約會")
+createPromise(2024, 12, 25, 18, 30, "alice,bob", "l1", "聖誕約會")
 ```
 
 #### `removePromise("約定ID")`
