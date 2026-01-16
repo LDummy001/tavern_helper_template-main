@@ -111,13 +111,14 @@
           <div class="promise-location-row">
             <div class="promise-location-group">
               <span class="promise-location-label">地點：</span>
-              <div v-if="!editing_promise_ids.has(promise_id)" class="promise-location">{{ locations.find(l => l.id === promise.location_id)?.name || promise.location_id }}</div>
+              <div v-if="!editing_promise_ids.has(promise_id)" class="promise-location">{{ promise.location_id ? (locations.find(l => l.id === promise.location_id)?.name || promise.location_id) : '無' }}</div>
               <select
                 v-else
                 v-model="edit_forms[promise_id].location_id"
                 class="promise-location-input promise-location-input-edit"
               >
                 <option value="" disabled>選擇地點...</option>
+                <option value="">無</option>
                 <option
                   v-for="location in locations"
                   :key="location.id"
@@ -241,6 +242,7 @@
                 class="promise-location-input promise-location-input-edit"
               >
                 <option value="" disabled>選擇地點...</option>
+                <option value="">無</option>
                 <option
                   v-for="location in locations"
                   :key="location.id"
@@ -489,14 +491,15 @@ const validateAndCreatePromise = (form: {
   character_ids: string[];
   description: string;
 }) => {
-  if (!form.id || !form.deadline || !form.location_id || !form.description) {
+  if (!form.id || !form.deadline || !form.description) {
     return null;
   }
 
   try {
     const deadline = createDatetimeFromDeadline(form.deadline);
     const character_ids = form.character_ids.filter(id => id);
-    return new Promise(deadline, character_ids, form.location_id, form.description);
+    const location_id = form.location_id || null; // 將空字符串轉換為 null
+    return new Promise(deadline, character_ids, location_id, form.description);
   } catch (error) {
     console.error('Failed to create promise:', error);
     return null;
@@ -537,7 +540,7 @@ const startEditingPromise = (promise_id: string) => {
     edit_forms.value[promise_id] = {
       id: promise_id,
       deadline: parseDatetimeToDeadline(promise.deadline),
-      location_id: promise.location_id,
+      location_id: promise.location_id || '', // 將 null 轉換為空字符串以供表單使用
       character_ids: [...promise.character_ids],
       description: promise.description,
     };

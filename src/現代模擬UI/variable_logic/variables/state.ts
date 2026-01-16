@@ -176,7 +176,7 @@ export class State {
     return locations.reverse();
   }
 
-  public addPromise(deadline: Datetime, character_ids: string[], location_id: string, description: string) {
+  public addPromise(deadline: Datetime, character_ids: string[], location_id: string | null, description: string) {
     const existing_ids = Array.from(this.promises.keys());
     const numbers = existing_ids.map(id => parseInt(id.substring(1))).filter(n => !isNaN(n));
     const max_number = Math.max(...numbers, 0);

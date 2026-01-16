@@ -38,7 +38,14 @@
                   </div>
                 </div>
                 <div class="message-status-row">
-                  <div class="status-info" v-html="getMessageStatusDisplay(last_message_id - (messages.length - 1 - msg_index))"></div>
+                  <div class="status-info">
+                    <div class="status-datetime">
+                      {{ getMessageStatusDisplay(last_message_id - (messages.length - 1 - msg_index)).datetimeLine }}
+                    </div>
+                    <div class="status-location">
+                      {{ getMessageStatusDisplay(last_message_id - (messages.length - 1 - msg_index)).locationString }}
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="message-content">
@@ -212,11 +219,17 @@ const getMessageStatusDisplay = (message_id: number) => {
     const currentLocations = state.getCurrentLocations();
     const locationString = currentLocations.map(location => location.name).join('-');
 
-    // 返回兩行顯示
-    return `${datetimeLine}<br>${locationString}`;
+    // 返回結構化數據
+    return {
+      datetimeLine,
+      locationString,
+    };
   } catch (error) {
     console.error('Failed to load message status:', error);
-    return '載入狀態中...';
+    return {
+      datetimeLine: '載入狀態中...',
+      locationString: '',
+    };
   }
 };
 
@@ -542,7 +555,6 @@ const processTagRule = (tag_rule: tagRule, message_segments: MessageSegment[]) =
     if (process_all_matches) {
       // 處理所有匹配的標籤
       let remaining_message = message;
-      let offset = 0;
 
       while (true) {
         const start_index = remaining_message.indexOf(start_tag);
@@ -581,7 +593,7 @@ const processTagRule = (tag_rule: tagRule, message_segments: MessageSegment[]) =
       }
     } else {
       // 原來的邏輯：只處理第一個匹配
-      const start_index = message.indexOf(start_tag);
+      const start_index = tag_rule.match_mode === 'both' ? message.indexOf(start_tag) : -1;
       const end_index = tag_rule.match_strategy === 'first' ? message.indexOf(end_tag) : message.lastIndexOf(end_tag);
 
       if (end_index < 0 || (tag_rule.match_mode === 'both' && start_index < 0)) {
@@ -589,8 +601,9 @@ const processTagRule = (tag_rule: tagRule, message_segments: MessageSegment[]) =
         continue;
       }
 
+      const target_message_start_index = tag_rule.match_mode === 'both' ? start_index + start_tag.length : 0;
       const front_message = start_index < 0 ? '' : message.substring(0, start_index);
-      const target_message = message.substring(start_index + start_tag.length, end_index);
+      const target_message = message.substring(target_message_start_index, end_index);
       const end_message = message.substring(end_index + end_tag.length);
 
       if (tag_rule.display_mode === 'invisible') {
@@ -1074,6 +1087,15 @@ onUnmounted(() => {
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.status-datetime {
+  margin-bottom: 2px;
+}
+
+.status-location {
+  font-size: 11px;
+  opacity: 0.8;
 }
 
 .message-actions {

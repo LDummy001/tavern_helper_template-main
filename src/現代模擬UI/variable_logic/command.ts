@@ -743,7 +743,7 @@ export class CreatePromiseCommand extends Command {
     this.description = description;
   }
   protected get REGEX(): RegExp {
-    return /createPromise\(\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+    return /createPromise\(\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*([^,()]+)\s*,\s*"([^"]+?)"\s*,\s*"([^"]*?)"\s*,\s*"([^"]+?)"\s*\)/g;
   }
   protected create(args: string[]): Command {
     const deadline_year = Number(args[0]);
@@ -775,7 +775,7 @@ export class CreatePromiseCommand extends Command {
     return true;
   }
   public execute(state: State, _message_id: number): State {
-    if (!state.locations.has(this.location_id)) return state;
+    if (this.location_id !== '' && !state.locations.has(this.location_id)) return state;
     for (const id of this.character_ids) {
       if (!state.hasCharacter(id)) return state;
     }
@@ -788,7 +788,8 @@ export class CreatePromiseCommand extends Command {
         this.deadline_minutes,
       ),
     );
-    state.addPromise(deadline, this.character_ids, this.location_id, this.description);
+    const location_id = this.location_id === '' ? null : this.location_id;
+    state.addPromise(deadline, this.character_ids, location_id, this.description);
     return state;
   }
 }
