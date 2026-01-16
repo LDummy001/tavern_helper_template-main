@@ -55,6 +55,7 @@ export class GenerationManager {
 
     // 使用更新後的 State 來隱藏正確的消息
     this.hideSummarizedMessages();
+    this.addEventStartTag();
 
     // 發送生成請求
     generate({ generation_id: generation_id });
@@ -66,6 +67,7 @@ export class GenerationManager {
     this.state.value.swipe_generation_message_id = message_id;
 
     this.hideSummarizedMessages();
+    this.addEventStartTag();
 
     // 隱藏當前消息
     setChatMessages(
@@ -152,6 +154,7 @@ export class GenerationManager {
           { refresh: 'none' },
         );
       }
+      this.removeEventStartTag();
 
       // 發送消息接收事件
       eventEmit('MESSAGE_RECEIVED', getLastMessageId());
@@ -185,7 +188,8 @@ export class GenerationManager {
   // 隱藏被 summary 覆蓋的消息
   private hideSummarizedMessages(): void {
     try {
-      const state = State.loadFromVariable(getLastMessageId()); // 從最新消息變數加載狀態
+      if (getLastMessageId() === 0) return;
+      const state = State.loadFromVariable(getLastMessageId() - 1); // 從最新消息變數加載狀態
       const latest_summary_last_message_id = state.getLatestSummaryLastMessageId();
       const total_messages = getLastMessageId() + 1; // 消息 ID 從 0 開始，所以總數是 last_id + 1
 
@@ -215,6 +219,26 @@ export class GenerationManager {
     } catch (error) {
       console.error('Failed to hide summarized messages:', error);
     }
+  }
+
+  private addEventStartTag(): void {
+    if (getLastMessageId() === 0) return;
+    const state = State.loadFromVariable(getLastMessageId() - 1); // 從最新消息變數加載狀態
+    const event_start_message_id =
+      state.summaries.length === 0 ? 0 : state.summaries[state.summaries.length - 1].last_message_id + 1;
+    const message = getChatMessages(event_start_message_id)[0].message;
+    const event_start_tag = `<!--${State.CURRENT_EVENT_KEY}開始-->\n`;
+    setChatMessages([{ message_id: event_start_message_id, message: `${event_start_tag}${message}` }]);
+  }
+
+  private removeEventStartTag(): void {
+    if (getLastMessageId() === 0) return;
+    const state = State.loadFromVariable(getLastMessageId() - 1); // 從最新消息變數加載狀態
+    const event_start_message_id =
+      state.summaries.length === 0 ? 0 : state.summaries[state.summaries.length - 1].last_message_id + 1;
+    const message = getChatMessages(event_start_message_id)[0].message;
+    const event_start_tag = `<!--${State.CURRENT_EVENT_KEY}開始-->\n`;
+    setChatMessages([{ message_id: event_start_message_id, message: message.replaceAll(event_start_tag, '') }]);
   }
 }
 

@@ -17965,6 +17965,7 @@ var __webpack_modules__ = {
         this.state.value.current_generation_id = generation_id;
         eventEmit("MESSAGE_SENT", message_id);
         this.hideSummarizedMessages();
+        this.addEventStartTag();
         generate({
           generation_id
         });
@@ -17973,6 +17974,7 @@ var __webpack_modules__ = {
         this.state.value.is_generating_new_swipe = true;
         this.state.value.swipe_generation_message_id = message_id;
         this.hideSummarizedMessages();
+        this.addEventStartTag();
         setChatMessages([ {
           message_id,
           is_hidden: true
@@ -18034,6 +18036,7 @@ var __webpack_modules__ = {
               refresh: "none"
             });
           }
+          this.removeEventStartTag();
           eventEmit("MESSAGE_RECEIVED", getLastMessageId());
         } catch (error) {
           console.error("Failed to handle generation end:", error);
@@ -18057,7 +18060,8 @@ var __webpack_modules__ = {
       }
       hideSummarizedMessages() {
         try {
-          const state = _variables_state__WEBPACK_IMPORTED_MODULE_1__.State.loadFromVariable(getLastMessageId());
+          if (getLastMessageId() === 0) return;
+          const state = _variables_state__WEBPACK_IMPORTED_MODULE_1__.State.loadFromVariable(getLastMessageId() - 1);
           const latest_summary_last_message_id = state.getLatestSummaryLastMessageId();
           const total_messages = getLastMessageId() + 1;
           const messages_to_update = [];
@@ -18083,6 +18087,28 @@ var __webpack_modules__ = {
         } catch (error) {
           console.error("Failed to hide summarized messages:", error);
         }
+      }
+      addEventStartTag() {
+        if (getLastMessageId() === 0) return;
+        const state = _variables_state__WEBPACK_IMPORTED_MODULE_1__.State.loadFromVariable(getLastMessageId() - 1);
+        const event_start_message_id = state.summaries.length === 0 ? 0 : state.summaries[state.summaries.length - 1].last_message_id + 1;
+        const message = getChatMessages(event_start_message_id)[0].message;
+        const event_start_tag = `\x3c!--${_variables_state__WEBPACK_IMPORTED_MODULE_1__.State.CURRENT_EVENT_KEY}開始--\x3e\n`;
+        setChatMessages([ {
+          message_id: event_start_message_id,
+          message: `${event_start_tag}${message}`
+        } ]);
+      }
+      removeEventStartTag() {
+        if (getLastMessageId() === 0) return;
+        const state = _variables_state__WEBPACK_IMPORTED_MODULE_1__.State.loadFromVariable(getLastMessageId() - 1);
+        const event_start_message_id = state.summaries.length === 0 ? 0 : state.summaries[state.summaries.length - 1].last_message_id + 1;
+        const message = getChatMessages(event_start_message_id)[0].message;
+        const event_start_tag = `\x3c!--${_variables_state__WEBPACK_IMPORTED_MODULE_1__.State.CURRENT_EVENT_KEY}開始--\x3e\n`;
+        setChatMessages([ {
+          message_id: event_start_message_id,
+          message: message.replaceAll(event_start_tag, "")
+        } ]);
       }
     }
     const generationManager = GenerationManager.getInstance();
