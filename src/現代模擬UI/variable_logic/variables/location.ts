@@ -11,6 +11,8 @@ export class Location {
   public static readonly PARENT_LOCATION_ID_KEY: string = '父地點id';
   public sub_location_ids: string[];
   public static readonly SUB_LOCATION_IDS_KEY: string = '子地點ids';
+  public storage_ids: string[];
+  public static readonly STORAGE_IDS_KEY: string = '貯存點ids';
 
   public constructor(
     id: string,
@@ -19,6 +21,7 @@ export class Location {
     description: string,
     parent_location_id: string | null,
     sub_location_ids: string[],
+    storage_ids: string[],
   ) {
     this.id = id;
     this.name = name;
@@ -26,6 +29,7 @@ export class Location {
     this.description = description;
     this.parent_location_id = parent_location_id;
     this.sub_location_ids = sub_location_ids;
+    this.storage_ids = storage_ids;
   }
 
   public static fromRecord(record: Record<string, any>): Location {
@@ -36,6 +40,7 @@ export class Location {
       record[Location.DESCRIPTION_KEY],
       record[Location.PARENT_LOCATION_ID_KEY],
       record[Location.SUB_LOCATION_IDS_KEY] || [],
+      record[Location.STORAGE_IDS_KEY] || [],
     );
   }
 
@@ -47,6 +52,7 @@ export class Location {
       [Location.DESCRIPTION_KEY]: this.description,
       [Location.PARENT_LOCATION_ID_KEY]: this.parent_location_id,
       [Location.SUB_LOCATION_IDS_KEY]: this.sub_location_ids,
+      [Location.STORAGE_IDS_KEY]: this.storage_ids,
     };
   }
 }

@@ -3,6 +3,7 @@ import { Datetime } from './datetime';
 import { Item } from './item';
 import { Location } from './location';
 import { Promise } from './promise';
+import { Storage } from './storage';
 import { Summary } from './summary';
 
 export class State {
@@ -21,6 +22,8 @@ export class State {
   public static readonly DEACTIVE_CHARACTERS_KEY: string = '背景角色';
   public items: Map<string, Item>;
   public static readonly ITEMS_KEY: string = '物品';
+  public storages: Map<string, Storage>;
+  public static readonly STORAGES_KEY: string = '貯存點';
   public locations: Map<string, Location>;
   public static readonly LOCATIONS_KEY: string = '地點';
   public promises: Map<string, Promise>;
@@ -36,6 +39,7 @@ export class State {
     active_characters: Map<string, Character>,
     deactive_characters: Map<string, Character>,
     items: Map<string, Item>,
+    storages: Map<string, Storage>,
     locations: Map<string, Location>,
     promises: Map<string, Promise>,
     summaries: Summary[],
@@ -47,6 +51,7 @@ export class State {
     this.active_characters = active_characters;
     this.deactive_characters = deactive_characters;
     this.items = items;
+    this.storages = storages;
     this.locations = locations;
     this.promises = promises;
     this.summaries = summaries;
@@ -76,6 +81,13 @@ export class State {
     for (const [item_id, item_record] of Object.entries(item_variables)) {
       items.set(item_id, Item.fromRecord(item_record));
     }
+    const storages = new Map<string, Storage>();
+    if (variable[State.STORAGES_KEY]) {
+      const storage_variables: Record<string, any> = variable[State.STORAGES_KEY];
+      for (const [storage_id, storage_record] of Object.entries(storage_variables)) {
+        storages.set(storage_id, Storage.fromRecord(storage_record));
+      }
+    }
     const locations = new Map<string, Location>();
     const location_variables: Record<string, any> = variable[State.LOCATIONS_KEY];
     for (const [location_id, location_record] of Object.entries(location_variables)) {
@@ -99,6 +111,7 @@ export class State {
       active_characters,
       deactive_characters,
       items,
+      storages,
       locations,
       promises,
       summaries,
@@ -117,6 +130,10 @@ export class State {
     const items: Record<string, any> = {};
     for (const [item_id, item] of this.items) {
       items[item_id] = item.toRecord();
+    }
+    const storages: Record<string, any> = {};
+    for (const [storage_id, storage] of this.storages) {
+      storages[storage_id] = storage.toRecord();
     }
     const locations: Record<string, any> = {};
     for (const [location_id, location] of this.locations) {
@@ -140,6 +157,7 @@ export class State {
       [State.ACTIVE_CHARACTERS_KEY]: active_characters,
       [State.DEACTIVE_CHARACTERS_KEY]: deactive_characters,
       [State.ITEMS_KEY]: items,
+      [State.STORAGES_KEY]: storages,
       [State.LOCATIONS_KEY]: locations,
       [State.PROMISES_KEY]: promises,
       [State.SUMMARIES_KEY]: summaries,
@@ -176,6 +194,106 @@ export class State {
     return locations.reverse();
   }
 
+  public addStorage(id: string, name: string, description: string, parent_id: string): void {
+    if (this.storages.has(id)) return;
+    const isValidParent = this.hasCharacter(parent_id) || this.storages.has(parent_id) || this.locations.has(parent_id);
+    if (!isValidParent) return;
+    const storage = new Storage(name, description, parent_id, 0, new Map());
+    this.storages.set(id, storage);
+    if (this.hasCharacter(parent_id)) {
+      const character = this.getCharacter(parent_id);
+      if (character) {
+        character.inventory.set(id, 1);
+      }
+    } else if (this.storages.has(parent_id)) {
+      const parentStorage = this.storages.get(parent_id);
+      if (parentStorage) {
+        parentStorage.inventory.set(id, 1);
+      }
+    } else if (this.locations.has(parent_id)) {
+      const location = this.locations.get(parent_id);
+      if (location) {
+        location.storage_ids.push(id);
+      }
+    }
+  }
+
+  public removeStorage(id: string): void {
+    const storage = this.storages.get(id);
+    if (!storage) return;
+    this.storages.delete(id);
+    const parent_id = storage.parent_id;
+    if (this.hasCharacter(parent_id)) {
+      const character = this.getCharacter(parent_id);
+      if (character) {
+        character.inventory.delete(id);
+      }
+    } else if (this.storages.has(parent_id)) {
+      const parentStorage = this.storages.get(parent_id);
+      if (parentStorage) {
+        parentStorage.inventory.delete(id);
+      }
+    } else if (this.locations.has(parent_id)) {
+      const location = this.locations.get(parent_id);
+      if (location) {
+        const index = location.storage_ids.indexOf(id);
+        if (index !== -1) {
+          location.storage_ids.splice(index, 1);
+        }
+      }
+    }
+  }
+
+  public setStorageParent(storage_id: string, parent_id: string): void {
+    const storage = this.storages.get(storage_id);
+    if (!storage) return;
+    const is_valid_parent =
+      this.hasCharacter(parent_id) ||
+      (this.storages.has(parent_id) && parent_id !== storage_id) ||
+      this.locations.has(parent_id);
+    if (!is_valid_parent) return;
+    const old_parent_id = storage.parent_id;
+    // Remove from old parent
+    if (this.hasCharacter(old_parent_id)) {
+      const character = this.getCharacter(old_parent_id);
+      if (character) {
+        character.inventory.delete(storage_id);
+      }
+    } else if (this.storages.has(old_parent_id)) {
+      const parentStorage = this.storages.get(old_parent_id);
+      if (parentStorage) {
+        parentStorage.inventory.delete(storage_id);
+      }
+    } else if (this.locations.has(old_parent_id)) {
+      const location = this.locations.get(old_parent_id);
+      if (location) {
+        const index = location.storage_ids.indexOf(storage_id);
+        if (index !== -1) {
+          location.storage_ids.splice(index, 1);
+        }
+      }
+    }
+    // Update storage parent_id
+    storage.parent_id = parent_id;
+    // Add to new parent
+    if (this.hasCharacter(parent_id)) {
+      const character = this.getCharacter(parent_id);
+      if (character) {
+        character.inventory.set(storage_id, 1);
+      }
+    } else if (this.storages.has(parent_id)) {
+      const parentStorage = this.storages.get(parent_id);
+      if (parentStorage) {
+        parentStorage.inventory.set(storage_id, 1);
+      }
+    } else if (this.locations.has(parent_id)) {
+      const location = this.locations.get(parent_id);
+      if (location) {
+        location.storage_ids.push(storage_id);
+      }
+    }
+  }
+
   public addPromise(deadline: Datetime, character_ids: string[], location_id: string | null, description: string) {
     const existing_ids = Array.from(this.promises.keys());
     const numbers = existing_ids.map(id => parseInt(id.substring(1))).filter(n => !isNaN(n));
@@ -194,6 +312,7 @@ export class State {
   public getLatestSummaryLastMessageId(): number {
     const variable = getVariables({ type: 'chat' });
     const exclude_latest_summaries = variable.settings?.exclude_latest_summaries || 0;
+    if (exclude_latest_summaries >= this.summaries.length) return -1;
     // summaries 已經按時間升序排列，最新的在最後，排除最後的 exclude_latest_summaries 個
     const effective_summaries = this.summaries.slice(0, this.summaries.length - exclude_latest_summaries);
     if (effective_summaries.length === 0) return -1;
@@ -357,6 +476,20 @@ export class State {
     return location_prompt;
   }
 
+  private getStoragePrompt(): string {
+    let storage_prompt = `<StorageTable>\n`;
+    storage_prompt += `|id|${Storage.NAME_KEY}|${Storage.DESCRIPTION_KEY}|${Storage.MONEY_KEY}|${Storage.INVENTORY_KEY}|\n`;
+    storage_prompt += '|---|---|---|---|---|\n';
+    for (const [storage_id, storage] of this.storages) {
+      const inventory_str = Array.from(storage.inventory.entries())
+        .map(([item_id, quantity]) => `${item_id}:${quantity}`)
+        .join(', ');
+      storage_prompt += `|${storage_id}|${storage.name}|${storage.description}|${storage.money}|${inventory_str}|\n`;
+    }
+    storage_prompt += `</StorageTable>\n`;
+    return storage_prompt;
+  }
+
   private getPromisePrompt(): string {
     let promise_prompt = `<PromiseTable>\n`;
     promise_prompt += `|id|${Promise.DEADLINE_KEY}|${Promise.CHARACTER_IDS_KEY}|${Promise.LOCATION_ID_KEY}|${Promise.DESCRIPTION_KEY}|\n`;
@@ -379,7 +512,7 @@ export class State {
     summary_prompt += '|---|---|---|\n';
     for (const summary of filtered_summaries) {
       const datetime_str = `${summary.datetime.year}年${summary.datetime.month}月${summary.datetime.date}日 ${summary.datetime.hours.toString().padStart(2, '0')}:${summary.datetime.minutes.toString().padStart(2, '0')}`;
-      summary_prompt += `|${datetime_str}|${summary.summary}|${summary.weighting.toFixed(1)}|\n`;
+      summary_prompt += `|${datetime_str}|${summary.summary}|${summary.weighting.toFixed(2)}|\n`;
     }
     summary_prompt += `</HistorySummary>\n`;
     return summary_prompt;
@@ -403,6 +536,7 @@ export class State {
     post_chat_prompt += `${this.getActiveCharacterPrompt()}\n`;
     post_chat_prompt += `${this.getDeactiveCharacterPrompt()}\n`;
     post_chat_prompt += `${this.getItemPrompt()}\n`;
+    post_chat_prompt += `${this.getStoragePrompt()}\n`;
     post_chat_prompt += `${this.getLocationPrompt()}\n`;
     post_chat_prompt += `${this.getPromisePrompt()}`;
 

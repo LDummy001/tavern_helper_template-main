@@ -8,7 +8,7 @@
 
       <!-- 地點列表 -->
       <div class="location-list">
-        <div v-for="[location_id, location] in locations" :key="location_id" :id="`location-${location_id}`" class="location-row">
+        <div v-for="[location_id, location] in locations" :id="`location-${location_id}`" :key="location_id" class="location-row">
           <!-- 第一行：ID、名稱、操作按鈕 -->
           <div class="location-first-row">
             <div class="location-id-name-group">
@@ -69,8 +69,8 @@
           </div>
           <div v-else class="location-parent-input-group">
             <select
-              class="parent-location-select"
               v-model="edit_forms[location_id].parent_location_id"
+              class="parent-location-select"
             >
               <option :value="null">根地點</option>
               <option
@@ -122,6 +122,44 @@
             </select>
           </div>
 
+          <!-- 第五行：貯存點 -->
+          <div v-if="!editing_location_ids.has(location_id)" class="location-storages-display">
+            <span v-for="storage_id in location.storage_ids" :key="storage_id" class="location-storage-tag">
+              貯: {{ storage_id }} {{ storages.get(storage_id)?.name || storage_id }}
+            </span>
+          </div>
+          <div v-else class="location-storages-input-group">
+            <div class="selected-storages">
+              <span
+                v-for="storage_id in edit_forms[location_id].storage_ids"
+                :key="storage_id"
+                class="selected-storage-tag"
+              >
+                {{ storages.get(storage_id)?.name || storage_id }}
+                <button class="remove-storage-btn" @click="removeStorageLocation(edit_forms[location_id], storage_id)">
+                  ×
+                </button>
+              </span>
+            </div>
+            <select
+              class="storage-location-select"
+              @change="
+                addStorageLocation(edit_forms[location_id], ($event.target as HTMLSelectElement).value);
+                ($event.target as HTMLSelectElement).value = '';
+              "
+            >
+              <option value="">選擇貯存點...</option>
+              <option
+                v-for="[id, storage] in storages"
+                :key="id"
+                :value="id"
+                :disabled="edit_forms[location_id].storage_ids.includes(id)"
+              >
+                {{ storage.name }} ({{ id }})
+              </option>
+            </select>
+          </div>
+
           <!-- 第五行：描述 -->
           <div v-if="!editing_location_ids.has(location_id)" class="location-description">{{ location.description }}</div>
           <textarea
@@ -160,8 +198,8 @@
           <!-- 第三行：父地點 -->
           <div class="location-parent-input-group">
             <select
-              class="parent-location-select"
               v-model="add_form.parent_location_id"
+              class="parent-location-select"
             >
               <option :value="null">根地點</option>
               <option
@@ -201,7 +239,34 @@
             </select>
           </div>
 
-          <!-- 第五行：描述 -->
+          <!-- 第五行：貯存點 -->
+          <div class="location-storages-input-group">
+            <div class="selected-storages">
+              <span v-for="storage_id in add_form.storage_ids" :key="storage_id" class="selected-storage-tag">
+                {{ storages.get(storage_id)?.name || storage_id }}
+                <button class="remove-storage-btn" @click="removeStorageLocation(add_form, storage_id)">×</button>
+              </span>
+            </div>
+            <select
+              class="storage-location-select"
+              @change="
+                addStorageLocation(add_form, ($event.target as HTMLSelectElement).value);
+                ($event.target as HTMLSelectElement).value = '';
+              "
+            >
+              <option value="">選擇貯存點...</option>
+              <option
+                v-for="[id, storage] in storages"
+                :key="id"
+                :value="id"
+                :disabled="add_form.storage_ids.includes(id)"
+              >
+                {{ storage.name }} ({{ id }})
+              </option>
+            </select>
+          </div>
+
+          <!-- 第六行：描述 -->
           <textarea v-model="add_form.description" class="location-description-input" placeholder="地點描述"></textarea>
         </div>
 
@@ -277,6 +342,7 @@ const createEmptyForm = () => ({
   description: '',
   parent_location_id: null as string | null,
   sub_location_ids: [] as string[],
+  storage_ids: [] as string[],
 });
 
 // 編輯模式
@@ -293,6 +359,7 @@ const edit_forms = ref<
       description: string;
       parent_location_id: string | null;
       sub_location_ids: string[];
+      storage_ids: string[];
     }
   >
 >({});
@@ -334,6 +401,10 @@ loadState();
 
 const locations = computed(() => {
   return state.value?.locations || new Map();
+});
+
+const storages = computed(() => {
+  return state.value?.storages || new Map();
 });
 
 // 生成下一個可用的地點ID
@@ -378,13 +449,14 @@ const validateAndCreateLocation = (form: {
   description: string;
   parent_location_id: string | null;
   sub_location_ids: string[];
+  storage_ids: string[];
 }) => {
   if (!form.id || !form.name || !form.location || !form.description) {
     return null;
   }
 
   try {
-    return new Location(form.id, form.name, form.location, form.description, form.parent_location_id, form.sub_location_ids);
+    return new Location(form.id, form.name, form.location, form.description, form.parent_location_id, form.sub_location_ids, form.storage_ids);
   } catch (error) {
     console.error('Failed to create location:', error);
     return null;
@@ -429,6 +501,7 @@ const startEditingLocation = (location_id: string) => {
       description: location.description,
       parent_location_id: location.parent_location_id,
       sub_location_ids: [...location.sub_location_ids],
+      storage_ids: [...location.storage_ids],
     };
   }
 };
@@ -460,6 +533,7 @@ const saveLocationEdit = (location_id: string) => {
         existing_location.description = updated_location.description;
         existing_location.parent_location_id = updated_location.parent_location_id;
         existing_location.sub_location_ids = updated_location.sub_location_ids;
+        existing_location.storage_ids = updated_location.storage_ids;
       }
       saveAndReloadState();
     }
@@ -517,6 +591,20 @@ const removeChildLocation = (form: { sub_location_ids: string[] }, child_id: str
   const index = form.sub_location_ids.indexOf(child_id);
   if (index > -1) {
     form.sub_location_ids.splice(index, 1);
+  }
+};
+
+// 處理貯存點的添加和移除
+const addStorageLocation = (form: { storage_ids: string[] }, storage_id: string) => {
+  if (!form.storage_ids.includes(storage_id)) {
+    form.storage_ids.push(storage_id);
+  }
+};
+
+const removeStorageLocation = (form: { storage_ids: string[] }, storage_id: string) => {
+  const index = form.storage_ids.indexOf(storage_id);
+  if (index > -1) {
+    form.storage_ids.splice(index, 1);
   }
 };
 
@@ -753,6 +841,23 @@ const jumpToLocation = (location_id: string) => {
   }
 }
 
+.location-storages-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.location-storage-tag {
+  background: #ff9800;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .location-description {
   color: #a0a0a0;
   line-height: 1.4;
@@ -888,8 +993,47 @@ const jumpToLocation = (location_id: string) => {
   }
 }
 
+.location-storages-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.selected-storages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.selected-storage-tag {
+  background: #ff9800;
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.remove-storage-btn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  margin-left: 2px;
+
+  &:hover {
+    color: #ccc;
+  }
+}
+
 .parent-location-select,
-.child-location-select {
+.child-location-select,
+.storage-location-select {
   background: #333;
   border: 1px solid #555;
   border-radius: 4px;
@@ -1039,14 +1183,17 @@ const jumpToLocation = (location_id: string) => {
   }
 
   .parent-location-select,
-  .child-location-select {
+  .child-location-select,
+  .storage-location-select {
     font-size: 12px;
     padding: 3px 6px;
   }
 
   .selected-child-tag,
   .location-child-tag,
-  .location-parent-tag {
+  .location-parent-tag,
+  .location-storage-tag,
+  .selected-storage-tag {
     font-size: 12px;
     padding: 2px 6px;
   }

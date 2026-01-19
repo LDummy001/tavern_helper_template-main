@@ -167,19 +167,26 @@ setWeather("晴天")
 createCharacter("alice", "Alice", 20, "女", "大學生", "一個活潑的女孩", "開朗", 165, 50, 85, "C", 60, 88, "長直髮", "可愛", "校服", 5, 15, "閱讀", "喜歡貓", 1000, 80, 20)
 ```
 
-#### `deltaMoney("角色ID", 金錢變化)`
+#### `deltaMoney("ID", 金錢變化)`
 
-調整角色的金錢。
+調整角色或貯存設施的金錢。
 
 **參數：**
 
-- `角色ID`: string - 目標角色ID
+- `ID`: string - 目標角色ID或貯存ID
 - `金錢變化`: number - 金錢變化量(可正可負)
+
+**效果：**
+
+- 如果ID對應角色，則調整角色的金錢
+- 如果ID對應貯存設施，則調整貯存設施的金錢
+- 如果ID不存在，則不執行任何操作
 
 **範例：**
 
 ```text
 deltaMoney("alice", 500)
+deltaMoney("bag1", -200)
 ```
 
 #### `deltaFriendship("來源角色ID", "目標角色ID", 友誼變化)`
@@ -325,20 +332,153 @@ deactivateCharacter("alice")
 createItem("book1", "小說書", "一本有趣的小說", 500)
 ```
 
-#### `deltaInventory("角色ID", "物品ID", 數量變化)`
+#### `deltaInventory("ID", "物品ID", 數量變化)`
 
-調整角色擁有的物品數量。
+調整角色或貯存設施擁有的物品數量。
 
 **參數：**
 
-- `角色ID`: string - 目標角色ID
+- `ID`: string - 目標角色ID或貯存ID
 - `物品ID`: string - 物品ID
 - `數量變化`: number - 數量變化量(可正可負，0以下會移除物品)
+
+**效果：**
+
+- 如果ID對應角色，則調整角色的物品數量
+- 如果ID對應貯存設施，則調整貯存設施的物品數量
+- 如果ID或物品ID不存在，則不執行任何操作
+- 數量為0或負數時會從物品欄中移除該物品
 
 **範例：**
 
 ```text
 deltaInventory("alice", "book1", 1)
+deltaInventory("bag1", "sword1", -1)
+```
+
+---
+
+### 貯存相關命令
+
+#### `createStorage("貯存ID", "貯存名稱", "貯存描述", "父級ID")`
+
+創建新貯存設施。
+
+**參數：**
+
+- `貯存ID`: string - 貯存設施唯一識別碼
+- `貯存名稱`: string - 貯存設施名稱
+- `貯存描述`: string - 貯存設施描述
+- `父級ID`: string - 父級角色ID、貯存ID或位置ID
+
+**效果：**
+
+- 創建新的貯存設施並添加到 `state.storages`
+- 如果貯存ID已存在，則不執行任何操作
+- 如果父級ID不存在於角色、貯存或位置中，則不執行任何操作
+- 如果父級是角色或貯存，則將新貯存ID添加到其inventory中，數量為1
+- 如果父級是位置，則將新貯存ID添加到其storage_ids中
+
+**範例：**
+
+```text
+createStorage("bag1", "背包", "一個普通的背包", "alice")
+createStorage("box1", "寶箱", "一個裝飾華麗的寶箱", "l1")
+```
+
+#### `removeStorage("貯存ID")`
+
+移除指定的貯存設施。
+
+**參數：**
+
+- `貯存ID`: string - 要移除的貯存設施ID
+
+**效果：**
+
+- 從 `state.storages` 中移除指定的貯存設施
+- 如果貯存ID不存在，則不執行任何操作
+- 同時從其父級中移除相應的ID：
+  - 如果父級是角色，則從角色的inventory中刪除該貯存ID
+  - 如果父級是貯存，則從父級貯存的inventory中刪除該貯存ID
+  - 如果父級是位置，則從位置的storage_ids中移除該貯存ID
+
+**範例：**
+
+```text
+removeStorage("bag1")
+```
+
+#### `setStorageParent("貯存ID", "父級ID")`
+
+更新貯存設施的父級。
+
+**參數：**
+
+- `貯存ID`: string - 要更新父級的貯存設施ID
+- `父級ID`: string - 新的父級ID（角色ID、貯存ID或位置ID）
+
+**效果：**
+
+- 更新指定貯存設施的parent_id
+- 如果貯存ID不存在，則不執行任何操作
+- 如果父級ID不是現有的角色ID、貯存ID（但不能是貯存ID本身）或位置ID，則不執行任何操作
+- 從舊父級中移除貯存ID
+- 將貯存ID添加到新父級中
+
+**範例：**
+
+```text
+setStorageParent("bag1", "l2")
+```
+
+#### `createStorage("貯存ID", "貯存名稱", "貯存描述", "父級ID")`
+
+創建新貯存設施。
+
+**參數：**
+
+- `貯存ID`: string - 貯存設施唯一識別碼
+- `貯存名稱`: string - 貯存設施名稱
+- `貯存描述`: string - 貯存設施描述
+- `父級ID`: string - 父級角色ID、貯存ID或位置ID
+
+**效果：**
+
+- 創建新的貯存設施並添加到 `state.storages`
+- 如果貯存ID已存在，則不執行任何操作
+- 如果父級ID不存在於角色、貯存或位置中，則不執行任何操作
+- 如果父級是角色或貯存，則將新貯存ID添加到其inventory中，數量為1
+- 如果父級是位置，則將新貯存ID添加到其storage_ids中
+
+**範例：**
+
+```text
+createStorage("bag1", "背包", "一個普通的背包", "alice")
+createStorage("box1", "寶箱", "一個裝飾華麗的寶箱", "l1")
+```
+
+#### `removeStorage("貯存ID")`
+
+移除指定的貯存設施。
+
+**參數：**
+
+- `貯存ID`: string - 要移除的貯存設施ID
+
+**效果：**
+
+- 從 `state.storages` 中移除指定的貯存設施
+- 如果貯存ID不存在，則不執行任何操作
+- 同時從其父級中移除相應的ID：
+  - 如果父級是角色，則從角色的inventory中刪除該貯存ID
+  - 如果父級是貯存，則從父級貯存的inventory中刪除該貯存ID
+  - 如果父級是位置，則從位置的storage_ids中移除該貯存ID
+
+**範例：**
+
+```text
+removeStorage("bag1")
 ```
 
 ---

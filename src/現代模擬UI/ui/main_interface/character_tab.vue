@@ -417,19 +417,39 @@
       <div class="inventory-section">
         <h3 class="section-title">所持物</h3>
         <div v-if="!is_editing && !is_adding" class="inventory-list">
-          <div v-for="[itemId, quantity] in selected_character?.inventory || []" :key="itemId" class="inventory-item">
-            <div class="inventory-first-row">
-              <span class="item-name-id">{{ state?.items.get(itemId)?.name || '未知' }} ({{ itemId }})</span>
-              <span class="item-quantity">× {{ quantity }}</span>
-            </div>
-            <div class="inventory-second-row">
-              {{ state?.items.get(itemId)?.description || '無描述' }}
-            </div>
-          </div>
-          <div v-if="!selected_character?.inventory || selected_character.inventory.size === 0" class="no-message">
-            沒有任何物品
-          </div>
-        </div>
+           <div
+             v-for="[itemId, quantity] in selected_character?.inventory || []"
+             :key="itemId"
+             class="inventory-item"
+             :class="{ 'storage-item': isStorage(itemId) }"
+           >
+             <div class="inventory-first-row">
+               <span class="item-name-id">{{ getInventoryItemName(itemId) }} ({{ itemId }})</span>
+               <span v-if="!isStorage(itemId)" class="item-quantity">× {{ quantity }}</span>
+               <span v-else class="storage-indicator">貯存點</span>
+             </div>
+             <div class="inventory-second-row">
+               {{ getInventoryItemDescription(itemId) }}
+             </div>
+             <div v-if="isStorage(itemId)" class="inventory-third-row">
+               <div v-if="getStorageInventorySize(itemId) === 0" class="no-inventory">無物品</div>
+               <div v-else class="inventory-items">
+                 <span
+                   v-for="[storage_item_id, storage_quantity] in getStorageInventory(itemId)"
+                   :key="storage_item_id"
+                   :class="state?.storages.has(storage_item_id) ? 'storage-item-tag' : 'inventory-item-tag'"
+                 >
+                   {{ getInventoryItemName(storage_item_id) }} ({{ storage_item_id }}){{
+                     state?.storages.has(storage_item_id) ? '' : ` × ${storage_quantity}`
+                   }}
+                 </span>
+               </div>
+             </div>
+           </div>
+           <div v-if="!selected_character?.inventory || selected_character.inventory.size === 0" class="no-message">
+             沒有任何物品
+           </div>
+         </div>
         <div v-else class="inventory-edit-list">
           <div v-for="(_, itemId) in edited_inventory" :key="itemId" class="inventory-edit-item">
             <select
@@ -437,13 +457,25 @@
               class="inventory-select"
               @change="e => updateInventoryItem(String(itemId), (e.target as HTMLSelectElement).value)"
             >
-              <option value="" disabled>選擇物品</option>
-              <option v-for="item in available_items" :key="item.id" :value="item.id">
-                {{ item.name }} ({{ item.id }})
-              </option>
+              <option value="" disabled>選擇物品或貯存點...</option>
+              <optgroup label="物品">
+                <option v-for="item in available_items.filter(i => i.type === 'item')" :key="item.id" :value="item.id">
+                  {{ item.name }} ({{ item.id }})
+                </option>
+              </optgroup>
+              <optgroup label="貯存點">
+                <option
+                  v-for="item in available_items.filter(i => i.type === 'storage')"
+                  :key="item.id"
+                  :value="item.id"
+                >
+                  {{ item.name }} ({{ item.id }})
+                </option>
+              </optgroup>
             </select>
-            <span class="inventory-edit-connector">×</span>
+            <span v-if="!isStorage(String(itemId))" class="inventory-edit-connector">×</span>
             <input
+              v-if="!isStorage(String(itemId))"
               v-model.number="edited_inventory[itemId]"
               class="inventory-quantity-input"
               type="number"
@@ -452,7 +484,7 @@
             />
             <button class="inventory-remove-btn" @click="removeInventoryItem(String(itemId))">×</button>
           </div>
-          <button class="add-inventory-btn" @click="addInventoryItem">+ 添加物品</button>
+          <button class="add-inventory-btn" @click="addInventoryItem">+ 添加物品或貯存點</button>
         </div>
       </div>
 
@@ -661,10 +693,52 @@ const available_items = computed(() => {
   if (!state.value) return [];
   const items = [];
   for (const [id, item] of state.value.items) {
-    items.push({ id, name: item.name });
+    items.push({ id, name: item.name, type: 'item' });
+  }
+  for (const [id, storage] of state.value.storages) {
+    items.push({ id, name: storage.name, type: 'storage' });
   }
   return items;
 });
+
+// 獲取物品名稱（支持 item 和 storage）
+const getInventoryItemName = (itemId: string) => {
+  if (!state.value) return '未知';
+  const item = state.value.items.get(itemId);
+  if (item) return item.name;
+  const storage = state.value.storages.get(itemId);
+  if (storage) return storage.name;
+  return '未知';
+};
+
+// 判斷物品是否為貯存點
+const isStorage = (itemId: string) => {
+  return state.value?.storages.has(itemId) || false;
+};
+
+// 獲取貯存點的庫存大小
+const getStorageInventorySize = (storageId: string) => {
+  const storage = state.value?.storages.get(storageId);
+  return storage?.inventory.size || 0;
+};
+
+// 獲取貯存點的庫存項目
+const getStorageInventory = (storageId: string) => {
+  const storage = state.value?.storages.get(storageId);
+  return storage?.inventory || new Map();
+};
+
+// 獲取物品描述（支持 item 和 storage）
+const getInventoryItemDescription = (itemId: string) => {
+  if (!state.value) return '無描述';
+  const item = state.value.items.get(itemId);
+  if (item) return item.description;
+  const storage = state.value.storages.get(itemId);
+  if (storage) {
+    return storage.description;
+  }
+  return '無描述';
+};
 
 // 選擇角色
 const selectCharacter = (characterId: string) => {
@@ -1101,7 +1175,9 @@ const confirmEditing = () => {
       for (const [itemId, quantity] of Object.entries(edited_character.value.所持物)) {
         // 如果物品ID不為空且數量大於0，則保留
         if (itemId && quantity && typeof quantity === 'number' && quantity > 0) {
-          filteredInventory[itemId] = quantity;
+          // 對於 storage 類型，數量必須是 1
+          const finalQuantity = isStorage(itemId) ? 1 : quantity;
+          filteredInventory[itemId] = finalQuantity;
         }
       }
       edited_character.value.所持物 = filteredInventory;
@@ -1829,10 +1905,63 @@ const confirmEditing = () => {
   font-size: 12px;
 }
 
+.storage-indicator {
+  font-weight: 600;
+  color: #ffffff;
+  background: #4caf50;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+:deep(.inventory-item-tag) {
+  background: #4caf50;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+:deep(.storage-item-tag) {
+  background: #ff9800;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .inventory-second-row {
   font-size: 12px;
   color: #a0a0a0;
   line-height: 1.4;
+}
+
+.inventory-third-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.no-inventory {
+  color: #888;
+  font-style: italic;
+  font-size: 13px;
+}
+
+.inventory-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .inventory-edit-item {
@@ -2035,6 +2164,16 @@ const confirmEditing = () => {
 
   .inventory-item {
     gap: 4px;
+  }
+
+  :deep(.inventory-item-tag) {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+
+  .inventory-third-row :deep(.inventory-item-tag) {
+    font-size: 12px;
+    padding: 2px 6px;
   }
 
   .character-item {

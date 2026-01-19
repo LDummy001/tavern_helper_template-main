@@ -174,7 +174,7 @@ export class CreateCharacterCommand extends Command {
     this.horny = horny;
   }
   protected get REGEX(): RegExp {
-    return /createCharacter\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*\)/g;
+    return /createCharacter\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*"([^"]+?)"\s*,\s*"([^"]*?)"\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*,\s*([^"]+?)\s*\)/g;
   }
   protected create(args: string[]): Command {
     const id = args[0];
@@ -305,8 +305,13 @@ export class DeltaMoneyCommand extends Command {
   }
   public execute(state: State, _message_id: number): State {
     const character = state.getCharacter(this.id);
-    if (!character) return state;
-    character.money += this.delta;
+    const storage = state.storages.get(this.id);
+    if (!character && !storage) return state;
+    if (character) {
+      character.money += this.delta;
+    } else {
+      storage!.money += this.delta;
+    }
     return state;
   }
 }
@@ -573,12 +578,12 @@ export class CreateItemCommand extends Command {
 
 @Command.registry.register()
 export class DeltaInventoryCommand extends Command {
-  private character_id: string;
+  private id: string;
   private item_id: string;
   private delta: number;
-  constructor(character_id: string, item_id: string, delta: number) {
+  constructor(id: string, item_id: string, delta: number) {
     super();
-    this.character_id = character_id;
+    this.id = id;
     this.item_id = item_id;
     this.delta = delta;
   }
@@ -586,10 +591,10 @@ export class DeltaInventoryCommand extends Command {
     return /deltaInventory\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*([^,()]+)\s*\)/g;
   }
   protected create(args: string[]): Command {
-    const character_id = args[0];
+    const id = args[0];
     const item_id = args[1];
     const delta = Number(args[2]);
-    return new DeltaInventoryCommand(character_id, item_id, delta);
+    return new DeltaInventoryCommand(id, item_id, delta);
   }
   protected isValid(): boolean {
     if (isNaN(this.delta)) return false;
@@ -597,15 +602,105 @@ export class DeltaInventoryCommand extends Command {
   }
   public execute(state: State, _message_id: number): State {
     if (!state.items.has(this.item_id)) return state;
-    const character = state.getCharacter(this.character_id);
-    if (!character) return state;
-    let quantity = character.inventory.get(this.item_id) || 0;
+    const character = state.getCharacter(this.id);
+    const storage = state.storages.get(this.id);
+    if (!character && !storage) return state;
+    const inventory = character ? character.inventory : storage!.inventory;
+    let quantity = inventory.get(this.item_id) || 0;
     quantity += this.delta;
     if (quantity <= 0) {
-      character.inventory.delete(this.item_id);
+      inventory.delete(this.item_id);
     } else {
-      character.inventory.set(this.item_id, quantity);
+      inventory.set(this.item_id, quantity);
     }
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class CreateStorageCommand extends Command {
+  private id: string;
+  private name: string;
+  private description: string;
+  private parent_id: string;
+  constructor(id: string, name: string, description: string, parent_id: string) {
+    super();
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.parent_id = parent_id;
+  }
+  protected get REGEX(): RegExp {
+    return /createStorage\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    const name = args[1];
+    const description = args[2];
+    const parent_id = args[3];
+    return new CreateStorageCommand(id, name, description, parent_id);
+  }
+  protected isValid(): boolean {
+    if (this.id.trim() === '') return false;
+    if (this.name.trim() === '') return false;
+    if (this.description.trim() === '') return false;
+    if (this.parent_id.trim() === '') return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    state.addStorage(this.id, this.name, this.description, this.parent_id);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class RemoveStorageCommand extends Command {
+  private id: string;
+  constructor(id: string) {
+    super();
+    this.id = id;
+  }
+  protected get REGEX(): RegExp {
+    return /removeStorage\(\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const id = args[0];
+    return new RemoveStorageCommand(id);
+  }
+  protected isValid(): boolean {
+    if (this.id.trim() === '') return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    state.removeStorage(this.id);
+    return state;
+  }
+}
+
+@Command.registry.register()
+export class SetStorageParentCommand extends Command {
+  private storage_id: string;
+  private parent_id: string;
+  constructor(storage_id: string, parent_id: string) {
+    super();
+    this.storage_id = storage_id;
+    this.parent_id = parent_id;
+  }
+  protected get REGEX(): RegExp {
+    return /setStorageParent\(\s*"([^"]+?)"\s*,\s*"([^"]+?)"\s*\)/g;
+  }
+  protected create(args: string[]): Command {
+    const storage_id = args[0];
+    const parent_id = args[1];
+    return new SetStorageParentCommand(storage_id, parent_id);
+  }
+  protected isValid(): boolean {
+    if (this.storage_id.trim() === '') return false;
+    if (this.parent_id.trim() === '') return false;
+    return true;
+  }
+  public execute(state: State, _message_id: number): State {
+    state.setStorageParent(this.storage_id, this.parent_id);
     return state;
   }
 }
@@ -642,7 +737,7 @@ export class CreateLocationCommand extends Command {
   }
   public execute(state: State, _message_id: number): State {
     if (state.locations.has(this.id)) return state;
-    const location = new Location(this.id, this.name, this.location, this.description, null, []);
+    const location = new Location(this.id, this.name, this.location, this.description, null, [], []);
     state.locations.set(this.id, location);
     return state;
   }

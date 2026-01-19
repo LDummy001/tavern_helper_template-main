@@ -19,6 +19,7 @@
           角色
         </button>
         <button class="tab-button" :class="{ active: active_tab === 'item' }" @click="switchToTab('item')">物品</button>
+        <button class="tab-button" :class="{ active: active_tab === 'storage' }" @click="switchToTab('storage')">貯存</button>
       </div>
       <!-- 第二行標籤 -->
       <div class="tab-row">
@@ -63,12 +64,16 @@
         </div>
 
         <div v-else-if="active_tab === 'item'" key="item" class="item-area">
-          <ItemTab />
-        </div>
+           <ItemTab />
+         </div>
 
-        <div v-else-if="active_tab === 'location'" key="location" class="location-area">
-          <LocationTab />
-        </div>
+         <div v-else-if="active_tab === 'storage'" key="storage" class="storage-area">
+           <StorageTab />
+         </div>
+
+         <div v-else-if="active_tab === 'location'" key="location" class="location-area">
+           <LocationTab />
+         </div>
 
         <div v-else-if="active_tab === 'promise'" key="promise" class="promise-area">
           <PromiseTab />
@@ -96,6 +101,7 @@ import CharacterTab from './character_tab.vue';
 import ConversationTab from './conversation_tab.vue';
 import ItemTab from './item_tab.vue';
 import LocationTab from './location_tab.vue';
+import StorageTab from './storage_tab.vue';
 import PromiseTab from './promise_tab.vue';
 import SettingTab from './setting_tab.vue';
 import SummaryTab from './summary_tab.vue';
@@ -110,7 +116,7 @@ const dialogue_scroll_position = ref(0);
 const current_time = ref('');
 
 // 標籤頁順序定義
-const tab_order = ['conversation', 'user', 'character', 'item', 'location', 'promise', 'summary', 'world_info', 'settings'];
+const tab_order = ['conversation', 'user', 'character', 'item', 'storage', 'location', 'promise', 'summary', 'world_info', 'settings'];
 
 // 滑動相關變數
 const touch_start_x = ref(0);
@@ -308,6 +314,13 @@ const handleMouseUp = (event: MouseEvent) => {
 }
 
 .item-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: #1a1a1a;
+}
+
+.storage-area {
   display: flex;
   flex-direction: column;
   flex: 1;

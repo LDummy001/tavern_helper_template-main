@@ -183,6 +183,7 @@ import { Datetime } from '@/現代模擬UI/variable_logic/variables/datetime';
 import { Item } from '@/現代模擬UI/variable_logic/variables/item';
 import { Location } from '@/現代模擬UI/variable_logic/variables/location';
 import { State } from '@/現代模擬UI/variable_logic/variables/state';
+import { Storage } from '@/現代模擬UI/variable_logic/variables/storage';
 import { onMounted, ref, watch } from 'vue';
 
 const start_year = ref('');
@@ -863,6 +864,7 @@ const startChat = () => {
       location_record.description,
       null,
       location_record.sub_location,
+      location_record.storage_ids || [],
     );
     locations.set(location_id, location);
   }
@@ -879,6 +881,7 @@ const startChat = () => {
     active_characters,
     deactive_characters,
     items,
+    new Map<string, Storage>(),
     locations,
     new Map(),
     [],
@@ -899,6 +902,7 @@ const exportInitializationSettings = () => {
       world_info: variables.world_info || '',
       characters: variables.characters || {},
       items: variables.items || {},
+      storages: variables.storages || {},
       locations: variables.locations || {},
       extra_world_info: variables.extra_world_info || [],
       extra_world_info_prompt: variables.extra_world_info_prompt || '',
@@ -939,6 +943,7 @@ const importInitializationSettings = (event: Event) => {
         'world_info',
         'characters',
         'items',
+        'storages',
         'locations',
         'extra_world_info',
         'extra_world_info_prompt',
@@ -955,6 +960,7 @@ const importInitializationSettings = (event: Event) => {
       variables.world_info = settings.world_info;
       variables.characters = settings.characters;
       variables.items = settings.items;
+      variables.storages = settings.storages;
       variables.locations = settings.locations;
       variables.extra_world_info = settings.extra_world_info;
       variables.extra_world_info_prompt = settings.extra_world_info_prompt;
