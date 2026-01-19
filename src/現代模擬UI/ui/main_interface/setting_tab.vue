@@ -5,6 +5,17 @@
     </div>
 
     <div class="settings-list">
+      <!-- 版本號 -->
+      <div class="setting-item version-item">
+        <div class="setting-label">
+          <span class="setting-title">版本號</span>
+          <span class="setting-description">當前應用版本</span>
+        </div>
+        <div class="setting-control">
+          <span class="version-number">{{ version }}</span>
+        </div>
+      </div>
+
       <!-- 全屏開關 -->
       <div class="setting-item">
         <div class="setting-label">
@@ -182,6 +193,7 @@ const emit = defineEmits<{
 }>();
 
 // 設置數據
+const version = ref('v0.4.2'); // 版本號 - 手動更新此處
 const fullscreen_enabled = ref(false);
 const render_size = ref(10);
 const exclude_latest_summaries = ref(1);
@@ -473,6 +485,10 @@ defineExpose({
 
   &:last-child {
     border-bottom: none;
+  }
+
+  &.version-item {
+    border-bottom: 1px solid #2a2a2a;
   }
 
   &.xml-rules-item {
@@ -875,5 +891,16 @@ input:checked + .slider:before {
     font-size: 9px;
     min-width: 35px;
   }
+}
+
+// 版本號樣式
+.version-number {
+  font-size: 16px;
+  font-weight: 600;
+  color: #007acc;
+  padding: 6px 12px;
+  min-width: 80px;
+  text-align: center;
+  user-select: text;
 }
 </style>

@@ -467,10 +467,10 @@ export class State {
 
   private getLocationPrompt(): string {
     let location_prompt = `<LocationTable>\n`;
-    location_prompt += `|id|${Location.NAME_KEY}|${Location.LOCATION_KEY}|${Location.DESCRIPTION_KEY}|${Location.SUB_LOCATION_IDS_KEY}|\n`;
+    location_prompt += `|id|${Location.NAME_KEY}|${Location.LOCATION_KEY}|${Location.DESCRIPTION_KEY}|${Location.SUB_LOCATION_IDS_KEY}|${Location.STORAGE_IDS_KEY}|\n`;
     location_prompt += '|---|---|---|---|---|\n';
     for (const [location_id, location] of this.locations) {
-      location_prompt += `|${location_id}|${location.name}|${location.location}|${location.description}|${location.sub_location_ids.join(',')}|\n`;
+      location_prompt += `|${location_id}|${location.name}|${location.location}|${location.description}|${location.sub_location_ids.join(',')}|${location.storage_ids.join(',')}|\n`;
     }
     location_prompt += `</LocationTable>\n`;
     return location_prompt;

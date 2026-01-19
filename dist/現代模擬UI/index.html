@@ -7773,6 +7773,7 @@ var __webpack_modules__ = {
           "07c173da-settings_container_max_height": settings_container_max_height.value
         }));
         const emit = __emit;
+        const version = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)("v0.4.2");
         const fullscreen_enabled = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
         const render_size = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)(10);
         const exclude_latest_summaries = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)(1);
@@ -7959,6 +7960,7 @@ var __webpack_modules__ = {
         });
         const __returned__ = {
           emit,
+          version,
           fullscreen_enabled,
           render_size,
           exclude_latest_summaries,
@@ -15230,13 +15232,13 @@ var __webpack_modules__ = {
       class: "settings-list"
     };
     const _hoisted_3 = {
-      class: "setting-item"
+      class: "setting-item version-item"
     };
     const _hoisted_4 = {
       class: "setting-control"
     };
     const _hoisted_5 = {
-      class: "switch"
+      class: "version-number"
     };
     const _hoisted_6 = {
       class: "setting-item"
@@ -15245,92 +15247,110 @@ var __webpack_modules__ = {
       class: "setting-control"
     };
     const _hoisted_8 = {
-      class: "setting-item"
+      class: "switch"
     };
     const _hoisted_9 = {
-      class: "setting-control"
+      class: "setting-item"
     };
     const _hoisted_10 = {
-      class: "folding-rules-fullwidth"
+      class: "setting-control"
     };
     const _hoisted_11 = {
-      class: "folding-rules-container"
+      class: "setting-item"
     };
     const _hoisted_12 = {
-      class: "rule-cell"
+      class: "setting-control"
     };
-    const _hoisted_13 = [ "onUpdate:modelValue", "onInput" ];
+    const _hoisted_13 = {
+      class: "folding-rules-fullwidth"
+    };
     const _hoisted_14 = {
+      class: "folding-rules-container"
+    };
+    const _hoisted_15 = {
       class: "rule-cell"
     };
-    const _hoisted_15 = [ "onUpdate:modelValue", "onInput" ];
-    const _hoisted_16 = {
+    const _hoisted_16 = [ "onUpdate:modelValue", "onInput" ];
+    const _hoisted_17 = {
       class: "rule-cell"
     };
-    const _hoisted_17 = [ "onUpdate:modelValue", "onChange" ];
-    const _hoisted_18 = {
-      class: "rule-cell"
-    };
+    const _hoisted_18 = [ "onUpdate:modelValue", "onInput" ];
     const _hoisted_19 = {
-      class: "radio-group compact"
+      class: "rule-cell"
     };
-    const _hoisted_20 = {
-      class: "radio-option compact"
+    const _hoisted_20 = [ "onUpdate:modelValue", "onChange" ];
+    const _hoisted_21 = {
+      class: "rule-cell"
     };
-    const _hoisted_21 = [ "onUpdate:modelValue", "onChange" ];
     const _hoisted_22 = {
-      class: "radio-option compact"
-    };
-    const _hoisted_23 = [ "onUpdate:modelValue", "onChange" ];
-    const _hoisted_24 = {
-      class: "rule-cell"
-    };
-    const _hoisted_25 = {
       class: "radio-group compact"
     };
-    const _hoisted_26 = {
+    const _hoisted_23 = {
       class: "radio-option compact"
     };
-    const _hoisted_27 = [ "onUpdate:modelValue", "onChange" ];
-    const _hoisted_28 = {
+    const _hoisted_24 = [ "onUpdate:modelValue", "onChange" ];
+    const _hoisted_25 = {
       class: "radio-option compact"
     };
-    const _hoisted_29 = [ "onUpdate:modelValue", "onChange" ];
-    const _hoisted_30 = {
+    const _hoisted_26 = [ "onUpdate:modelValue", "onChange" ];
+    const _hoisted_27 = {
       class: "rule-cell"
     };
-    const _hoisted_31 = [ "onClick" ];
+    const _hoisted_28 = {
+      class: "radio-group compact"
+    };
+    const _hoisted_29 = {
+      class: "radio-option compact"
+    };
+    const _hoisted_30 = [ "onUpdate:modelValue", "onChange" ];
+    const _hoisted_31 = {
+      class: "radio-option compact"
+    };
+    const _hoisted_32 = [ "onUpdate:modelValue", "onChange" ];
+    const _hoisted_33 = {
+      class: "rule-cell"
+    };
+    const _hoisted_34 = [ "onClick" ];
     function render(_ctx, _cache, $props, $setup, $data, $options) {
-      return (0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [ _cache[14] || (_cache[14] = (0, 
+      return (0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [ _cache[15] || (_cache[15] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
         class: "settings-header"
       }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", null, "設置") ], -1)), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 全屏開關 "), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [ _cache[4] || (_cache[4] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 版本號 "), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [ _cache[3] || (_cache[3] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "setting-label"
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+        class: "setting-title"
+      }, "版本號"), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+        class: "setting-description"
+      }, "當前應用版本") ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.version), 1) ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 全屏開關 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [ _cache[5] || (_cache[5] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
         class: "setting-label"
       }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "setting-title"
       }, "全屏模式"), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "setting-description"
-      }, "啟用全屏顯示模式") ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [ (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_5, [ (0, 
+      }, "啟用全屏顯示模式") ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_8, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => $setup.fullscreen_enabled = $event),
         type: "checkbox",
         onChange: $setup.handleFullscreenChange
-      }, null, 544), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $setup.fullscreen_enabled ] ]), _cache[3] || (_cache[3] = (0, 
+      }, null, 544), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $setup.fullscreen_enabled ] ]), _cache[4] || (_cache[4] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "slider"
       }, null, -1)) ]) ]) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 渲染大小 "), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [ _cache[5] || (_cache[5] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [ _cache[6] || (_cache[6] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
         class: "setting-label"
       }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "setting-title"
       }, "載入樓層數目"), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "setting-description"
-      }, "設置每次載入樓層的數目") ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [ (0, 
+      }, "設置每次載入樓層的數目") ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => $setup.render_size = $event),
         type: "number",
@@ -15340,14 +15360,14 @@ var __webpack_modules__ = {
       }, null, 544), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.render_size, void 0, {
         number: true
       } ] ]) ]) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 排除最新總結數量 "), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [ _cache[6] || (_cache[6] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [ _cache[7] || (_cache[7] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
         class: "setting-label"
       }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "setting-title"
       }, "排除最新總結數量"), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "setting-description"
-      }, "設置不使用最新n個總結的數量") ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [ (0, 
+      }, "設置不使用最新n個總結的數量") ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => $setup.exclude_latest_summaries = $event),
         type: "number",
@@ -15356,7 +15376,7 @@ var __webpack_modules__ = {
         onInput: $setup.handleExcludeLatestSummariesChange
       }, null, 544), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.exclude_latest_summaries, void 0, {
         number: true
-      } ] ]) ]) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" XML內容摺疊規則 "), _cache[13] || (_cache[13] = (0, 
+      } ] ]) ]) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" XML內容摺疊規則 "), _cache[14] || (_cache[14] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
         class: "setting-item xml-rules-item"
       }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -15366,8 +15386,8 @@ var __webpack_modules__ = {
       }, "XML內容摺疊規則"), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "setting-description"
       }, "設置XML標籤內容的顯示方式") ]) ], -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" XML內容摺疊規則表格 "), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [ (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 表頭 "), _cache[12] || (_cache[12] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 表頭 "), _cache[13] || (_cache[13] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)('<div class="rules-header" data-v-07c173da><div class="header-cell" data-v-07c173da>標籤名稱</div><div class="header-cell" data-v-07c173da>標題名稱</div><div class="header-cell" data-v-07c173da>顯示模式</div><div class="header-cell" data-v-07c173da>匹配模式</div><div class="header-cell" data-v-07c173da>匹配結束標籤策略</div><div class="header-cell" data-v-07c173da>操作</div></div>', 1)), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 規則行 "), ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), 
       (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
@@ -15375,7 +15395,7 @@ var __webpack_modules__ = {
       vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
         key: index,
         class: "folding-rule-row"
-      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 標籤名稱 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [ (0, 
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 標籤名稱 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": $event => rule.tag_name = $event,
         type: "text",
@@ -15384,8 +15404,8 @@ var __webpack_modules__ = {
         onInput: $event => $setup.updateFoldingRule(index, {
           tag_name: rule.tag_name
         })
-      }, null, 40, _hoisted_13), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, rule.tag_name ] ]) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 標題名稱 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [ (0, 
+      }, null, 40, _hoisted_16), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, rule.tag_name ] ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 標題名稱 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": $event => rule.title_name = $event,
         type: "text",
@@ -15394,21 +15414,21 @@ var __webpack_modules__ = {
         onInput: $event => $setup.updateFoldingRule(index, {
           title_name: rule.title_name
         })
-      }, null, 40, _hoisted_15), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, rule.title_name ] ]) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 顯示模式 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [ (0, 
+      }, null, 40, _hoisted_18), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, rule.title_name ] ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 顯示模式 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
         "onUpdate:modelValue": $event => rule.display_mode = $event,
         class: "select-input compact",
         onChange: $event => $setup.updateFoldingRule(index, {
           display_mode: rule.display_mode
         })
-      }, [ ..._cache[7] || (_cache[7] = [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+      }, [ ..._cache[8] || (_cache[8] = [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
         value: "invisible"
       }, "隱藏", -1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
         value: "fold_bar"
-      }, "摺疊欄", -1) ]) ], 40, _hoisted_17), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, rule.display_mode ] ]) ]), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 匹配模式 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [ (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_20, [ (0, 
+      }, "摺疊欄", -1) ]) ], 40, _hoisted_20), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, rule.display_mode ] ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 匹配模式 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_23, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": $event => rule.match_mode = $event,
         type: "radio",
@@ -15416,10 +15436,10 @@ var __webpack_modules__ = {
         onChange: $event => $setup.updateFoldingRule(index, {
           match_mode: rule.match_mode
         })
-      }, null, 40, _hoisted_21), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_mode ] ]), _cache[8] || (_cache[8] = (0, 
+      }, null, 40, _hoisted_24), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_mode ] ]), _cache[9] || (_cache[9] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "radio-label"
-      }, "開始及結束", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_22, [ (0, 
+      }, "開始及結束", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_25, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": $event => rule.match_mode = $event,
         type: "radio",
@@ -15427,12 +15447,12 @@ var __webpack_modules__ = {
         onChange: $event => $setup.updateFoldingRule(index, {
           match_mode: rule.match_mode
         })
-      }, null, 40, _hoisted_23), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_mode ] ]), _cache[9] || (_cache[9] = (0, 
+      }, null, 40, _hoisted_26), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_mode ] ]), _cache[10] || (_cache[10] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "radio-label"
       }, "只結束", -1)) ]) ]) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 匹配結束標籤策略 "), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [ (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_26, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_29, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": $event => rule.match_strategy = $event,
         type: "radio",
@@ -15440,10 +15460,10 @@ var __webpack_modules__ = {
         onChange: $event => $setup.updateFoldingRule(index, {
           match_strategy: rule.match_strategy
         })
-      }, null, 40, _hoisted_27), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_strategy ] ]), _cache[10] || (_cache[10] = (0, 
+      }, null, 40, _hoisted_30), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_strategy ] ]), _cache[11] || (_cache[11] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "radio-label"
-      }, "第一個", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_28, [ (0, 
+      }, "第一個", -1)) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_31, [ (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
         "onUpdate:modelValue": $event => rule.match_strategy = $event,
         type: "radio",
@@ -15451,14 +15471,14 @@ var __webpack_modules__ = {
         onChange: $event => $setup.updateFoldingRule(index, {
           match_strategy: rule.match_strategy
         })
-      }, null, 40, _hoisted_29), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_strategy ] ]), _cache[11] || (_cache[11] = (0, 
+      }, null, 40, _hoisted_32), [ [ vue__WEBPACK_IMPORTED_MODULE_0__.vModelRadio, rule.match_strategy ] ]), _cache[12] || (_cache[12] = (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
         class: "radio-label"
       }, "最後一個", -1)) ]) ]) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 刪除按鈕 "), (0, 
-      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_30, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         class: "delete-rule-btn compact",
         onClick: $event => $setup.deleteFoldingRule(index)
-      }, "刪除", 8, _hoisted_31) ]) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 添加規則按鈕 "), (0, 
+      }, "刪除", 8, _hoisted_34) ]) ]))), 128)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 添加規則按鈕 "), (0, 
       vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
         class: "add-rule-row"
       }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
@@ -20105,10 +20125,10 @@ var __webpack_modules__ = {
       }
       getLocationPrompt() {
         let location_prompt = `<LocationTable>\n`;
-        location_prompt += `|id|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.NAME_KEY}|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.LOCATION_KEY}|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.DESCRIPTION_KEY}|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.SUB_LOCATION_IDS_KEY}|\n`;
+        location_prompt += `|id|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.NAME_KEY}|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.LOCATION_KEY}|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.DESCRIPTION_KEY}|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.SUB_LOCATION_IDS_KEY}|${_location__WEBPACK_IMPORTED_MODULE_3__.Location.STORAGE_IDS_KEY}|\n`;
         location_prompt += "|---|---|---|---|---|\n";
         for (const [location_id, location] of this.locations) {
-          location_prompt += `|${location_id}|${location.name}|${location.location}|${location.description}|${location.sub_location_ids.join(",")}|\n`;
+          location_prompt += `|${location_id}|${location.name}|${location.location}|${location.description}|${location.sub_location_ids.join(",")}|${location.storage_ids.join(",")}|\n`;
         }
         location_prompt += `</LocationTable>\n`;
         return location_prompt;
@@ -20430,7 +20450,7 @@ var __webpack_exports__ = {};
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-133.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/現代模擬UI/ui/main_interface/setting_tab.vue?vue&type=style&index=0&id=07c173da&lang=scss&scoped=true ***!
   \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-@charset "UTF-8";.settings-container[data-v-07c173da]{display:flex;flex-direction:column;background-color:#1a1a1a;color:#e0e0e0;overflow:hidden;min-height:var(--07c173da-settings_container_max_height);max-height:var(--07c173da-settings_container_max_height)}.settings-header[data-v-07c173da]{padding:20px 16px 16px 16px;border-bottom:1px solid #404040}.settings-header h2[data-v-07c173da]{margin:0;font-size:24px;font-weight:600;color:#e0e0e0}.settings-list[data-v-07c173da]{flex:1;overflow-y:auto;padding:8px 0}.setting-item[data-v-07c173da]{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #2a2a2a;transition:background-color 0.2s ease}.setting-item[data-v-07c173da]:hover{background-color:rgba(255,255,255,0.02)}.setting-item[data-v-07c173da]:last-child{border-bottom:none}.setting-item.xml-rules-item[data-v-07c173da]{border-bottom:none;padding-bottom:8px}.setting-label[data-v-07c173da]{flex:1;display:flex;flex-direction:column;gap:4px}.setting-title[data-v-07c173da]{font-size:16px;font-weight:500;color:#e0e0e0}.setting-description[data-v-07c173da]{font-size:14px;color:#888;line-height:1.4}.setting-control[data-v-07c173da]{display:flex;align-items:center;margin-left:16px}.switch[data-v-07c173da]{position:relative;display:inline-block;width:50px;height:24px}.switch input[data-v-07c173da]{opacity:0;width:0;height:0}.slider[data-v-07c173da]{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#404040;transition:0.3s;border-radius:24px}.slider[data-v-07c173da]:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background-color:white;transition:0.3s;border-radius:50%}input:checked+.slider[data-v-07c173da]{background-color:#007acc}input:checked+.slider[data-v-07c173da]:before{transform:translateX(26px)}.number-input[data-v-07c173da]{width:80px;padding:8px 12px;background-color:#2a2a2a;border:1px solid #404040;border-radius:8px;color:#e0e0e0;font-size:14px;text-align:center;outline:none;transition:border-color 0.2s ease}.number-input[data-v-07c173da]:focus{border-color:#007acc}.number-input[data-v-07c173da]::placeholder{color:#888}.number-input[data-v-07c173da]{}.number-input[data-v-07c173da]::-webkit-outer-spin-button,.number-input[data-v-07c173da]::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}.number-input[type=number][data-v-07c173da]{-webkit-appearance:textfield;appearance:textfield}.setting-section-header[data-v-07c173da]{padding:16px 16px 8px 16px;display:flex;align-items:center;gap:12px}.setting-section-header h3[data-v-07c173da]{margin:0;font-size:18px;font-weight:600;color:#e0e0e0}.setting-section-header .section-description[data-v-07c173da]{font-size:14px;color:#888;line-height:1.4}.folding-rules-fullwidth[data-v-07c173da]{margin-top:8px;padding:0 16px}.folding-rules-container[data-v-07c173da]{width:100%;border:1px solid #404040;border-radius:8px;overflow:hidden}.rules-header[data-v-07c173da]{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:12px;padding:12px 16px;background-color:#2a2a2a;border-bottom:1px solid #404040;font-size:12px;font-weight:500;color:#b0b0b0;text-transform:uppercase;letter-spacing:0.5px}.header-cell[data-v-07c173da]{text-align:center;padding:4px 0}.folding-rule-row[data-v-07c173da]{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:12px;padding:12px 16px;background-color:#1a1a1a;border-bottom:1px solid #2a2a2a;align-items:center}.folding-rule-row[data-v-07c173da]:last-child{border-bottom:none}.folding-rule-row[data-v-07c173da]:hover{background-color:#202020}.rule-cell[data-v-07c173da]{display:flex;align-items:center;justify-content:center;min-height:32px}.field-label[data-v-07c173da]{font-size:12px;font-weight:500;color:#b0b0b0;text-transform:uppercase;letter-spacing:0.5px}.text-input[data-v-07c173da]{padding:6px 8px;background-color:#2a2a2a;border:1px solid #404040;border-radius:4px;color:#e0e0e0;font-size:13px;outline:none;transition:border-color 0.2s ease;width:100%;min-width:80px}.text-input[data-v-07c173da]:focus{border-color:#007acc}.text-input[data-v-07c173da]::placeholder{color:#666}.text-input.compact[data-v-07c173da]{padding:4px 6px;font-size:12px;min-width:60px}.select-input[data-v-07c173da]{padding:6px 8px;background-color:#2a2a2a;border:1px solid #404040;border-radius:4px;color:#e0e0e0;font-size:13px;outline:none;cursor:pointer;transition:border-color 0.2s ease;width:100%;min-width:80px}.select-input[data-v-07c173da]:focus{border-color:#007acc}.select-input.compact[data-v-07c173da]{padding:4px 6px;font-size:12px;min-width:60px}.radio-group[data-v-07c173da]{display:flex;flex-direction:column;gap:4px;width:100%}.radio-group.compact[data-v-07c173da]{gap:2px}.radio-option[data-v-07c173da]{display:flex;align-items:center;gap:4px;cursor:pointer;padding:2px 4px;border-radius:3px;transition:background-color 0.2s ease;justify-content:center}.radio-option[data-v-07c173da]:hover{background-color:rgba(255,255,255,0.05)}.radio-option.compact[data-v-07c173da]{padding:1px 2px;gap:2px}.radio-option input[type=radio][data-v-07c173da]{margin:0;width:14px;height:14px;accent-color:#007acc;cursor:pointer}.radio-option .radio-label[data-v-07c173da]{font-size:11px;color:#b0b0b0;-webkit-user-select:none;user-select:none;white-space:nowrap}.delete-rule-btn[data-v-07c173da]{padding:6px 10px;background-color:#dc3545;border:none;border-radius:4px;color:white;font-size:11px;font-weight:500;cursor:pointer;transition:background-color 0.2s ease;white-space:nowrap;min-width:50px}.delete-rule-btn[data-v-07c173da]:hover{background-color:#c82333}.delete-rule-btn.compact[data-v-07c173da]{padding:4px 8px;font-size:10px;min-width:40px}.add-rule-row[data-v-07c173da]{display:flex;justify-content:center;padding:12px 0}.add-rule-btn[data-v-07c173da]{padding:10px 20px;background-color:#007acc;border:none;border-radius:8px;color:white;font-size:14px;font-weight:500;cursor:pointer;transition:background-color 0.2s ease}.add-rule-btn[data-v-07c173da]:hover{background-color:#0056b3}@media (max-width:768px){.settings-header[data-v-07c173da]{padding:16px 12px 12px 12px}.settings-header h2[data-v-07c173da]{font-size:20px}.setting-item[data-v-07c173da]{padding:12px}.setting-title[data-v-07c173da]{font-size:15px}.setting-description[data-v-07c173da]{font-size:13px}.number-input[data-v-07c173da]{width:70px;padding:6px 10px;font-size:13px}.rules-header[data-v-07c173da]{font-size:10px;padding:8px 12px}.folding-rule-row[data-v-07c173da]{padding:8px 12px;gap:6px}.rule-cell[data-v-07c173da]{min-height:28px}.text-input.compact[data-v-07c173da],.select-input.compact[data-v-07c173da]{font-size:11px;padding:3px 4px;min-width:45px}.radio-option.compact .radio-label[data-v-07c173da]{font-size:10px}.delete-rule-btn.compact[data-v-07c173da]{padding:3px 6px;font-size:9px;min-width:35px}}
+@charset "UTF-8";.settings-container[data-v-07c173da]{display:flex;flex-direction:column;background-color:#1a1a1a;color:#e0e0e0;overflow:hidden;min-height:var(--07c173da-settings_container_max_height);max-height:var(--07c173da-settings_container_max_height)}.settings-header[data-v-07c173da]{padding:20px 16px 16px 16px;border-bottom:1px solid #404040}.settings-header h2[data-v-07c173da]{margin:0;font-size:24px;font-weight:600;color:#e0e0e0}.settings-list[data-v-07c173da]{flex:1;overflow-y:auto;padding:8px 0}.setting-item[data-v-07c173da]{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #2a2a2a;transition:background-color 0.2s ease}.setting-item[data-v-07c173da]:hover{background-color:rgba(255,255,255,0.02)}.setting-item[data-v-07c173da]:last-child{border-bottom:none}.setting-item.version-item[data-v-07c173da]{border-bottom:1px solid #2a2a2a}.setting-item.xml-rules-item[data-v-07c173da]{border-bottom:none;padding-bottom:8px}.setting-label[data-v-07c173da]{flex:1;display:flex;flex-direction:column;gap:4px}.setting-title[data-v-07c173da]{font-size:16px;font-weight:500;color:#e0e0e0}.setting-description[data-v-07c173da]{font-size:14px;color:#888;line-height:1.4}.setting-control[data-v-07c173da]{display:flex;align-items:center;margin-left:16px}.switch[data-v-07c173da]{position:relative;display:inline-block;width:50px;height:24px}.switch input[data-v-07c173da]{opacity:0;width:0;height:0}.slider[data-v-07c173da]{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#404040;transition:0.3s;border-radius:24px}.slider[data-v-07c173da]:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background-color:white;transition:0.3s;border-radius:50%}input:checked+.slider[data-v-07c173da]{background-color:#007acc}input:checked+.slider[data-v-07c173da]:before{transform:translateX(26px)}.number-input[data-v-07c173da]{width:80px;padding:8px 12px;background-color:#2a2a2a;border:1px solid #404040;border-radius:8px;color:#e0e0e0;font-size:14px;text-align:center;outline:none;transition:border-color 0.2s ease}.number-input[data-v-07c173da]:focus{border-color:#007acc}.number-input[data-v-07c173da]::placeholder{color:#888}.number-input[data-v-07c173da]{}.number-input[data-v-07c173da]::-webkit-outer-spin-button,.number-input[data-v-07c173da]::-webkit-inner-spin-button{-webkit-appearance:none;appearance:none;margin:0}.number-input[type=number][data-v-07c173da]{-webkit-appearance:textfield;appearance:textfield}.setting-section-header[data-v-07c173da]{padding:16px 16px 8px 16px;display:flex;align-items:center;gap:12px}.setting-section-header h3[data-v-07c173da]{margin:0;font-size:18px;font-weight:600;color:#e0e0e0}.setting-section-header .section-description[data-v-07c173da]{font-size:14px;color:#888;line-height:1.4}.folding-rules-fullwidth[data-v-07c173da]{margin-top:8px;padding:0 16px}.folding-rules-container[data-v-07c173da]{width:100%;border:1px solid #404040;border-radius:8px;overflow:hidden}.rules-header[data-v-07c173da]{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:12px;padding:12px 16px;background-color:#2a2a2a;border-bottom:1px solid #404040;font-size:12px;font-weight:500;color:#b0b0b0;text-transform:uppercase;letter-spacing:0.5px}.header-cell[data-v-07c173da]{text-align:center;padding:4px 0}.folding-rule-row[data-v-07c173da]{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr auto;gap:12px;padding:12px 16px;background-color:#1a1a1a;border-bottom:1px solid #2a2a2a;align-items:center}.folding-rule-row[data-v-07c173da]:last-child{border-bottom:none}.folding-rule-row[data-v-07c173da]:hover{background-color:#202020}.rule-cell[data-v-07c173da]{display:flex;align-items:center;justify-content:center;min-height:32px}.field-label[data-v-07c173da]{font-size:12px;font-weight:500;color:#b0b0b0;text-transform:uppercase;letter-spacing:0.5px}.text-input[data-v-07c173da]{padding:6px 8px;background-color:#2a2a2a;border:1px solid #404040;border-radius:4px;color:#e0e0e0;font-size:13px;outline:none;transition:border-color 0.2s ease;width:100%;min-width:80px}.text-input[data-v-07c173da]:focus{border-color:#007acc}.text-input[data-v-07c173da]::placeholder{color:#666}.text-input.compact[data-v-07c173da]{padding:4px 6px;font-size:12px;min-width:60px}.select-input[data-v-07c173da]{padding:6px 8px;background-color:#2a2a2a;border:1px solid #404040;border-radius:4px;color:#e0e0e0;font-size:13px;outline:none;cursor:pointer;transition:border-color 0.2s ease;width:100%;min-width:80px}.select-input[data-v-07c173da]:focus{border-color:#007acc}.select-input.compact[data-v-07c173da]{padding:4px 6px;font-size:12px;min-width:60px}.radio-group[data-v-07c173da]{display:flex;flex-direction:column;gap:4px;width:100%}.radio-group.compact[data-v-07c173da]{gap:2px}.radio-option[data-v-07c173da]{display:flex;align-items:center;gap:4px;cursor:pointer;padding:2px 4px;border-radius:3px;transition:background-color 0.2s ease;justify-content:center}.radio-option[data-v-07c173da]:hover{background-color:rgba(255,255,255,0.05)}.radio-option.compact[data-v-07c173da]{padding:1px 2px;gap:2px}.radio-option input[type=radio][data-v-07c173da]{margin:0;width:14px;height:14px;accent-color:#007acc;cursor:pointer}.radio-option .radio-label[data-v-07c173da]{font-size:11px;color:#b0b0b0;-webkit-user-select:none;user-select:none;white-space:nowrap}.delete-rule-btn[data-v-07c173da]{padding:6px 10px;background-color:#dc3545;border:none;border-radius:4px;color:white;font-size:11px;font-weight:500;cursor:pointer;transition:background-color 0.2s ease;white-space:nowrap;min-width:50px}.delete-rule-btn[data-v-07c173da]:hover{background-color:#c82333}.delete-rule-btn.compact[data-v-07c173da]{padding:4px 8px;font-size:10px;min-width:40px}.add-rule-row[data-v-07c173da]{display:flex;justify-content:center;padding:12px 0}.add-rule-btn[data-v-07c173da]{padding:10px 20px;background-color:#007acc;border:none;border-radius:8px;color:white;font-size:14px;font-weight:500;cursor:pointer;transition:background-color 0.2s ease}.add-rule-btn[data-v-07c173da]:hover{background-color:#0056b3}@media (max-width:768px){.settings-header[data-v-07c173da]{padding:16px 12px 12px 12px}.settings-header h2[data-v-07c173da]{font-size:20px}.setting-item[data-v-07c173da]{padding:12px}.setting-title[data-v-07c173da]{font-size:15px}.setting-description[data-v-07c173da]{font-size:13px}.number-input[data-v-07c173da]{width:70px;padding:6px 10px;font-size:13px}.rules-header[data-v-07c173da]{font-size:10px;padding:8px 12px}.folding-rule-row[data-v-07c173da]{padding:8px 12px;gap:6px}.rule-cell[data-v-07c173da]{min-height:28px}.text-input.compact[data-v-07c173da],.select-input.compact[data-v-07c173da]{font-size:11px;padding:3px 4px;min-width:45px}.radio-option.compact .radio-label[data-v-07c173da]{font-size:10px}.delete-rule-btn.compact[data-v-07c173da]{padding:3px 6px;font-size:9px;min-width:35px}}.version-number[data-v-07c173da]{font-size:16px;font-weight:600;color:#007acc;padding:6px 12px;min-width:80px;text-align:center;-webkit-user-select:text;user-select:text}
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-133.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/現代模擬UI/ui/main_interface/summary_tab.vue?vue&type=style&index=0&id=1549ad2e&lang=scss&scoped=true ***!
   \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/

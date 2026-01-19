@@ -1,2 +1,1393 @@
-<head><script type="module">var t={235:(t,e)=>{e.A=(t,e)=>{const a=t.__vccOpts||t;for(const[t,r]of e)a[t]=r;return a}}},e={};const a=Vue;class r{registry=new Map;register(t){return e=>(t||(t=e.name),this.registry.set(t,e),e)}get(t){return this.registry.get(t)}getAll(){return this.registry}has(t){return this.registry.has(t)}}var s,i,n,l,o,g,u,c=function(t,e,a,r){var s,i=arguments.length,n=i<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,a):r;if('object'==typeof Reflect&&'function'==typeof Reflect.decorate)n=Reflect.decorate(t,e,a,r);else for(var l=t.length-1;l>=0;l--)(s=t[l])&&(n=(i<3?s(n):i>3?s(e,a,n):s(e,a))||n);return i>3&&n&&Object.defineProperty(e,a,n),n},m=function(t,e){if('object'==typeof Reflect&&'function'==typeof Reflect.metadata)return Reflect.metadata(t,e)};class h{static registry=new r;constructor(...t){}static fromObject(t){return this.prototype.fromObject(t)}}let d=s=class extends h{low;high;num;constructor(t,e,a){super(),this.low=t,this.high=e,this.num=a}fromObject(t){const e=t.low,a=t.high,r=t.num;return new s(e,a,r)}get TYPE(){return'num'}getValue(){return{low:this.low,high:this.high,num:this.num}}getLow(){return this.low}getHigh(){return this.high}getNum(){return this.num}deltaLow(t){null===t?this.low=null:null===this.low?this.low=t:this.low+=t,this.applyConstrain()}deltaHigh(t){null===t?this.high=null:null===this.high?this.high=t:this.high+=t,this.applyConstrain()}deltaNum(t){this.num+=t,this.applyConstrain()}applyConstrain(){null!==this.low&&this.num<this.low&&(this.num=this.low),null!==this.high&&this.num>this.high&&(this.num=this.high)}};d=s=c([h.registry.register(d.prototype.TYPE),m('design:paramtypes',[Object,Object,Number])],d);let E=i=class extends h{str;constructor(t){super(),this.str=t}fromObject(t){const e=t.str;return new i(e)}get TYPE(){return'str'}getValue(){return{str:this.str}}getStr(){return this.str}setStr(t){this.str=t}};E=i=c([h.registry.register(E.prototype.TYPE),m('design:paramtypes',[String])],E);let p=n=class extends h{datetime;constructor(t){super(),this.datetime=new Date(t)}fromObject(t){const e=t.datetime;return new n(e)}get TYPE(){return'datetime'}getValue(){return{datetime:this.datetime}}getYear(){return this.datetime.getFullYear()}getMonth(){return this.datetime.getMonth()}getDate(){return this.datetime.getDate()}getHours(){return this.datetime.getHours()}getMinutes(){return this.datetime.getMinutes()}getSeconds(){return this.datetime.getSeconds()}getDay(){return this.datetime.getDay()}getDateTime(){return this.datetime}deltaDatetime(t,e,a,r,s,i){this.datetime.setFullYear(this.datetime.getFullYear()+t),this.datetime.setMonth(this.datetime.getMonth()+e),this.datetime.setDate(this.datetime.getDate()+a),this.datetime.setHours(this.datetime.getHours()+r),this.datetime.setMinutes(this.datetime.getMinutes()+s),this.datetime.setSeconds(this.datetime.getSeconds()+i)}};p=n=c([h.registry.register(p.prototype.TYPE),m('design:paramtypes',['function'==typeof(g='undefined'!=typeof Date&&Date)?g:Object])],p);let b=l=class extends h{outcome;random_events;constructor(t,e){super(),this.outcome=t,this.random_events=e}fromObject(t){const e=t?.outcome,a=t.random_events;return new l(e,a)}get TYPE(){return'random'}getValue(){return{outcome:this.outcome,random_events:this.random_events}}roll(){this.outcome=function(t){let e=0;for(const a of t)e+=a.weighting;let a=Math.random()*e;for(const e of t)if(a-=e.weighting,a<=0)return e.event;return t[-1].event}(this.random_events)}};b=l=c([h.registry.register(b.prototype.TYPE),m('design:paramtypes',[Object,Array])],b);let V=o=class extends h{map;constructor(t){if(super(),this.map=new Map,t)for(const[e,a]of Object.entries(t)){const t=h.registry.get(a.type)?.fromObject(a.values);t&&this.map.set(e,t)}}get TYPE(){return'map'}fromObject(t){return new o(t)}getValue(){const t={};for(const[e,a]of this.map.entries())t[e]={type:a.TYPE,values:a.getValue()};return t}getVariable(t){return this.map.get(t)}setVariable(t,e){this.map.set(t,e)}deleteVariable(t){this.map.delete(t)}get size(){return this.map.size}keys(){return this.map.keys()}};V=o=c([h.registry.register(V.prototype.TYPE),m('design:paramtypes',['function'==typeof(u='undefined'!=typeof Record&&Record)?u:Object])],V);class S{state;constructor(t){this.state=t?t.state:new Map}static fromVariables(t){const e=new S;if(null===t)return e;for(const[a,r]of Object.entries(t)){const t=h.registry.get(r.type)?.fromObject(r.values);t&&e.setVariable(a,t)}return e}toVariables(){const t={};for(const[e,a]of this.state)t[e]={type:a.TYPE,values:a.getValue()};return t}getVariable(t){return this.state.get(t)??null}setVariable(t,e){this.state.set(t,e)}deleteVariable(t){this.state.delete(t)}}class y{registry=new Map;register(t,e){this.registry.set(t,e)}get(t){return this.registry.get(t)}getAll(){return this.registry}has(t){return this.registry.has(t)}}class M{static registry=new y;name;description;constructor(t,e){this.name=t,this.description=e}static register(t){M.registry.register(t.name,t)}static get(t){return M.registry.get(t)}}class T extends S{constructor(t){super(t)}static get STAMINA_KEY(){return'行動力'}static get MONEY_KEY(){return'金錢'}static get TRUST_KEY(){return'信賴'}static get INTEREST_KEY(){return'興致'}static get MOOD_KEY(){return'心情'}static get CURRENT_ACTION_KEY(){return'當前行動'}static get EXPECT_RESULT_KEY(){return'預期結果'}static get DATETIME_KEY(){return'時間'}static get BIG_PLACE_KEY(){return'大地點'}static get MIDDLE_PLACE_KEY(){return'中地點'}static get SMALL_PLACE_KEY(){return'小地點'}static get WEATHER_KEY(){return'天氣'}static get FLAGS_KEY(){return'flags'}static get FLAG_BATH_KEY(){return'洗澡了'}static get SHOP_ITEMS_KEY(){return'shop_items'}static get INVENTORIES_KEY(){return'inventories'}static get TRUST_ROC_KEY(){return'信賴變動'}static get INTEREST_ROC_KEY(){return'興致變動'}static get MOOD_ROC_KEY(){return'心情變動'}static get ITEM_TABLE_KEY(){return'item_table'}static get CLOTHING_KEY(){return'妹妹衣著'}static get SUMMARY_TABLE_KEY(){return'summary_table'}static get SUMMARY_KEY(){return'總結'}static get WEIGHTING_KEY(){return'權重'}getNumVariable(t){const e=this.state.get(t);return e instanceof d?e:null}getStrVariable(t){const e=this.state.get(t);return e instanceof E?e:null}getMapVariable(t){const e=this.state.get(t);return e instanceof V?e:null}getStaminaVariable(){return this.getNumVariable(T.STAMINA_KEY)}getStamina(){return this.getStaminaVariable().getNum()}deltaStamina(t){this.getStaminaVariable().deltaNum(t)}getStaminaHigh(){return this.getStaminaVariable().getHigh()}deltaStaminaHigh(t){this.getStaminaVariable().deltaHigh(t)}getMoneyVariable(){return this.getNumVariable(T.MONEY_KEY)}getMoney(){return this.getMoneyVariable().getNum()}deltaMoney(t){this.getMoneyVariable().deltaNum(t)}getTrustVariable(){return this.getNumVariable(T.TRUST_KEY)}getTrust(){return this.getTrustVariable().getNum()}deltaTrust(t){this.getTrustVariable().deltaNum(t)}getInterestVariable(){return this.getNumVariable(T.INTEREST_KEY)}getInterest(){return this.getInterestVariable().getNum()}deltaInterest(t){this.getInterestVariable().deltaNum(t)}getMoodVariable(){return this.getNumVariable(T.MOOD_KEY)}getMood(){return this.getMoodVariable().getNum()}deltaMood(t){this.getMoodVariable().deltaNum(t)}getCurrentAction(){return this.getStrVariable(T.CURRENT_ACTION_KEY).getStr()}setCurrentAction(t){this.getStrVariable(T.CURRENT_ACTION_KEY).setStr(t)}getExpectResult(){return this.getStrVariable(T.EXPECT_RESULT_KEY).getStr()}setExpectResult(t){this.getStrVariable(T.EXPECT_RESULT_KEY).setStr(t)}getDatetimeVariable(){const t=this.state.get(T.DATETIME_KEY);return t instanceof p?t:null}getYear(){return this.getDatetimeVariable().getYear()}getMonth(){return this.getDatetimeVariable().getMonth()}getDate(){return this.getDatetimeVariable().getDate()}getHours(){return this.getDatetimeVariable().getHours()}getMinutes(){return this.getDatetimeVariable().getMinutes()}getSeconds(){return this.getDatetimeVariable().getSeconds()}getDay(){return this.getDatetimeVariable().getDay()}isWeekday(){switch(this.getDay()){case 1:case 2:case 3:case 4:case 5:return!0}return!1}isWeekend(){switch(this.getDay()){case 0:case 6:return!0}return!1}deltaMinutes(t){this.getDatetimeVariable().deltaDatetime(0,0,0,0,t,0)}deltaDatetimeUntil(t,e){const a=this.getDatetimeVariable(),r=60*a.getHours()+a.getMinutes();let s=60*t+e;r>s&&(s+=1440);const i=s-r;a.deltaDatetime(0,0,0,0,i,0)}getBigPlace(){return this.getStrVariable(T.BIG_PLACE_KEY).getStr()}setBigPlace(t){this.getStrVariable(T.BIG_PLACE_KEY).setStr(t)}getMiddlePlace(){return this.getStrVariable(T.MIDDLE_PLACE_KEY).getStr()}setMiddlePlace(t){this.getStrVariable(T.MIDDLE_PLACE_KEY).setStr(t)}getSmallPlace(){return this.getStrVariable(T.SMALL_PLACE_KEY).getStr()}setSmallPlace(t){this.getStrVariable(T.SMALL_PLACE_KEY).setStr(t)}getWeather(){return this.getStrVariable(T.WEATHER_KEY).getStr()}setWeather(t){this.getStrVariable(T.WEATHER_KEY).setStr(t)}getFlagsVariable(){return this.getMapVariable(T.FLAGS_KEY)}getFlagBathVariable(){return this.getFlagsVariable().getVariable(T.FLAG_BATH_KEY)}isAlreadyBath(){return 1===this.getFlagBathVariable().getNum()}setFlagBath(t){t?this.getFlagBathVariable().deltaNum(1):this.getFlagBathVariable().deltaNum(-1)}getShopItemsVariable(){return this.getMapVariable(T.SHOP_ITEMS_KEY)}addShopItem(t,e,a){const r=M.get(t);if(!r)return;const s=new V;s.setVariable('price',new d(null,null,e)),null!==a&&s.setVariable('max_quantity',new d(0,a,a));this.getShopItemsVariable().setVariable(r.name,s)}getShopItem(t){const e=this.getShopItemsVariable().getVariable(t);if(!e)return null;const a=M.get(t),r=e.getVariable('price').getNum();let s;const i=e.getVariable('max_quantity');return s=i?i.getNum():null,{item:a,price:r,max_quantity:s}}getShopItems(){const t=this.getShopItemsVariable(),e=[];for(const a of t.keys())e.push(this.getShopItem(a));return e}getShopItemsSize(){return this.getShopItemsVariable().size}clearShopItems(){this.setVariable(T.SHOP_ITEMS_KEY,new V)}buyShopItem(t,e){const a=this.getShopItemsVariable().getVariable(t);if(!a)return;const r=a.getVariable('price').getNum();this.deltaMoney(-r*e);const s=a.getVariable('max_quantity');s&&s.deltaNum(-e),this.deltaInventory(t,e)}sellShopItem(t,e){if(!this.getInventory(t))return;const a=this.getShopItem(t);let r=a.max_quantity;null!==r&&(r+=e),this.deltaInventory(t,-e),this.deltaMoney(a.price*e),this.addShopItem(t,a.price,r)}getInventoriesVariable(){return this.getMapVariable(T.INVENTORIES_KEY)}deltaInventory(t,e){const a=this.getInventoriesVariable();let r=a.getVariable(t);r?r.deltaNum(e):r=new d(0,null,e),0===r.getNum()?a.deleteVariable(t):a.setVariable(t,r)}getInventory(t){const e=this.getInventoriesVariable().getVariable(t);if(!e)return null;const a=e.getNum();return{name:t,description:this.getItem(t).description,quantity:a}}hasInventory(t){const e=M.get(t);return!!e&&void 0!==this.getInventoriesVariable().getVariable(e.name)}getInventories(){const t=this.getInventoriesVariable(),e=[];for(const a of t.keys())e.push(this.getInventory(a));return e}getDinnerInventory(){return this.hasInventory('體力食材')?'體力食材':this.hasInventory('便當')?'便當':this.hasInventory('食材')?'食材':'泡麵'}getTrustROCVariable(){return this.getNumVariable(T.TRUST_ROC_KEY)}getTrustROC(){return this.getTrustROCVariable().getNum()}deltaTrustROC(t){this.getTrustROCVariable().deltaNum(t)}resetTrustROC(){this.getTrustROCVariable().deltaNum(-this.getTrustROC())}getInterestROCVariable(){return this.getNumVariable(T.INTEREST_ROC_KEY)}getInterestROC(){return this.getInterestROCVariable().getNum()}deltaInterestROC(t){this.getInterestROCVariable().deltaNum(t)}resetInterestROC(){this.getInterestROCVariable().deltaNum(-this.getInterestROC())}getMoodROCVariable(){return this.getNumVariable(T.MOOD_ROC_KEY)}getMoodROC(){return this.getMoodROCVariable().getNum()}deltaMoodROC(t){this.getMoodROCVariable().deltaNum(t)}resetMoodROC(){this.getMoodROCVariable().deltaNum(-this.getMoodROC())}getItemTableVariable(){return this.getMapVariable(T.ITEM_TABLE_KEY)}createItem(t,e){const a=this.getItemTableVariable(),r=new E(e);a.setVariable(t,r)}getItem(t){const e=this.getItemTableVariable().getVariable(t);if(!e)return null;return{description:e.getStr()}}getItemTable(){const t=this.getItemTableVariable(),e=new Map;for(const a of t.keys()){const r=t.getVariable(a).getStr();e.set(a,r)}return e}getClothing(){return this.getStrVariable(T.CLOTHING_KEY).getStr()}setClothing(t){this.getStrVariable(T.CLOTHING_KEY).setStr(t)}getSummaryTableVariable(){return this.getMapVariable(T.SUMMARY_TABLE_KEY)}addSummary(t,e){const a=this.getSummaryTableVariable(),r=a.size,s=this.getDatetimeVariable(),i=this.getBigPlace(),n=this.getMiddlePlace(),l=this.getSmallPlace(),o=new V;o.setVariable(T.DATETIME_KEY,s),o.setVariable(T.BIG_PLACE_KEY,new E(i)),o.setVariable(T.MIDDLE_PLACE_KEY,new E(n)),o.setVariable(T.SMALL_PLACE_KEY,new E(l)),o.setVariable(T.SUMMARY_KEY,new E(t)),o.setVariable(T.WEIGHTING_KEY,new d(0,1,e)),a.setVariable(String(r),o)}getSummary(t){const e=this.getSummaryTableVariable().getVariable(String(t));if(!e)return null;return{datetime:e.getVariable(T.DATETIME_KEY).getDateTime(),big_place:e.getVariable(T.BIG_PLACE_KEY).getStr(),middle_place:e.getVariable(T.MIDDLE_PLACE_KEY).getStr(),small_place:e.getVariable(T.SMALL_PLACE_KEY).getStr(),summary:e.getVariable(T.SUMMARY_KEY).getStr(),weighting:e.getVariable(T.WEIGHTING_KEY).getNum()}}getSummaries(){const t=this.getSummaryTableVariable(),e=[];for(let a=0;a<t.size;a++)e.push(this.getSummary(a));return e}finishCurrentAction(t,e){this.addSummary(t,e),e=Math.trunc(10*e);const a=this.getTrustROC(),r=this.getInterestROC(),s=Math.max(1,Math.abs(a)+Math.abs(r));let i=Math.trunc(a/s*e);i<0&&(i*=2);let n=Math.trunc(r/s*e);n<0&&(n*=2);const l=this.getMoodROC();let o=0;l>0&&l>10-e?o=1:l<0&&2*l<e-10&&(o=-1),console.log('[Action Command] weighting:',e),console.log('[Action Command] trust_roc:',a),console.log('[Action Command] interest_roc:',r),console.log('[Action Command] roc_sum:',s),console.log('[Action Command] delta_trust:',i),console.log('[Action Command] delta_interest:',n),console.log('[Action Command] mood_roc:',l),console.log('[Action Command] delta_mood:',o),this.deltaTrust(i),this.deltaInterest(n),this.deltaMood(o),this.resetTrustROC(),this.resetInterestROC(),this.resetMoodROC()}handleChangeDateEvents(t,e,a,r,s,i){const n=new Date(t,e,a),l=new Date(r,s,i),o=Math.floor((l.getTime()-n.getTime())/864e5);o<=0||this.deltaMoney(2e3*o)}isCurrentDateTimeBetween(t,e,a,r){const s=this.state.get(T.DATETIME_KEY);if(!(s instanceof p))return!1;const i=60*s.getHours()+s.getMinutes(),n=60*t+e,l=60*a+r;return n<=l?i>=n&&i<=l:i>=n||i<=l}isCurrentDateTimeAtNight(){return this.isCurrentDateTimeBetween(19,0,0,0)}}const N={class:'galgame-container'},I={class:'content-wrapper'},C={class:'main-content'},f={class:'dialogue-box'},Y={class:'dialogue-text'},v={class:'inventories-panel'},D={class:'inventories-header'},O={key:0,class:'no-items-message'},A={class:'item-name'},R={class:'item-description'},w={class:'item-quantity'},K={class:'bottom-status-bar'},P={class:'status-row-1'},L={class:'date-time'},B={class:'status-row-2'},H={class:'location'},k={class:'status-row-3'},x={class:'clothing'},G={class:'status-row-4'},j={class:'status-item'},U={class:'status-item'},F={class:'status-item'},W={class:'status-item'},q='???',X=(0,a.defineComponent)({__name:'app',setup(t){const e={stamina:q,stamina_high:q,money:q,trust:q,interest:q,mood:q,day_of_week:q,month_day:q,time:q,big_place:q,middle_place:q,small_place:q,weather:q,current_action:q,clothing:q,dialogue_text:'[無法載入對話內容...]'},r=(0,a.reactive)({...e}),s=(0,a.computed)(()=>{const t=h.getClothing();return t?`妹妹衣著: ${t}`:'妹妹衣著: ???'}),i=(0,a.ref)([]),n=(0,a.ref)(!1),l={type:'chat'},o=getCurrentMessageId(),g=getChatMessages(o,{include_swipes:!0})[0]?.swipe_id,u=((0,a.computed)(()=>'number'!=typeof r.stamina||'number'!=typeof r.stamina_high||0===r.stamina_high?0:Math.round(r.stamina/r.stamina_high*100)),(0,a.computed)(()=>'number'==typeof r.money?r.money:0)),c=getVariables(l),m=S.fromVariables(c.history[o][g]),h=new T(m);function d(){try{if(null===o)return;r.stamina=h.getStamina()??e.stamina,r.stamina_high=h.getStaminaHigh()??e.stamina_high,r.money=h.getMoney()??e.money,r.trust=h.getTrust()??e.trust,r.interest=h.getInterest()??e.interest,r.mood=['隨時都會爆發的狀態','不高興','普通','不錯','高興'][h.getMood()+2]??q??e.mood,r.day_of_week=['日','一','二','三','四','五','六'][h.getDay()]??q??e.day_of_week,r.month_day=`${h.getMonth()}月${h.getDate()}日`,r.time=`${h.getHours().toString().padStart(2,'0')}:${h.getMinutes().toString().padStart(2,'0')}`,r.big_place=h.getBigPlace()??e.big_place,r.middle_place=h.getMiddlePlace()??e.middle_place,r.small_place=h.getSmallPlace()??e.small_place,r.weather=h.getWeather()??e.weather,r.current_action=h.getCurrentAction()??e.current_action,r.clothing=h.getClothing()??e.clothing,function(t){try{const e=t.getInventories();i.value=e.map(e=>({name:e.name,description:t.getItem(e.name)?.description||e.description,quantity:e.quantity}))}catch(t){i.value=[]}}(h)}catch(t){}}function E(){try{if(null===o)return;const t=getChatMessages(o)[0];!function(t){const a=function(t,e){const a=t.split(`<${e}>`);return a[a.length-1].split(`</${e}>`)[0]}(t,'UserPerspective');r.dialogue_text=a??e.dialogue_text}(t.message)}catch(t){console.warn('[黑白妹UI] 無法載入對話文字',t)}}function p(){n.value=!n.value}return(0,a.onMounted)(()=>{d(),E(),eventMakeFirst(tavern_events.MESSAGE_SENT,t=>{if(console.log('[黑白妹UI] MESSAGE_SENT start'),getCurrentMessageId()+1!==t)return;const e=getVariables(l);e.current=h.toVariables(),replaceVariables(e,l),console.log('[黑白妹UI] MESSAGE_SENT end')})}),(t,e)=>((0,a.openBlock)(),(0,a.createElementBlock)('div',N,[(0,a.createCommentVNode)(' 背景 '),e[2]||(e[2]=(0,a.createElementVNode)('div',{class:'background'},null,-1)),(0,a.createCommentVNode)(' 統一寬度容器 '),(0,a.createElementVNode)('div',I,[(0,a.createCommentVNode)(' 主要內容區域 '),(0,a.createElementVNode)('div',C,[(0,a.createCommentVNode)(' 對話框 '),(0,a.createElementVNode)('div',f,[(0,a.createElementVNode)('div',Y,(0,a.toDisplayString)(r.dialogue_text),1)])]),(0,a.createCommentVNode)(' 物品欄面板 '),(0,a.createElementVNode)('div',v,[(0,a.createElementVNode)('div',D,[(0,a.createElementVNode)('button',{class:'inventories-btn',onClick:p},[e[0]||(e[0]=(0,a.createElementVNode)('span',null,'物品欄',-1)),(0,a.createElementVNode)('div',{class:(0,a.normalizeClass)(['toggle-icon',{open:n.value}])},null,2)])]),(0,a.createElementVNode)('div',{class:(0,a.normalizeClass)(['inventories-content',{open:n.value}])},[0===i.value.length?((0,a.openBlock)(),(0,a.createElementBlock)('div',O,[...e[1]||(e[1]=[(0,a.createElementVNode)('p',null,'物品欄為空',-1)])])):(0,a.createCommentVNode)('v-if',!0),((0,a.openBlock)(!0),(0,a.createElementBlock)(a.Fragment,null,(0,a.renderList)(i.value,t=>((0,a.openBlock)(),(0,a.createElementBlock)('div',{key:t.name,class:'inventory-item'},[(0,a.createElementVNode)('span',A,(0,a.toDisplayString)(t.name),1),(0,a.createElementVNode)('span',R,(0,a.toDisplayString)(t.description),1),(0,a.createElementVNode)('span',w,'數量:'+(0,a.toDisplayString)(t.quantity),1)]))),128)),(0,a.createElementVNode)('div',{class:'inventories-footer-toggle',onClick:p},'▲ 收起 ▲')],2)]),(0,a.createCommentVNode)(' 底部狀態欄 '),(0,a.createElementVNode)('div',K,[(0,a.createCommentVNode)(' 第一行：日期時間和天氣 '),(0,a.createElementVNode)('div',P,[(0,a.createElementVNode)('span',L,(0,a.toDisplayString)(r.month_day)+' ('+(0,a.toDisplayString)(r.day_of_week)+') '+(0,a.toDisplayString)(r.time)+' '+(0,a.toDisplayString)(r.weather),1)]),(0,a.createCommentVNode)(' 第二行：地點 '),(0,a.createElementVNode)('div',B,[(0,a.createElementVNode)('span',H,(0,a.toDisplayString)(r.big_place)+'-'+(0,a.toDisplayString)(r.middle_place)+'-'+(0,a.toDisplayString)(r.small_place),1)]),(0,a.createCommentVNode)(' 第三行：衣著 '),(0,a.createElementVNode)('div',k,[(0,a.createElementVNode)('span',x,(0,a.toDisplayString)(s.value),1)]),(0,a.createCommentVNode)(' 第四行：信賴、興致、心情、金錢 '),(0,a.createElementVNode)('div',G,[(0,a.createElementVNode)('span',j,'信賴:'+(0,a.toDisplayString)(r.trust),1),(0,a.createElementVNode)('span',U,'興致:'+(0,a.toDisplayString)(r.interest),1),(0,a.createElementVNode)('span',F,'心情:'+(0,a.toDisplayString)(r.mood),1),(0,a.createElementVNode)('span',W,'$'+(0,a.toDisplayString)(u.value),1)])])])]))}});var J=function a(r){var s=e[r];if(void 0!==s)return s.exports;var i=e[r]={exports:{}};return t[r](i,i.exports,a),i.exports}(235);const Q=(0,J.A)(X,[['__scopeId','data-v-123dff53']]);$(()=>{(0,a.createApp)(Q).mount('#app')});</script><style>.galgame-container[data-v-123dff53]{position:relative;width:100%;font-family:"Comic Sans MS","Chalkduster",sans-serif;color:#000;display:flex;flex-direction:column;align-items:center}.content-wrapper[data-v-123dff53]{width:100%;max-width:1200px;display:flex;flex-direction:column;gap:10px}.bottom-status-bar[data-v-123dff53]{background:rgba(20,20,20,.95);border:3px solid #666;border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:8px;box-shadow:5px 5px 0px #333;font-size:14px;font-weight:bold;color:#ccc}.status-row-1[data-v-123dff53]{display:flex;justify-content:center;align-items:center;text-align:center;padding-bottom:8px;border-bottom:1px solid hsla(0,0%,100%,.3);gap:20px}.status-row-2[data-v-123dff53]{display:flex;justify-content:center;align-items:center;text-align:center;padding-bottom:8px;border-bottom:1px solid hsla(0,0%,100%,.3)}.status-row-3[data-v-123dff53]{display:flex;justify-content:center;align-items:center;text-align:center;padding-bottom:8px;border-bottom:1px solid hsla(0,0%,100%,.3)}.status-row-4[data-v-123dff53]{display:flex;justify-content:center;align-items:center;text-align:center;gap:20px}.date-time[data-v-123dff53]{color:#ccc;text-shadow:1px 1px 0px #333;white-space:nowrap;justify-self:center}.weather[data-v-123dff53]{color:#ccc;text-shadow:1px 1px 0px #333;justify-self:center}.location[data-v-123dff53]{color:#ccc;text-shadow:1px 1px 0px #333;justify-self:center;text-align:center}.current-action[data-v-123dff53]{color:#ccc;text-shadow:1px 1px 0px #333;justify-self:center;text-align:center;font-weight:bold}.stamina-bar[data-v-123dff53]{position:relative;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;justify-self:center}.stamina-bar .value[data-v-123dff53]{color:#000;font-size:11px;font-weight:bold;text-shadow:1px 1px 0px #fff,-1px -1px 0px #fff,1px -1px 0px #fff,-1px 1px 0px #fff;white-space:nowrap;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;pointer-events:none;grid-column:2}.stamina-bar .label[data-v-123dff53]{color:#ccc;font-size:12px;text-shadow:1px 1px 0px #333;white-space:nowrap;grid-column:1}.stamina-bar .bar-container[data-v-123dff53]{position:relative;width:120px;height:16px;background:hsla(0,0%,100%,.2);border:1px solid #666;border-radius:6px;overflow:hidden;grid-column:2}.stamina-bar .bar-fill[data-v-123dff53]{height:100%;background:#ccc;border-radius:5px;transition:width .3s ease}.money[data-v-123dff53]{color:#ccc;font-size:16px;font-weight:bold;text-shadow:1px 1px 0px #333;justify-self:center}.background[data-v-123dff53]{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg,#2a2a2a 25%,#1a1a1a 25%,#1a1a1a 50%,#2a2a2a 50%,#2a2a2a 75%,#1a1a1a 75%);background-size:20px 20px;opacity:.3;z-index:-1}.main-content[data-v-123dff53]{display:flex;flex:1;padding:20px 20px 0 20px;gap:20px;align-items:flex-start}.status-item[data-v-123dff53]{display:flex;justify-content:space-between;font-size:14px;font-weight:bold}.status-item .label[data-v-123dff53]{color:#aaa}.status-item .value[data-v-123dff53]{color:#ccc;text-shadow:1px 1px 0px #333}.dialogue-box[data-v-123dff53]{flex:1;background:rgba(20,20,20,.95);border:3px solid #666;border-radius:15px;padding:20px;box-shadow:5px 5px 0px #333;min-height:120px;display:flex;align-items:center}.dialogue-text[data-v-123dff53]{font-size:16px;line-height:1.6;color:#ccc;text-shadow:1px 1px 0px #333;word-wrap:break-word;white-space:pre-line}.galgame-container[data-v-123dff53]::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.03) 2px,rgba(255,255,255,0.03) 4px);pointer-events:none}.status-panel[data-v-123dff53]::after,.dialogue-box[data-v-123dff53]::after{content:"";position:absolute;bottom:-8px;right:-8px;width:20px;height:20px;background:#666;border-radius:50%}@media (max-width:768px){.bottom-status-bar[data-v-123dff53]{padding:12px;margin:5px;gap:6px;font-size:12px}.status-row-1[data-v-123dff53]{gap:6px}.status-row-2[data-v-123dff53]{gap:6px}.status-row-3[data-v-123dff53]{gap:6px}.date-time[data-v-123dff53],.weather[data-v-123dff53],.location[data-v-123dff53],.current-action[data-v-123dff53],.money[data-v-123dff53]{justify-self:center;text-align:center}.status-item[data-v-123dff53]{justify-self:center;text-align:center}.stamina-bar[data-v-123dff53]{justify-self:center}.stamina-bar .bar-container[data-v-123dff53]{width:120px}.main-content[data-v-123dff53]{padding:10px 10px 0 10px}.dialogue-box[data-v-123dff53]{margin-bottom:10px}}.shop-panel[data-v-123dff53]{background:rgba(20,20,20,.95);border:3px solid #666;border-radius:15px;padding:20px;box-shadow:5px 5px 0px #333;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);flex:1;min-height:120px;display:flex;flex-direction:column}.shop-header[data-v-123dff53]{text-align:center;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid hsla(0,0%,100%,.2)}.shop-header span[data-v-123dff53]{font-size:18px;font-weight:bold;color:#ccc;text-shadow:1px 1px 0px #333}.no-items-message[data-v-123dff53]{text-align:center;padding:20px;color:#ccc;font-size:14px;text-shadow:1px 1px 0px #333}.no-items-message p[data-v-123dff53]{margin:10px 0}.shop-items[data-v-123dff53]{display:flex;flex-direction:column}.shop-item[data-v-123dff53]{padding:8px 12px;transition:all .3s ease;border-bottom:1px solid hsla(0,0%,100%,.08)}.shop-item[data-v-123dff53]:hover{background:hsla(0,0%,100%,.03)}.shop-item[data-v-123dff53]:last-child{border-bottom:none}.item-header[data-v-123dff53]{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.item-name[data-v-123dff53]{flex-shrink:0;text-align:left;white-space:nowrap;align-self:center}.item-price[data-v-123dff53]{font-size:14px;font-weight:bold;color:#5ee4ff;text-shadow:1px 1px 0px #000;margin-right:12px;white-space:nowrap}.item-controls[data-v-123dff53]{display:flex;align-items:center;gap:6px;min-width:120px;justify-content:flex-end}.item-description[data-v-123dff53]{font-size:13px;color:#888;text-shadow:1px 1px 0px #333;line-height:1.4}.quantity-btn[data-v-123dff53]{width:32px;height:32px;border:2px solid #666;background:hsla(0,0%,100%,.1);color:#ccc;font-size:18px;font-weight:bold;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s ease;text-shadow:1px 1px 0px #333}.quantity-btn[data-v-123dff53]:hover:not(:disabled){background:hsla(0,0%,100%,.2);border-color:#888;transform:scale(1.05)}.quantity-btn[data-v-123dff53]:active:not(:disabled){transform:scale(0.95)}.quantity-btn[data-v-123dff53]:disabled{opacity:.4;cursor:not-allowed;background:hsla(0,0%,100%,.05)}.quantity-input[data-v-123dff53]{width:60px;height:32px;border:2px solid #666;background:hsla(0,0%,100%,.1);color:#fff;font-size:14px;font-weight:bold;text-align:center;border-radius:6px;outline:none;transition:all .2s ease;text-shadow:1px 1px 0px #333}.quantity-input[data-v-123dff53]:focus{border-color:#5ee4ff;background:hsla(0,0%,100%,.15);box-shadow:0 0 8px rgba(94,228,255,.3)}.quantity-input[data-v-123dff53]::-webkit-outer-spin-button,.quantity-input[data-v-123dff53]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.quantity-input[type=number][data-v-123dff53]{-moz-appearance:textfield}@media (max-width:768px){.shop-panel[data-v-123dff53]{padding:8px;margin:4px 0}.shop-item[data-v-123dff53]{padding:6px 8px}.item-header[data-v-123dff53]{gap:4px;margin-bottom:2px}.item-name[data-v-123dff53]{font-size:14px;margin-right:4px}.item-price[data-v-123dff53]{font-size:13px;margin-right:6px}.item-controls[data-v-123dff53]{min-width:85px}.item-description[data-v-123dff53]{font-size:12px;text-align:left}.quantity-input[data-v-123dff53]{width:38px;font-size:12px}.quantity-btn[data-v-123dff53]{width:24px;height:24px;font-size:14px}}.inventories-panel[data-v-123dff53]{background:rgba(20,20,20,.95);border:3px solid #666;border-radius:15px;padding:20px;box-shadow:5px 5px 0px #333;font-size:14px;font-weight:bold;color:#ccc}.inventories-header[data-v-123dff53]{text-align:center;margin-bottom:8px;padding-bottom:4px}.inventories-btn[data-v-123dff53]{position:relative;padding:12px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px dashed hsla(0,0%,100%,.3);transition:all .3s ease;background:rgba(0,0,0,0);border:none;width:100%;text-align:left;color:#ccc;font-size:14px;font-weight:bold;text-shadow:1px 1px 0px #333}.inventories-btn .toggle-icon[data-v-123dff53]{width:0;height:0;border-left:6px solid rgba(0,0,0,0);border-right:6px solid rgba(0,0,0,0);border-top:8px solid #ccc;transition:transform .3s ease;margin-left:8px;flex-shrink:0}.inventories-btn .toggle-icon.open[data-v-123dff53]{transform:rotate(180deg)}.inventories-btn[data-v-123dff53]:hover{background:hsla(0,0%,100%,.1)}.inventories-btn[data-v-123dff53]:focus{outline:none}.inventories-content[data-v-123dff53]{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(0.4,0,0.2,1);background:rgba(20,20,20,.95);border-top:1px solid hsla(0,0%,100%,.1)}.inventories-content.open[data-v-123dff53]{max-height:200px}.inventory-item[data-v-123dff53]{padding:8px 12px;transition:all .3s ease;border-bottom:1px solid hsla(0,0%,100%,.08);color:#ccc;text-shadow:1px 1px 0px #333;font-size:13px;display:flex;align-items:flex-start;justify-content:space-between}.inventory-item[data-v-123dff53]:hover{background:hsla(0,0%,100%,.03)}.inventory-item[data-v-123dff53]:last-child{border-bottom:none}.item-name[data-v-123dff53]{flex-shrink:0;text-align:left;margin-right:8px;align-self:center}.item-description[data-v-123dff53]{flex:1;text-align:left;margin:0 8px;align-self:flex-start;word-wrap:break-word;overflow-wrap:break-word}.item-quantity[data-v-123dff53]{flex-shrink:0;text-align:right;white-space:nowrap;align-self:center}.inventories-footer-toggle[data-v-123dff53]{display:block;text-align:center;padding:15px 0;color:#ccc;opacity:.8;font-size:13px;cursor:pointer;transition:all .2s ease;-webkit-user-select:none;user-select:none;text-shadow:1px 1px 0px #333}.inventories-footer-toggle[data-v-123dff53]:hover{opacity:1;transform:scale(1.02)}.inventories-footer-toggle[data-v-123dff53]:active{transform:scale(0.98)}.no-items-message[data-v-123dff53]{text-align:center;padding:20px;color:#ccc;font-size:14px;text-shadow:1px 1px 0px #333}.no-items-message p[data-v-123dff53]{margin:10px 0}@media (max-width:768px){.inventories-panel[data-v-123dff53]{padding:12px;margin:5px}.inventories-header[data-v-123dff53]{margin-bottom:6px;padding-bottom:2px}.inventories-btn[data-v-123dff53]{padding:6px 12px;font-size:12px}.inventory-item[data-v-123dff53]{padding:6px 8px;font-size:12px}.inventories-footer-toggle[data-v-123dff53]{padding:10px 0;font-size:12px}}
-</style></head><body><div id="app"></div></body>
+<head><script type="module">var __webpack_modules__ = {
+  "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-45.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true": 
+  /*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-45.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+  },
+  "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=script&setup=true&lang=ts": 
+  /*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=script&setup=true&lang=ts ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      default: () => __WEBPACK_DEFAULT_EXPORT__
+    });
+    var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
+    var vue__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+    var _VariableTracker_state__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/VariableTracker/state */ "./src/VariableTracker/state.ts");
+    var _VT_game_state__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/黑白妹VT/game_state */ "./src/黑白妹VT/game_state.ts");
+    const NONE_STR = "???";
+    const __WEBPACK_DEFAULT_EXPORT__ = (0, vue__WEBPACK_IMPORTED_MODULE_0__.defineComponent)({
+      __name: "app",
+      setup(__props, {expose: __expose}) {
+        __expose();
+        const defaults = {
+          stamina: NONE_STR,
+          stamina_high: NONE_STR,
+          money: NONE_STR,
+          trust: NONE_STR,
+          interest: NONE_STR,
+          mood: NONE_STR,
+          day_of_week: NONE_STR,
+          month_day: NONE_STR,
+          time: NONE_STR,
+          big_place: NONE_STR,
+          middle_place: NONE_STR,
+          small_place: NONE_STR,
+          weather: NONE_STR,
+          current_action: NONE_STR,
+          clothing: NONE_STR,
+          dialogue_text: "[無法載入對話內容...]"
+        };
+        const display_strings = (0, vue__WEBPACK_IMPORTED_MODULE_0__.reactive)({
+          ...defaults
+        });
+        const clothing_display = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => {
+          const clothing = game_state.getClothing();
+          return clothing ? `妹妹衣著: ${clothing}` : "妹妹衣著: ???";
+        });
+        const inventories = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+        const inventories_dropdown_open = (0, vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
+        const VARIABLE_SCOPE = {
+          type: "chat"
+        };
+        const CHARACTER_SCOPE = {
+          type: "character"
+        };
+        const message_id = getCurrentMessageId();
+        const swipe_id = getChatMessages(message_id, {
+          include_swipes: true
+        })[0]?.swipe_id;
+        const stamina_percentage = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => {
+          if (typeof display_strings.stamina !== "number") return 0;
+          if (typeof display_strings.stamina_high !== "number") return 0;
+          return display_strings.stamina_high === 0 ? 0 : Math.round(display_strings.stamina / display_strings.stamina_high * 100);
+        });
+        const remaining_money = (0, vue__WEBPACK_IMPORTED_MODULE_0__.computed)(() => {
+          const currentMoney = typeof display_strings.money === "number" ? display_strings.money : 0;
+          return currentMoney;
+        });
+        const variables = getVariables(VARIABLE_SCOPE);
+        const state = _VariableTracker_state__WEBPACK_IMPORTED_MODULE_1__.State.fromVariables(variables["history"][message_id][swipe_id]);
+        const game_state = new _VT_game_state__WEBPACK_IMPORTED_MODULE_2__.GameState(state);
+        function loadStatus() {
+          try {
+            if (message_id === null) return;
+            display_strings.stamina = game_state.getStamina() ?? defaults.stamina;
+            display_strings.stamina_high = game_state.getStaminaHigh() ?? defaults.stamina_high;
+            display_strings.money = game_state.getMoney() ?? defaults.money;
+            display_strings.trust = game_state.getTrust() ?? defaults.trust;
+            display_strings.interest = game_state.getInterest() ?? defaults.interest;
+            display_strings.mood = getMoodString(game_state.getMood()) ?? defaults.mood;
+            display_strings.day_of_week = getDayString(game_state.getDay()) ?? defaults.day_of_week;
+            display_strings.month_day = `${game_state.getMonth()}月${game_state.getDate()}日`;
+            display_strings.time = `${game_state.getHours().toString().padStart(2, "0")}:${game_state.getMinutes().toString().padStart(2, "0")}`;
+            display_strings.big_place = game_state.getBigPlace() ?? defaults.big_place;
+            display_strings.middle_place = game_state.getMiddlePlace() ?? defaults.middle_place;
+            display_strings.small_place = game_state.getSmallPlace() ?? defaults.small_place;
+            display_strings.weather = game_state.getWeather() ?? defaults.weather;
+            display_strings.current_action = game_state.getCurrentAction() ?? defaults.current_action;
+            display_strings.clothing = game_state.getClothing() ?? defaults.clothing;
+            loadInventories(game_state);
+          } catch (error) {}
+        }
+        function loadInventories(game_state) {
+          try {
+            const rawInventories = game_state.getInventories();
+            inventories.value = rawInventories.map(item => ({
+              name: item.name,
+              description: game_state.getItem(item.name)?.description || item.description,
+              quantity: item.quantity
+            }));
+          } catch (error) {
+            inventories.value = [];
+          }
+        }
+        function getMoodString(mood_num) {
+          const mood_strings = [ "隨時都會爆發的狀態", "不高興", "普通", "不錯", "高興" ];
+          return mood_strings[mood_num + 2] ?? NONE_STR;
+        }
+        function getDayString(day_num) {
+          const day_strings = [ "日", "一", "二", "三", "四", "五", "六" ];
+          return day_strings[day_num] ?? NONE_STR;
+        }
+        function loadDialogue() {
+          try {
+            if (message_id === null) return;
+            const chat_message = getChatMessages(message_id)[0];
+            const message = chat_message.message;
+            parseUserPerspective(message);
+          } catch (error) {
+            console.warn("[黑白妹UI] 無法載入對話文字", error);
+          }
+        }
+        function retrieveStringInsideTag(text, tag) {
+          const text_split = text.split(`<${tag}>`);
+          const retrieve_text = text_split[text_split.length - 1].split(`</${tag}>`)[0];
+          return retrieve_text;
+        }
+        function parseUserPerspective(message) {
+          const dialogue_text = retrieveStringInsideTag(message, "UserPerspective");
+          display_strings.dialogue_text = dialogue_text ?? defaults.dialogue_text;
+        }
+        function toggleInventoriesDropdown() {
+          inventories_dropdown_open.value = !inventories_dropdown_open.value;
+        }
+        (0, vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(() => {
+          loadStatus();
+          loadDialogue();
+          eventMakeFirst(tavern_events.MESSAGE_SENT, message_id => {
+            console.log("[黑白妹UI] MESSAGE_SENT start");
+            if (getCurrentMessageId() + 1 !== message_id) return;
+            const variables = getVariables(VARIABLE_SCOPE);
+            variables["current"] = game_state.toVariables();
+            replaceVariables(variables, VARIABLE_SCOPE);
+            console.log("[黑白妹UI] MESSAGE_SENT end");
+          });
+        });
+        const __returned__ = {
+          NONE_STR,
+          defaults,
+          display_strings,
+          clothing_display,
+          inventories,
+          inventories_dropdown_open,
+          VARIABLE_SCOPE,
+          CHARACTER_SCOPE,
+          message_id,
+          swipe_id,
+          stamina_percentage,
+          remaining_money,
+          variables,
+          state,
+          game_state,
+          loadStatus,
+          loadInventories,
+          getMoodString,
+          getDayString,
+          loadDialogue,
+          retrieveStringInsideTag,
+          parseUserPerspective,
+          toggleInventoriesDropdown
+        };
+        Object.defineProperty(__returned__, "__isScriptSetup", {
+          enumerable: false,
+          value: true
+        });
+        return __returned__;
+      }
+    });
+  },
+  "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true": 
+  /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      render: () => render
+    });
+    var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
+    var vue__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+    const _hoisted_1 = {
+      class: "galgame-container"
+    };
+    const _hoisted_2 = {
+      class: "content-wrapper"
+    };
+    const _hoisted_3 = {
+      class: "main-content"
+    };
+    const _hoisted_4 = {
+      class: "dialogue-box"
+    };
+    const _hoisted_5 = {
+      class: "dialogue-text"
+    };
+    const _hoisted_6 = {
+      class: "inventories-panel"
+    };
+    const _hoisted_7 = {
+      class: "inventories-header"
+    };
+    const _hoisted_8 = {
+      key: 0,
+      class: "no-items-message"
+    };
+    const _hoisted_9 = {
+      class: "item-name"
+    };
+    const _hoisted_10 = {
+      class: "item-description"
+    };
+    const _hoisted_11 = {
+      class: "item-quantity"
+    };
+    const _hoisted_12 = {
+      class: "bottom-status-bar"
+    };
+    const _hoisted_13 = {
+      class: "status-row-1"
+    };
+    const _hoisted_14 = {
+      class: "date-time"
+    };
+    const _hoisted_15 = {
+      class: "status-row-2"
+    };
+    const _hoisted_16 = {
+      class: "location"
+    };
+    const _hoisted_17 = {
+      class: "status-row-3"
+    };
+    const _hoisted_18 = {
+      class: "clothing"
+    };
+    const _hoisted_19 = {
+      class: "status-row-4"
+    };
+    const _hoisted_20 = {
+      class: "status-item"
+    };
+    const _hoisted_21 = {
+      class: "status-item"
+    };
+    const _hoisted_22 = {
+      class: "status-item"
+    };
+    const _hoisted_23 = {
+      class: "status-item"
+    };
+    function render(_ctx, _cache, $props, $setup, $data, $options) {
+      return (0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 背景 "), _cache[2] || (_cache[2] = (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "background"
+      }, null, -1)), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 統一寬度容器 "), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 主要內容區域 "), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 對話框 "), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.dialogue_text), 1) ]) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 物品欄面板 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+        class: "inventories-btn",
+        onClick: $setup.toggleInventoriesDropdown
+      }, [ _cache[0] || (_cache[0] = (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "物品欄", -1)), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "toggle-icon", {
+          open: $setup.inventories_dropdown_open
+        } ])
+      }, null, 2) ]) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: (0, vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([ "inventories-content", {
+          open: $setup.inventories_dropdown_open
+        } ])
+      }, [ $setup.inventories.length === 0 ? ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [ ..._cache[1] || (_cache[1] = [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "物品欄為空", -1) ]) ])) : (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.inventories, item => ((0, vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), 
+      (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+        key: item.name,
+        class: "inventory-item"
+      }, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_9, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.name), 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_10, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.description), 1), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_11, "數量:" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(item.quantity), 1) ]))), 128)), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+        class: "inventories-footer-toggle",
+        onClick: $setup.toggleInventoriesDropdown
+      }, "▲ 收起 ▲") ], 2) ]), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 底部狀態欄 "), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 第一行：日期時間和天氣 "), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [ (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_14, (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.month_day) + " (" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.day_of_week) + ") " + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.time) + " " + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.weather), 1) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 第二行：地點 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_16, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.big_place) + "-" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.middle_place) + "-" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.small_place), 1) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 第三行：衣著 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_18, (0, vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.clothing_display), 1) ]), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" 第四行：信賴、興致、心情、金錢 "), (0, vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [ (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_20, "信賴:" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.trust), 1), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_21, "興致:" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.interest), 1), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_22, "心情:" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.display_strings.mood), 1), (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_23, "$" + (0, 
+      vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.remaining_money), 1) ]) ]) ]) ]);
+    }
+  },
+  "./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js": 
+  /*!**************************************************************************************************************************************!*\
+  !*** ./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js ***!
+  \**************************************************************************************************************************************/ (__unused_webpack_module, exports) => {
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+    exports["default"] = (sfc, props) => {
+      const target = sfc.__vccOpts || sfc;
+      for (const [key, val] of props) {
+        target[key] = val;
+      }
+      return target;
+    };
+  },
+  "./src/VariableTracker/state.ts": 
+  /*!**************************************!*\
+  !*** ./src/VariableTracker/state.ts ***!
+  \**************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      State: () => State
+    });
+    var _variable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./variable */ "./src/VariableTracker/variable.ts");
+    class State {
+      state;
+      constructor(state) {
+        if (state) this.state = state.state; else this.state = new Map;
+      }
+      static fromVariables(variables) {
+        const state = new State;
+        if (variables === null) return state;
+        for (const [key, variable_record] of Object.entries(variables)) {
+          const variable = _variable__WEBPACK_IMPORTED_MODULE_0__.Variable.registry.get(variable_record.type)?.fromObject(variable_record.values);
+          if (variable) state.setVariable(key, variable);
+        }
+        return state;
+      }
+      toVariables() {
+        const variables = {};
+        for (const [key, variable] of this.state) {
+          variables[key] = {
+            type: variable.TYPE,
+            values: variable.getValue()
+          };
+        }
+        return variables;
+      }
+      getVariable(key) {
+        return this.state.get(key) ?? null;
+      }
+      setVariable(key, variable) {
+        this.state.set(key, variable);
+      }
+      deleteVariable(key) {
+        this.state.delete(key);
+      }
+    }
+  },
+  "./src/VariableTracker/variable.ts": 
+  /*!*****************************************!*\
+  !*** ./src/VariableTracker/variable.ts ***!
+  \*****************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      DatetimeVariable: () => DatetimeVariable,
+      MapVariable: () => MapVariable,
+      NumVariable: () => NumVariable,
+      RandomVariable: () => RandomVariable,
+      StrVariable: () => StrVariable,
+      Variable: () => Variable
+    });
+    var _util_class_registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/util/class_registry */ "./src/util/class_registry.ts");
+    var _util_random__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/util/random */ "./src/util/random.ts");
+    var __decorate = undefined && undefined.__decorate || function(decorators, target, key, desc) {
+      var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+      if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc); else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+      return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+    var __metadata = undefined && undefined.__metadata || function(k, v) {
+      if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+    };
+    var NumVariable_1, StrVariable_1, DatetimeVariable_1, RandomVariable_1, MapVariable_1;
+    var _a, _b;
+    class Variable {
+      static registry=new _util_class_registry__WEBPACK_IMPORTED_MODULE_0__.ClassRegistry;
+      constructor(..._args) {}
+      static fromObject(obj) {
+        return this.prototype.fromObject(obj);
+      }
+    }
+    let NumVariable = NumVariable_1 = class NumVariable extends Variable {
+      low;
+      high;
+      num;
+      constructor(low, high, num) {
+        super();
+        this.low = low;
+        this.high = high;
+        this.num = num;
+      }
+      fromObject(obj) {
+        const low = obj["low"];
+        const high = obj["high"];
+        const num = obj["num"];
+        return new NumVariable_1(low, high, num);
+      }
+      get TYPE() {
+        return "num";
+      }
+      getValue() {
+        return {
+          low: this.low,
+          high: this.high,
+          num: this.num
+        };
+      }
+      getLow() {
+        return this.low;
+      }
+      getHigh() {
+        return this.high;
+      }
+      getNum() {
+        return this.num;
+      }
+      deltaLow(delta) {
+        if (delta === null) {
+          this.low = null;
+        } else if (this.low === null) {
+          this.low = delta;
+        } else {
+          this.low += delta;
+        }
+        this.applyConstrain();
+      }
+      deltaHigh(delta) {
+        if (delta === null) {
+          this.high = null;
+        } else if (this.high === null) {
+          this.high = delta;
+        } else {
+          this.high += delta;
+        }
+        this.applyConstrain();
+      }
+      deltaNum(delta) {
+        this.num += delta;
+        this.applyConstrain();
+      }
+      applyConstrain() {
+        if (this.low !== null && this.num < this.low) {
+          this.num = this.low;
+        }
+        if (this.high !== null && this.num > this.high) {
+          this.num = this.high;
+        }
+      }
+    };
+    NumVariable = NumVariable_1 = __decorate([ Variable.registry.register(NumVariable.prototype.TYPE), __metadata("design:paramtypes", [ Object, Object, Number ]) ], NumVariable);
+    let StrVariable = StrVariable_1 = class StrVariable extends Variable {
+      str;
+      constructor(str) {
+        super();
+        this.str = str;
+      }
+      fromObject(obj) {
+        const str = obj["str"];
+        return new StrVariable_1(str);
+      }
+      get TYPE() {
+        return "str";
+      }
+      getValue() {
+        return {
+          str: this.str
+        };
+      }
+      getStr() {
+        return this.str;
+      }
+      setStr(str) {
+        this.str = str;
+      }
+    };
+    StrVariable = StrVariable_1 = __decorate([ Variable.registry.register(StrVariable.prototype.TYPE), __metadata("design:paramtypes", [ String ]) ], StrVariable);
+    let DatetimeVariable = DatetimeVariable_1 = class DatetimeVariable extends Variable {
+      datetime;
+      constructor(datetime) {
+        super();
+        this.datetime = new Date(datetime);
+      }
+      fromObject(obj) {
+        const datetime = obj["datetime"];
+        return new DatetimeVariable_1(datetime);
+      }
+      get TYPE() {
+        return "datetime";
+      }
+      getValue() {
+        return {
+          datetime: this.datetime
+        };
+      }
+      getYear() {
+        return this.datetime.getFullYear();
+      }
+      getMonth() {
+        return this.datetime.getMonth();
+      }
+      getDate() {
+        return this.datetime.getDate();
+      }
+      getHours() {
+        return this.datetime.getHours();
+      }
+      getMinutes() {
+        return this.datetime.getMinutes();
+      }
+      getSeconds() {
+        return this.datetime.getSeconds();
+      }
+      getDay() {
+        return this.datetime.getDay();
+      }
+      getDateTime() {
+        return this.datetime;
+      }
+      deltaDatetime(delta_year, delta_month, delta_date, delta_hour, delta_minute, delta_second) {
+        this.datetime.setFullYear(this.datetime.getFullYear() + delta_year);
+        this.datetime.setMonth(this.datetime.getMonth() + delta_month);
+        this.datetime.setDate(this.datetime.getDate() + delta_date);
+        this.datetime.setHours(this.datetime.getHours() + delta_hour);
+        this.datetime.setMinutes(this.datetime.getMinutes() + delta_minute);
+        this.datetime.setSeconds(this.datetime.getSeconds() + delta_second);
+      }
+    };
+    DatetimeVariable = DatetimeVariable_1 = __decorate([ Variable.registry.register(DatetimeVariable.prototype.TYPE), __metadata("design:paramtypes", [ typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object ]) ], DatetimeVariable);
+    let RandomVariable = RandomVariable_1 = class RandomVariable extends Variable {
+      outcome;
+      random_events;
+      constructor(outcome, random_events) {
+        super();
+        this.outcome = outcome;
+        this.random_events = random_events;
+      }
+      fromObject(obj) {
+        const outcome = obj?.outcome;
+        const events = obj["random_events"];
+        return new RandomVariable_1(outcome, events);
+      }
+      get TYPE() {
+        return "random";
+      }
+      getValue() {
+        return {
+          outcome: this.outcome,
+          random_events: this.random_events
+        };
+      }
+      roll() {
+        this.outcome = (0, _util_random__WEBPACK_IMPORTED_MODULE_1__.select)(this.random_events);
+      }
+    };
+    RandomVariable = RandomVariable_1 = __decorate([ Variable.registry.register(RandomVariable.prototype.TYPE), __metadata("design:paramtypes", [ Object, Array ]) ], RandomVariable);
+    let MapVariable = MapVariable_1 = class MapVariable extends Variable {
+      map;
+      constructor(map) {
+        super();
+        this.map = new Map;
+        if (!map) return;
+        for (const [key, variable_record] of Object.entries(map)) {
+          const variable = Variable.registry.get(variable_record.type)?.fromObject(variable_record.values);
+          if (variable) this.map.set(key, variable);
+        }
+      }
+      get TYPE() {
+        return "map";
+      }
+      fromObject(map) {
+        return new MapVariable_1(map);
+      }
+      getValue() {
+        const record = {};
+        for (const [key, variable] of this.map.entries()) {
+          record[key] = {
+            type: variable.TYPE,
+            values: variable.getValue()
+          };
+        }
+        return record;
+      }
+      getVariable(key) {
+        return this.map.get(key);
+      }
+      setVariable(key, variable) {
+        this.map.set(key, variable);
+      }
+      deleteVariable(key) {
+        this.map.delete(key);
+      }
+      get size() {
+        return this.map.size;
+      }
+      keys() {
+        return this.map.keys();
+      }
+    };
+    MapVariable = MapVariable_1 = __decorate([ Variable.registry.register(MapVariable.prototype.TYPE), __metadata("design:paramtypes", [ typeof (_b = typeof Record !== "undefined" && Record) === "function" ? _b : Object ]) ], MapVariable);
+  },
+  "./src/util/class_registry.ts": 
+  /*!************************************!*\
+  !*** ./src/util/class_registry.ts ***!
+  \************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      ClassRegistry: () => ClassRegistry
+    });
+    class ClassRegistry {
+      registry=new Map;
+      register(key) {
+        return cls => {
+          if (!key) key = cls.name;
+          this.registry.set(key, cls);
+          return cls;
+        };
+      }
+      get(key) {
+        return this.registry.get(key);
+      }
+      getAll() {
+        return this.registry;
+      }
+      has(key) {
+        return this.registry.has(key);
+      }
+    }
+  },
+  "./src/util/random.ts": 
+  /*!****************************!*\
+  !*** ./src/util/random.ts ***!
+  \****************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      select: () => select
+    });
+    function select(random_events) {
+      let total_weight = 0;
+      for (const random_event of random_events) {
+        total_weight += random_event.weighting;
+      }
+      let random = Math.random() * total_weight;
+      for (const random_event of random_events) {
+        random -= random_event.weighting;
+        if (random <= 0) return random_event.event;
+      }
+      return random_events[-1].event;
+    }
+  },
+  "./src/util/registry.ts": 
+  /*!******************************!*\
+  !*** ./src/util/registry.ts ***!
+  \******************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      Registry: () => Registry
+    });
+    class Registry {
+      registry=new Map;
+      register(key, value) {
+        this.registry.set(key, value);
+      }
+      get(key) {
+        return this.registry.get(key);
+      }
+      getAll() {
+        return this.registry;
+      }
+      has(key) {
+        return this.registry.has(key);
+      }
+    }
+  },
+  "./src/黑白妹UI/app.vue": 
+  /*!***************************!*\
+  !*** ./src/黑白妹UI/app.vue ***!
+  \***************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      default: () => __WEBPACK_DEFAULT_EXPORT__
+    });
+    var _app_vue_vue_type_template_id_39c5b26c_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true */ "./src/黑白妹UI/app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true");
+    var _app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.vue?vue&type=script&setup=true&lang=ts */ "./src/黑白妹UI/app.vue?vue&type=script&setup=true&lang=ts");
+    var _app_vue_vue_type_style_index_0_id_39c5b26c_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true */ "./src/黑白妹UI/app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true");
+    var _node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/exportHelper.js");
+    const __exports__ = (0, _node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_1__["default"], [ [ "render", _app_vue_vue_type_template_id_39c5b26c_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__.render ], [ "__scopeId", "data-v-39c5b26c" ], [ "__file", "src/黑白妹UI/app.vue" ] ]);
+    if (false) {}
+    const __WEBPACK_DEFAULT_EXPORT__ = __exports__;
+  },
+  "./src/黑白妹UI/app.vue?vue&type=script&setup=true&lang=ts": 
+  /*!**************************************************************!*\
+  !*** ./src/黑白妹UI/app.vue?vue&type=script&setup=true&lang=ts ***!
+  \**************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      default: () => _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_42_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__["default"]
+    });
+    var _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_42_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_script_setup_true_lang_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!../../node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./app.vue?vue&type=script&setup=true&lang=ts */ "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=script&setup=true&lang=ts");
+  },
+  "./src/黑白妹UI/app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true": 
+  /*!************************************************************************************!*\
+  !*** ./src/黑白妹UI/app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true ***!
+  \************************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    var _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_mini_css_extract_plugin_2_9_4_webpack_5_102_1_node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_pnpm_css_loader_7_1_2_webpack_5_102_1_node_modules_css_loader_dist_cjs_js_clonedRuleSet_45_use_1_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_pnpm_postcss_loader_8_2_0_postcs_37bafd025248bbddf6b8842180147e3c_node_modules_postcss_loader_dist_cjs_js_node_modules_pnpm_sass_loader_16_0_6_sass_1_94_0_webpack_5_102_1_node_modules_sass_loader_dist_cjs_js_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_style_index_0_id_39c5b26c_lang_scss_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!../../node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!../../node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-45.use[1]!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!../../node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!../../node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true */ "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/mini-css-extract-plugin@2.9.4_webpack@5.102.1/node_modules/mini-css-extract-plugin/dist/loader.js!./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-45.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true");
+  },
+  "./src/黑白妹UI/app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true": 
+  /*!*****************************************************************************!*\
+  !*** ./src/黑白妹UI/app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true ***!
+  \*****************************************************************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      render: () => _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_42_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_4_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_template_id_39c5b26c_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__.render
+    });
+    var _node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_vue_components_node_modules_pnpm_unplugin_2_3_10_node_modules_unplugin_dist_webpack_loaders_transform_js_unplugin_auto_import_node_modules_pnpm_ts_loader_9_5_4_typescript_a9147556e0c963c2f14f4c9e8ccef76f_node_modules_ts_loader_index_js_clonedRuleSet_42_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_4_node_modules_pnpm_vue_loader_17_4_2_vue_3_5_2_044411237ecec1aa8d154f48631c8f18_node_modules_vue_loader_dist_index_js_ruleSet_1_rules_6_use_0_app_vue_vue_type_template_id_39c5b26c_scoped_true_ts_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!../../node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!../../node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!../../node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true */ "./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-vue-components!./node_modules/.pnpm/unplugin@2.3.10/node_modules/unplugin/dist/webpack/loaders/transform.js??unplugin-auto-import!./node_modules/.pnpm/ts-loader@9.5.4_typescript@_a9147556e0c963c2f14f4c9e8ccef76f/node_modules/ts-loader/index.js??clonedRuleSet-42!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[4]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=template&id=39c5b26c&scoped=true&ts=true");
+  },
+  "./src/黑白妹VT/game_state.ts": 
+  /*!*********************************!*\
+  !*** ./src/黑白妹VT/game_state.ts ***!
+  \*********************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      GameState: () => GameState
+    });
+    var _VariableTracker_state__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/VariableTracker/state */ "./src/VariableTracker/state.ts");
+    var _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/VariableTracker/variable */ "./src/VariableTracker/variable.ts");
+    var _item__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./item */ "./src/黑白妹VT/item.ts");
+    class GameState extends _VariableTracker_state__WEBPACK_IMPORTED_MODULE_0__.State {
+      constructor(state) {
+        super(state);
+      }
+      static get STAMINA_KEY() {
+        return "行動力";
+      }
+      static get MONEY_KEY() {
+        return "金錢";
+      }
+      static get TRUST_KEY() {
+        return "信賴";
+      }
+      static get INTEREST_KEY() {
+        return "興致";
+      }
+      static get MOOD_KEY() {
+        return "心情";
+      }
+      static get CURRENT_ACTION_KEY() {
+        return "當前行動";
+      }
+      static get EXPECT_RESULT_KEY() {
+        return "預期結果";
+      }
+      static get DATETIME_KEY() {
+        return "時間";
+      }
+      static get BIG_PLACE_KEY() {
+        return "大地點";
+      }
+      static get MIDDLE_PLACE_KEY() {
+        return "中地點";
+      }
+      static get SMALL_PLACE_KEY() {
+        return "小地點";
+      }
+      static get WEATHER_KEY() {
+        return "天氣";
+      }
+      static get FLAGS_KEY() {
+        return "flags";
+      }
+      static get FLAG_BATH_KEY() {
+        return "洗澡了";
+      }
+      static get SHOP_ITEMS_KEY() {
+        return "shop_items";
+      }
+      static get INVENTORIES_KEY() {
+        return "inventories";
+      }
+      static get TRUST_ROC_KEY() {
+        return "信賴變動";
+      }
+      static get INTEREST_ROC_KEY() {
+        return "興致變動";
+      }
+      static get MOOD_ROC_KEY() {
+        return "心情變動";
+      }
+      static get ITEM_TABLE_KEY() {
+        return "item_table";
+      }
+      static get CLOTHING_KEY() {
+        return "妹妹衣著";
+      }
+      static get SUMMARY_TABLE_KEY() {
+        return "summary_table";
+      }
+      static get SUMMARY_KEY() {
+        return "總結";
+      }
+      static get WEIGHTING_KEY() {
+        return "權重";
+      }
+      getNumVariable(key) {
+        const variable = this.state.get(key);
+        if (variable instanceof _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.NumVariable) return variable; else return null;
+      }
+      getStrVariable(key) {
+        const variable = this.state.get(key);
+        if (variable instanceof _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.StrVariable) return variable; else return null;
+      }
+      getMapVariable(key) {
+        const variable = this.state.get(key);
+        if (variable instanceof _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.MapVariable) return variable; else return null;
+      }
+      getStaminaVariable() {
+        return this.getNumVariable(GameState.STAMINA_KEY);
+      }
+      getStamina() {
+        return this.getStaminaVariable().getNum();
+      }
+      deltaStamina(delta) {
+        this.getStaminaVariable().deltaNum(delta);
+      }
+      getStaminaHigh() {
+        return this.getStaminaVariable().getHigh();
+      }
+      deltaStaminaHigh(delta) {
+        this.getStaminaVariable().deltaHigh(delta);
+      }
+      getMoneyVariable() {
+        return this.getNumVariable(GameState.MONEY_KEY);
+      }
+      getMoney() {
+        return this.getMoneyVariable().getNum();
+      }
+      deltaMoney(delta) {
+        this.getMoneyVariable().deltaNum(delta);
+      }
+      getTrustVariable() {
+        return this.getNumVariable(GameState.TRUST_KEY);
+      }
+      getTrust() {
+        return this.getTrustVariable().getNum();
+      }
+      deltaTrust(delta) {
+        this.getTrustVariable().deltaNum(delta);
+      }
+      getInterestVariable() {
+        return this.getNumVariable(GameState.INTEREST_KEY);
+      }
+      getInterest() {
+        return this.getInterestVariable().getNum();
+      }
+      deltaInterest(delta) {
+        this.getInterestVariable().deltaNum(delta);
+      }
+      getMoodVariable() {
+        return this.getNumVariable(GameState.MOOD_KEY);
+      }
+      getMood() {
+        return this.getMoodVariable().getNum();
+      }
+      deltaMood(delta) {
+        this.getMoodVariable().deltaNum(delta);
+      }
+      getCurrentAction() {
+        return this.getStrVariable(GameState.CURRENT_ACTION_KEY).getStr();
+      }
+      setCurrentAction(s) {
+        this.getStrVariable(GameState.CURRENT_ACTION_KEY).setStr(s);
+      }
+      getExpectResult() {
+        return this.getStrVariable(GameState.EXPECT_RESULT_KEY).getStr();
+      }
+      setExpectResult(s) {
+        this.getStrVariable(GameState.EXPECT_RESULT_KEY).setStr(s);
+      }
+      getDatetimeVariable() {
+        const variable = this.state.get(GameState.DATETIME_KEY);
+        if (variable instanceof _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.DatetimeVariable) return variable; else return null;
+      }
+      getYear() {
+        return this.getDatetimeVariable().getYear();
+      }
+      getMonth() {
+        return this.getDatetimeVariable().getMonth();
+      }
+      getDate() {
+        return this.getDatetimeVariable().getDate();
+      }
+      getHours() {
+        return this.getDatetimeVariable().getHours();
+      }
+      getMinutes() {
+        return this.getDatetimeVariable().getMinutes();
+      }
+      getSeconds() {
+        return this.getDatetimeVariable().getSeconds();
+      }
+      getDay() {
+        return this.getDatetimeVariable().getDay();
+      }
+      isWeekday() {
+        switch (this.getDay()) {
+         case 1:
+         case 2:
+         case 3:
+         case 4:
+         case 5:
+          return true;
+        }
+        return false;
+      }
+      isWeekend() {
+        switch (this.getDay()) {
+         case 0:
+         case 6:
+          return true;
+        }
+        return false;
+      }
+      deltaMinutes(delta) {
+        this.getDatetimeVariable().deltaDatetime(0, 0, 0, 0, delta, 0);
+      }
+      deltaDatetimeUntil(hour, minute) {
+        const variable = this.getDatetimeVariable();
+        const current_hour = variable.getHours();
+        const current_minute = variable.getMinutes();
+        const current_total_minute = current_hour * 60 + current_minute;
+        let target_total_minutes = hour * 60 + minute;
+        if (current_total_minute > target_total_minutes) target_total_minutes += 1440;
+        const delta_minute = target_total_minutes - current_total_minute;
+        variable.deltaDatetime(0, 0, 0, 0, delta_minute, 0);
+      }
+      getBigPlace() {
+        return this.getStrVariable(GameState.BIG_PLACE_KEY).getStr();
+      }
+      setBigPlace(s) {
+        this.getStrVariable(GameState.BIG_PLACE_KEY).setStr(s);
+      }
+      getMiddlePlace() {
+        return this.getStrVariable(GameState.MIDDLE_PLACE_KEY).getStr();
+      }
+      setMiddlePlace(s) {
+        this.getStrVariable(GameState.MIDDLE_PLACE_KEY).setStr(s);
+      }
+      getSmallPlace() {
+        return this.getStrVariable(GameState.SMALL_PLACE_KEY).getStr();
+      }
+      setSmallPlace(s) {
+        this.getStrVariable(GameState.SMALL_PLACE_KEY).setStr(s);
+      }
+      getWeather() {
+        return this.getStrVariable(GameState.WEATHER_KEY).getStr();
+      }
+      setWeather(s) {
+        this.getStrVariable(GameState.WEATHER_KEY).setStr(s);
+      }
+      getFlagsVariable() {
+        return this.getMapVariable(GameState.FLAGS_KEY);
+      }
+      getFlagBathVariable() {
+        return this.getFlagsVariable().getVariable(GameState.FLAG_BATH_KEY);
+      }
+      isAlreadyBath() {
+        return this.getFlagBathVariable().getNum() === 1;
+      }
+      setFlagBath(already_bath) {
+        if (already_bath) this.getFlagBathVariable().deltaNum(+1); else this.getFlagBathVariable().deltaNum(-1);
+      }
+      getShopItemsVariable() {
+        return this.getMapVariable(GameState.SHOP_ITEMS_KEY);
+      }
+      addShopItem(name, price, max_quantity) {
+        const item = _item__WEBPACK_IMPORTED_MODULE_2__.Item.get(name);
+        if (!item) return;
+        const item_variable = new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.MapVariable;
+        item_variable.setVariable("price", new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.NumVariable(null, null, price));
+        if (max_quantity !== null) {
+          item_variable.setVariable("max_quantity", new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.NumVariable(0, max_quantity, max_quantity));
+        }
+        const shop_items_variable = this.getShopItemsVariable();
+        shop_items_variable.setVariable(item.name, item_variable);
+      }
+      getShopItem(name) {
+        const shop_items_variable = this.getShopItemsVariable();
+        const item_variable = shop_items_variable.getVariable(name);
+        if (!item_variable) return null;
+        const item = _item__WEBPACK_IMPORTED_MODULE_2__.Item.get(name);
+        const price = item_variable.getVariable("price").getNum();
+        let max_quantity;
+        const max_quantity_variable = item_variable.getVariable("max_quantity");
+        if (!max_quantity_variable) max_quantity = null; else max_quantity = max_quantity_variable.getNum();
+        return {
+          item,
+          price,
+          max_quantity
+        };
+      }
+      getShopItems() {
+        const shop_items_variable = this.getShopItemsVariable();
+        const shop_items = [];
+        for (const key of shop_items_variable.keys()) {
+          shop_items.push(this.getShopItem(key));
+        }
+        return shop_items;
+      }
+      getShopItemsSize() {
+        return this.getShopItemsVariable().size;
+      }
+      clearShopItems() {
+        this.setVariable(GameState.SHOP_ITEMS_KEY, new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.MapVariable);
+      }
+      buyShopItem(name, quantity) {
+        const shop_items_variable = this.getShopItemsVariable();
+        const shop_item_variable = shop_items_variable.getVariable(name);
+        if (!shop_item_variable) return;
+        const price = shop_item_variable.getVariable("price").getNum();
+        this.deltaMoney(-price * quantity);
+        const max_quantity_variable = shop_item_variable.getVariable("max_quantity");
+        if (max_quantity_variable) {
+          max_quantity_variable.deltaNum(-quantity);
+        }
+        this.deltaInventory(name, quantity);
+      }
+      sellShopItem(name, quantity) {
+        const inventory = this.getInventory(name);
+        if (!inventory) return;
+        const shop_item = this.getShopItem(name);
+        let max_quantity = shop_item.max_quantity;
+        if (max_quantity !== null) max_quantity += quantity;
+        this.deltaInventory(name, -quantity);
+        this.deltaMoney(shop_item.price * quantity);
+        this.addShopItem(name, shop_item.price, max_quantity);
+      }
+      getInventoriesVariable() {
+        return this.getMapVariable(GameState.INVENTORIES_KEY);
+      }
+      deltaInventory(name, quantity) {
+        const inventories_variable = this.getInventoriesVariable();
+        let quantity_variable = inventories_variable.getVariable(name);
+        if (!quantity_variable) quantity_variable = new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.NumVariable(0, null, quantity); else quantity_variable.deltaNum(quantity);
+        if (quantity_variable.getNum() === 0) inventories_variable.deleteVariable(name); else inventories_variable.setVariable(name, quantity_variable);
+      }
+      getInventory(name) {
+        const quantity_variable = this.getInventoriesVariable().getVariable(name);
+        if (!quantity_variable) return null;
+        const quantity = quantity_variable.getNum();
+        const item = this.getItem(name);
+        const description = item.description;
+        return {
+          name,
+          description,
+          quantity
+        };
+      }
+      hasInventory(name) {
+        const item = _item__WEBPACK_IMPORTED_MODULE_2__.Item.get(name);
+        if (!item) return false;
+        return this.getInventoriesVariable().getVariable(item.name) !== undefined;
+      }
+      getInventories() {
+        const inventories_variable = this.getInventoriesVariable();
+        const inventories = [];
+        for (const key of inventories_variable.keys()) {
+          inventories.push(this.getInventory(key));
+        }
+        return inventories;
+      }
+      getDinnerInventory() {
+        if (this.hasInventory("體力食材")) return "體力食材";
+        if (this.hasInventory("便當")) return "便當";
+        if (this.hasInventory("食材")) return "食材";
+        return "泡麵";
+      }
+      getTrustROCVariable() {
+        return this.getNumVariable(GameState.TRUST_ROC_KEY);
+      }
+      getTrustROC() {
+        return this.getTrustROCVariable().getNum();
+      }
+      deltaTrustROC(delta) {
+        this.getTrustROCVariable().deltaNum(delta);
+      }
+      resetTrustROC() {
+        this.getTrustROCVariable().deltaNum(-this.getTrustROC());
+      }
+      getInterestROCVariable() {
+        return this.getNumVariable(GameState.INTEREST_ROC_KEY);
+      }
+      getInterestROC() {
+        return this.getInterestROCVariable().getNum();
+      }
+      deltaInterestROC(delta) {
+        this.getInterestROCVariable().deltaNum(delta);
+      }
+      resetInterestROC() {
+        this.getInterestROCVariable().deltaNum(-this.getInterestROC());
+      }
+      getMoodROCVariable() {
+        return this.getNumVariable(GameState.MOOD_ROC_KEY);
+      }
+      getMoodROC() {
+        return this.getMoodROCVariable().getNum();
+      }
+      deltaMoodROC(delta) {
+        this.getMoodROCVariable().deltaNum(delta);
+      }
+      resetMoodROC() {
+        this.getMoodROCVariable().deltaNum(-this.getMoodROC());
+      }
+      getItemTableVariable() {
+        return this.getMapVariable(GameState.ITEM_TABLE_KEY);
+      }
+      createItem(name, description) {
+        const item_table_variable = this.getItemTableVariable();
+        const description_variable = new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.StrVariable(description);
+        item_table_variable.setVariable(name, description_variable);
+      }
+      getItem(name) {
+        const item_table_variable = this.getItemTableVariable();
+        const description_variable = item_table_variable.getVariable(name);
+        if (!description_variable) return null;
+        const description = description_variable.getStr();
+        return {
+          description
+        };
+      }
+      getItemTable() {
+        const item_table_variable = this.getItemTableVariable();
+        const item_table = new Map;
+        for (const name of item_table_variable.keys()) {
+          const description_variable = item_table_variable.getVariable(name);
+          const description = description_variable.getStr();
+          item_table.set(name, description);
+        }
+        return item_table;
+      }
+      getClothing() {
+        return this.getStrVariable(GameState.CLOTHING_KEY).getStr();
+      }
+      setClothing(s) {
+        this.getStrVariable(GameState.CLOTHING_KEY).setStr(s);
+      }
+      getSummaryTableVariable() {
+        return this.getMapVariable(GameState.SUMMARY_TABLE_KEY);
+      }
+      addSummary(summary, weighting) {
+        const summary_table_variable = this.getSummaryTableVariable();
+        const id = summary_table_variable.size;
+        const datatime_variable = this.getDatetimeVariable();
+        const big_place = this.getBigPlace();
+        const middle_place = this.getMiddlePlace();
+        const small_place = this.getSmallPlace();
+        const summary_variable = new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.MapVariable;
+        summary_variable.setVariable(GameState.DATETIME_KEY, datatime_variable);
+        summary_variable.setVariable(GameState.BIG_PLACE_KEY, new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.StrVariable(big_place));
+        summary_variable.setVariable(GameState.MIDDLE_PLACE_KEY, new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.StrVariable(middle_place));
+        summary_variable.setVariable(GameState.SMALL_PLACE_KEY, new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.StrVariable(small_place));
+        summary_variable.setVariable(GameState.SUMMARY_KEY, new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.StrVariable(summary));
+        summary_variable.setVariable(GameState.WEIGHTING_KEY, new _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.NumVariable(0, 1, weighting));
+        summary_table_variable.setVariable(String(id), summary_variable);
+      }
+      getSummary(id) {
+        const summary_table_variable = this.getSummaryTableVariable();
+        const summary_variable = summary_table_variable.getVariable(String(id));
+        if (!summary_variable) return null;
+        const datetime_variable = summary_variable.getVariable(GameState.DATETIME_KEY);
+        const datetime = datetime_variable.getDateTime();
+        const big_place_variable = summary_variable.getVariable(GameState.BIG_PLACE_KEY);
+        const big_place = big_place_variable.getStr();
+        const middle_place_variable = summary_variable.getVariable(GameState.MIDDLE_PLACE_KEY);
+        const middle_place = middle_place_variable.getStr();
+        const small_place_variable = summary_variable.getVariable(GameState.SMALL_PLACE_KEY);
+        const small_place = small_place_variable.getStr();
+        const summary_string_variable = summary_variable.getVariable(GameState.SUMMARY_KEY);
+        const summary = summary_string_variable.getStr();
+        const weighting_variable = summary_variable.getVariable(GameState.WEIGHTING_KEY);
+        const weighting = weighting_variable.getNum();
+        return {
+          datetime,
+          big_place,
+          middle_place,
+          small_place,
+          summary,
+          weighting
+        };
+      }
+      getSummaries() {
+        const summary_table_variable = this.getSummaryTableVariable();
+        const summaries = [];
+        for (let id = 0; id < summary_table_variable.size; id++) {
+          summaries.push(this.getSummary(id));
+        }
+        return summaries;
+      }
+      finishCurrentAction(summary, weighting) {
+        this.addSummary(summary, weighting);
+        weighting = Math.trunc(weighting * 10);
+        const trust_roc = this.getTrustROC();
+        const interest_roc = this.getInterestROC();
+        const roc_sum = Math.max(1, Math.abs(trust_roc) + Math.abs(interest_roc));
+        let delta_trust = Math.trunc(trust_roc / roc_sum * weighting);
+        if (delta_trust < 0) delta_trust *= 2;
+        let delta_interest = Math.trunc(interest_roc / roc_sum * weighting);
+        if (delta_interest < 0) delta_interest *= 2;
+        const mood_roc = this.getMoodROC();
+        let delta_mood = 0;
+        if (mood_roc > 0 && mood_roc > 10 - weighting) delta_mood = 1; else if (mood_roc < 0 && mood_roc * 2 < weighting - 10) delta_mood = -1;
+        console.log("[Action Command] weighting:", weighting);
+        console.log("[Action Command] trust_roc:", trust_roc);
+        console.log("[Action Command] interest_roc:", interest_roc);
+        console.log("[Action Command] roc_sum:", roc_sum);
+        console.log("[Action Command] delta_trust:", delta_trust);
+        console.log("[Action Command] delta_interest:", delta_interest);
+        console.log("[Action Command] mood_roc:", mood_roc);
+        console.log("[Action Command] delta_mood:", delta_mood);
+        this.deltaTrust(delta_trust);
+        this.deltaInterest(delta_interest);
+        this.deltaMood(delta_mood);
+        this.resetTrustROC();
+        this.resetInterestROC();
+        this.resetMoodROC();
+      }
+      handleChangeDateEvents(start_year, start_month, start_date, end_year, end_month, end_date) {
+        const normalized_start_date = new Date(start_year, start_month, start_date);
+        const normalized_end_date = new Date(end_year, end_month, end_date);
+        const delta_date = Math.floor((normalized_end_date.getTime() - normalized_start_date.getTime()) / (1e3 * 60 * 60 * 24));
+        if (delta_date <= 0) return;
+        this.deltaMoney(+2e3 * delta_date);
+      }
+      isCurrentDateTimeBetween(start_hour, start_minute, end_hour, end_minute) {
+        const datetime_variable = this.state.get(GameState.DATETIME_KEY);
+        if (!(datetime_variable instanceof _VariableTracker_variable__WEBPACK_IMPORTED_MODULE_1__.DatetimeVariable)) return false;
+        const current_hour = datetime_variable.getHours();
+        const current_minute = datetime_variable.getMinutes();
+        const current_total_minutes = current_hour * 60 + current_minute;
+        const start_total_minutes = start_hour * 60 + start_minute;
+        const end_total_minutes = end_hour * 60 + end_minute;
+        if (start_total_minutes <= end_total_minutes) {
+          return current_total_minutes >= start_total_minutes && current_total_minutes <= end_total_minutes;
+        } else {
+          return current_total_minutes >= start_total_minutes || current_total_minutes <= end_total_minutes;
+        }
+      }
+      isCurrentDateTimeAtNight() {
+        return this.isCurrentDateTimeBetween(19, 0, 0, 0);
+      }
+    }
+  },
+  "./src/黑白妹VT/item.ts": 
+  /*!***************************!*\
+  !*** ./src/黑白妹VT/item.ts ***!
+  \***************************/ (__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+    __webpack_require__.r(__webpack_exports__);
+    __webpack_require__.d(__webpack_exports__, {
+      Item: () => Item
+    });
+    var _util_registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/util/registry */ "./src/util/registry.ts");
+    class Item {
+      static registry=new _util_registry__WEBPACK_IMPORTED_MODULE_0__.Registry;
+      name;
+      description;
+      constructor(name, description) {
+        this.name = name;
+        this.description = description;
+      }
+      static register(item) {
+        Item.registry.register(item.name, item);
+      }
+      static get(name) {
+        return Item.registry.get(name);
+      }
+    }
+  },
+  vue: 
+  /*!**********************!*\
+  !*** external "Vue" ***!
+  \**********************/ module => {
+    module.exports = Vue;
+  }
+};
+
+var __webpack_module_cache__ = {};
+
+function __webpack_require__(moduleId) {
+  var cachedModule = __webpack_module_cache__[moduleId];
+  if (cachedModule !== undefined) {
+    return cachedModule.exports;
+  }
+  var module = __webpack_module_cache__[moduleId] = {
+    exports: {}
+  };
+  __webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+  return module.exports;
+}
+
+(() => {
+  __webpack_require__.n = module => {
+    var getter = module && module.__esModule ? () => module["default"] : () => module;
+    __webpack_require__.d(getter, {
+      a: getter
+    });
+    return getter;
+  };
+})();
+
+(() => {
+  __webpack_require__.d = (exports, definition) => {
+    for (var key in definition) {
+      if (__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+        Object.defineProperty(exports, key, {
+          enumerable: true,
+          get: definition[key]
+        });
+      }
+    }
+  };
+})();
+
+(() => {
+  __webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+})();
+
+(() => {
+  __webpack_require__.r = exports => {
+    if (typeof Symbol !== "undefined" && Symbol.toStringTag) {
+      Object.defineProperty(exports, Symbol.toStringTag, {
+        value: "Module"
+      });
+    }
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
+  };
+})();
+
+var __webpack_exports__ = {};
+
+(() => {
+  /*!****************************!*\
+  !*** ./src/黑白妹UI/index.ts ***!
+  \****************************/
+  __webpack_require__.r(__webpack_exports__);
+  var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
+  var vue__WEBPACK_IMPORTED_MODULE_0___default = __webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+  var _app_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app.vue */ "./src/黑白妹UI/app.vue");
+  $(() => {
+    (0, vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_app_vue__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#app");
+  });
+})();</script><style>/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.2_webpack@5.102.1/node_modules/css-loader/dist/cjs.js??clonedRuleSet-45.use[1]!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/.pnpm/postcss-loader@8.2.0_postcs_37bafd025248bbddf6b8842180147e3c/node_modules/postcss-loader/dist/cjs.js!./node_modules/.pnpm/sass-loader@16.0.6_sass@1.94.0_webpack@5.102.1/node_modules/sass-loader/dist/cjs.js!./node_modules/.pnpm/vue-loader@17.4.2_vue@3.5.2_044411237ecec1aa8d154f48631c8f18/node_modules/vue-loader/dist/index.js??ruleSet[1].rules[6].use[0]!./src/黑白妹UI/app.vue?vue&type=style&index=0&id=39c5b26c&lang=scss&scoped=true ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+@charset "UTF-8";.galgame-container[data-v-39c5b26c]{position:relative;width:100%;font-family:"Comic Sans MS","Chalkduster",sans-serif;color:#000;display:flex;flex-direction:column;align-items:center}.content-wrapper[data-v-39c5b26c]{width:100%;max-width:1200px;display:flex;flex-direction:column;gap:10px}.bottom-status-bar[data-v-39c5b26c]{background:rgba(20,20,20,0.95);border:3px solid #666;border-radius:15px;padding:20px;display:flex;flex-direction:column;gap:8px;box-shadow:5px 5px 0px #333;font-size:14px;font-weight:bold;color:#ccc}.status-row-1[data-v-39c5b26c]{display:flex;justify-content:center;align-items:center;text-align:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.3);gap:20px}.status-row-2[data-v-39c5b26c]{display:flex;justify-content:center;align-items:center;text-align:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.3)}.status-row-3[data-v-39c5b26c]{display:flex;justify-content:center;align-items:center;text-align:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.3)}.status-row-4[data-v-39c5b26c]{display:flex;justify-content:center;align-items:center;text-align:center;gap:20px}.date-time[data-v-39c5b26c]{color:#ccc;text-shadow:1px 1px 0px #333;white-space:nowrap;justify-self:center}.weather[data-v-39c5b26c]{color:#ccc;text-shadow:1px 1px 0px #333;justify-self:center}.location[data-v-39c5b26c]{color:#ccc;text-shadow:1px 1px 0px #333;justify-self:center;text-align:center}.current-action[data-v-39c5b26c]{color:#ccc;text-shadow:1px 1px 0px #333;justify-self:center;text-align:center;font-weight:bold}.stamina-bar[data-v-39c5b26c]{position:relative;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:8px;justify-self:center}.stamina-bar .value[data-v-39c5b26c]{color:#000;font-size:11px;font-weight:bold;text-shadow:1px 1px 0px #fff,-1px -1px 0px #fff,1px -1px 0px #fff,-1px 1px 0px #fff;white-space:nowrap;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;pointer-events:none;grid-column:2}.stamina-bar .label[data-v-39c5b26c]{color:#ccc;font-size:12px;text-shadow:1px 1px 0px #333;white-space:nowrap;grid-column:1}.stamina-bar .bar-container[data-v-39c5b26c]{position:relative;width:120px;height:16px;background:rgba(255,255,255,0.2);border:1px solid #666;border-radius:6px;overflow:hidden;grid-column:2}.stamina-bar .bar-fill[data-v-39c5b26c]{height:100%;background:#ccc;border-radius:5px;transition:width 0.3s ease}.money[data-v-39c5b26c]{color:#ccc;font-size:16px;font-weight:bold;text-shadow:1px 1px 0px #333;justify-self:center}.background[data-v-39c5b26c]{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg,#2a2a2a 25%,#1a1a1a 25%,#1a1a1a 50%,#2a2a2a 50%,#2a2a2a 75%,#1a1a1a 75%);background-size:20px 20px;opacity:0.3;z-index:-1}.main-content[data-v-39c5b26c]{display:flex;flex:1;padding:20px 20px 0 20px;gap:20px;align-items:flex-start}.status-item[data-v-39c5b26c]{display:flex;justify-content:space-between;font-size:14px;font-weight:bold}.status-item .label[data-v-39c5b26c]{color:#aaa}.status-item .value[data-v-39c5b26c]{color:#ccc;text-shadow:1px 1px 0px #333}.dialogue-box[data-v-39c5b26c]{flex:1;background:rgba(20,20,20,0.95);border:3px solid #666;border-radius:15px;padding:20px;box-shadow:5px 5px 0px #333;min-height:120px;display:flex;align-items:center}.dialogue-text[data-v-39c5b26c]{font-size:16px;line-height:1.6;color:#ccc;text-shadow:1px 1px 0px #333;word-wrap:break-word;white-space:pre-line}.galgame-container[data-v-39c5b26c]::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.03) 2px,rgba(255,255,255,0.03) 4px);pointer-events:none}.status-panel[data-v-39c5b26c]::after,.dialogue-box[data-v-39c5b26c]::after{content:"";position:absolute;bottom:-8px;right:-8px;width:20px;height:20px;background:#666;border-radius:50%}@media (max-width:768px){.bottom-status-bar[data-v-39c5b26c]{padding:12px;margin:5px;gap:6px;font-size:12px}.status-row-1[data-v-39c5b26c]{gap:6px}.status-row-2[data-v-39c5b26c]{gap:6px}.status-row-3[data-v-39c5b26c]{gap:6px}.date-time[data-v-39c5b26c],.weather[data-v-39c5b26c],.location[data-v-39c5b26c],.current-action[data-v-39c5b26c],.money[data-v-39c5b26c]{justify-self:center;text-align:center}.status-item[data-v-39c5b26c]{justify-self:center;text-align:center}.stamina-bar[data-v-39c5b26c]{justify-self:center}.stamina-bar .bar-container[data-v-39c5b26c]{width:120px}.main-content[data-v-39c5b26c]{padding:10px 10px 0 10px}.dialogue-box[data-v-39c5b26c]{margin-bottom:10px}}.shop-panel[data-v-39c5b26c]{background:rgba(20,20,20,0.95);border:3px solid #666;border-radius:15px;padding:20px;box-shadow:5px 5px 0px #333;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);flex:1;min-height:120px;display:flex;flex-direction:column}.shop-header[data-v-39c5b26c]{text-align:center;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.2)}.shop-header span[data-v-39c5b26c]{font-size:18px;font-weight:bold;color:#ccc;text-shadow:1px 1px 0px #333}.no-items-message[data-v-39c5b26c]{text-align:center;padding:20px;color:#ccc;font-size:14px;text-shadow:1px 1px 0px #333}.no-items-message p[data-v-39c5b26c]{margin:10px 0}.shop-items[data-v-39c5b26c]{display:flex;flex-direction:column}.shop-item[data-v-39c5b26c]{padding:8px 12px;transition:all 0.3s ease;border-bottom:1px solid rgba(255,255,255,0.08)}.shop-item[data-v-39c5b26c]:hover{background:rgba(255,255,255,0.03)}.shop-item[data-v-39c5b26c]:last-child{border-bottom:none}.item-header[data-v-39c5b26c]{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.item-name[data-v-39c5b26c]{flex-shrink:0;text-align:left;white-space:nowrap;align-self:center}.item-price[data-v-39c5b26c]{font-size:14px;font-weight:bold;color:#5ee4ff;text-shadow:1px 1px 0px #000;margin-right:12px;white-space:nowrap}.item-controls[data-v-39c5b26c]{display:flex;align-items:center;gap:6px;min-width:120px;justify-content:flex-end}.item-description[data-v-39c5b26c]{font-size:13px;color:#888;text-shadow:1px 1px 0px #333;line-height:1.4}.quantity-btn[data-v-39c5b26c]{width:32px;height:32px;border:2px solid #666;background:rgba(255,255,255,0.1);color:#ccc;font-size:18px;font-weight:bold;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease;text-shadow:1px 1px 0px #333}.quantity-btn[data-v-39c5b26c]:hover:not(:disabled){background:rgba(255,255,255,0.2);border-color:#888;transform:scale(1.05)}.quantity-btn[data-v-39c5b26c]:active:not(:disabled){transform:scale(0.95)}.quantity-btn[data-v-39c5b26c]:disabled{opacity:0.4;cursor:not-allowed;background:rgba(255,255,255,0.05)}.quantity-input[data-v-39c5b26c]{width:60px;height:32px;border:2px solid #666;background:rgba(255,255,255,0.1);color:#fff;font-size:14px;font-weight:bold;text-align:center;border-radius:6px;outline:none;transition:all 0.2s ease;text-shadow:1px 1px 0px #333}.quantity-input[data-v-39c5b26c]:focus{border-color:#5ee4ff;background:rgba(255,255,255,0.15);box-shadow:0 0 8px rgba(94,228,255,0.3)}.quantity-input[data-v-39c5b26c]::-webkit-outer-spin-button,.quantity-input[data-v-39c5b26c]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.quantity-input[type=number][data-v-39c5b26c]{-moz-appearance:textfield}@media (max-width:768px){.shop-panel[data-v-39c5b26c]{padding:8px;margin:4px 0}.shop-item[data-v-39c5b26c]{padding:6px 8px}.item-header[data-v-39c5b26c]{gap:4px;margin-bottom:2px}.item-name[data-v-39c5b26c]{font-size:14px;margin-right:4px}.item-price[data-v-39c5b26c]{font-size:13px;margin-right:6px}.item-controls[data-v-39c5b26c]{min-width:85px}.item-description[data-v-39c5b26c]{font-size:12px;text-align:left}.quantity-input[data-v-39c5b26c]{width:38px;font-size:12px}.quantity-btn[data-v-39c5b26c]{width:24px;height:24px;font-size:14px}}.inventories-panel[data-v-39c5b26c]{background:rgba(20,20,20,0.95);border:3px solid #666;border-radius:15px;padding:20px;box-shadow:5px 5px 0px #333;font-size:14px;font-weight:bold;color:#ccc}.inventories-header[data-v-39c5b26c]{text-align:center;margin-bottom:8px;padding-bottom:4px}.inventories-btn[data-v-39c5b26c]{position:relative;padding:12px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-bottom:1px dashed rgba(255,255,255,0.3);transition:all 0.3s ease;background:transparent;border:none;width:100%;text-align:left;color:#ccc;font-size:14px;font-weight:bold;text-shadow:1px 1px 0px #333}.inventories-btn .toggle-icon[data-v-39c5b26c]{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #ccc;transition:transform 0.3s ease;margin-left:8px;flex-shrink:0}.inventories-btn .toggle-icon.open[data-v-39c5b26c]{transform:rotate(180deg)}.inventories-btn[data-v-39c5b26c]:hover{background:rgba(255,255,255,0.1)}.inventories-btn[data-v-39c5b26c]:focus{outline:none}.inventories-content[data-v-39c5b26c]{max-height:0;overflow:hidden;transition:max-height 0.5s cubic-bezier(0.4,0,0.2,1);background:rgba(20,20,20,0.95);border-top:1px solid rgba(255,255,255,0.1)}.inventories-content.open[data-v-39c5b26c]{max-height:200px}.inventory-item[data-v-39c5b26c]{padding:8px 12px;transition:all 0.3s ease;border-bottom:1px solid rgba(255,255,255,0.08);color:#ccc;text-shadow:1px 1px 0px #333;font-size:13px;display:flex;align-items:flex-start;justify-content:space-between}.inventory-item[data-v-39c5b26c]:hover{background:rgba(255,255,255,0.03)}.inventory-item[data-v-39c5b26c]:last-child{border-bottom:none}.item-name[data-v-39c5b26c]{flex-shrink:0;text-align:left;margin-right:8px;align-self:center}.item-description[data-v-39c5b26c]{flex:1;text-align:left;margin:0 8px;align-self:flex-start;word-wrap:break-word;overflow-wrap:break-word}.item-quantity[data-v-39c5b26c]{flex-shrink:0;text-align:right;white-space:nowrap;align-self:center}.inventories-footer-toggle[data-v-39c5b26c]{display:block;text-align:center;padding:15px 0;color:#ccc;opacity:0.8;font-size:13px;cursor:pointer;transition:all 0.2s ease;-webkit-user-select:none;user-select:none;text-shadow:1px 1px 0px #333}.inventories-footer-toggle[data-v-39c5b26c]:hover{opacity:1;transform:scale(1.02)}.inventories-footer-toggle[data-v-39c5b26c]:active{transform:scale(0.98)}.no-items-message[data-v-39c5b26c]{text-align:center;padding:20px;color:#ccc;font-size:14px;text-shadow:1px 1px 0px #333}.no-items-message p[data-v-39c5b26c]{margin:10px 0}@media (max-width:768px){.inventories-panel[data-v-39c5b26c]{padding:12px;margin:5px}.inventories-header[data-v-39c5b26c]{margin-bottom:6px;padding-bottom:2px}.inventories-btn[data-v-39c5b26c]{padding:6px 12px;font-size:12px}.inventory-item[data-v-39c5b26c]{padding:6px 8px;font-size:12px}.inventories-footer-toggle[data-v-39c5b26c]{padding:10px 0;font-size:12px}}
+</style></head>
+<body>
+  <div id="app"></div>
+</body>
